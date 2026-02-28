@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
+import HeroBackground from "./components/HeroBackground";
 
 type Lang = "ro" | "en";
 
@@ -23,7 +24,15 @@ export default function Home() {
   });
   const [services, setServices] = useState<string[]>([]);
   const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-  const [waitlistCount, setWaitlistCount] = useState(0);
+
+  // Fake counter: 175 acum, 3239 la lansare (15 Mar 2026)
+  const fakeCount = (() => {
+    const start = new Date("2026-02-28T00:00:00").getTime();
+    const end = new Date("2026-03-15T00:00:00").getTime();
+    const now = Date.now();
+    const clamped = Math.min(Math.max(now, start), end);
+    return 175 + Math.floor((3239 - 175) * (clamped - start) / (end - start));
+  })();
 
   useEffect(() => {
     const target = new Date("2026-03-15T00:00:00").getTime();
@@ -42,12 +51,6 @@ export default function Home() {
     return () => clearInterval(id);
   }, []);
 
-  useEffect(() => {
-    fetch("/api/waitlist-count")
-      .then((r) => r.json())
-      .then((data) => setWaitlistCount(data.count ?? 0))
-      .catch(() => setWaitlistCount(0));
-  }, []);
 
   function toggleService(value: string) {
     setServices((prev) =>
@@ -115,7 +118,7 @@ export default function Home() {
       )}
 
       {/* ── NAV ── */}
-      <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between border-b border-white/10 bg-[#0a0a0a]/80 px-6 py-4 backdrop-blur">
+      <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between bg-black/30 px-6 py-4 backdrop-blur-sm">
         <div className="w-16" />
         <Image
           src="/nesco-logo.png"
@@ -126,72 +129,84 @@ export default function Home() {
         />
         <button
           onClick={() => setLang(lang === "ro" ? "en" : "ro")}
-          className="rounded-full border border-white/20 px-3 py-1 text-xs font-semibold text-zinc-400 transition hover:border-white/40 hover:text-white"
+          className="rounded-full border border-white/20 px-3 py-1 text-xs font-semibold text-zinc-400 transition hover:border-white/40 hover:text-white flex items-center gap-1.5"
         >
-          {lang === "ro" ? "EN" : "RO"}
+          {lang === "ro" ? (
+            <><img src="https://flagcdn.com/gb.svg" alt="EN" className="h-3.5 w-5 object-cover rounded-sm" /> EN</>
+          ) : (
+            <><img src="https://flagcdn.com/ro.svg" alt="RO" className="h-3.5 w-5 object-cover rounded-sm" /> RO</>
+          )}
         </button>
       </header>
 
-      <main className="pt-20">
+      <main>
         {/* ── 1. HERO ── */}
-        <section className="mx-auto max-w-3xl px-6 pb-24 pt-24 text-center">
-          <span className="inline-block rounded-full border border-[#56db84]/40 bg-[#56db84]/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#56db84]">
-            Nesco Digital AI
-          </span>
+        <section className="relative overflow-hidden pb-24 pt-40 text-center" style={{ background: "rgb(9,4,0)" }}>
+          <HeroBackground />
+          <div className="relative mx-auto max-w-3xl px-6" style={{ zIndex: 1 }}>
+            {/* Badge + Social proof pe același rând */}
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              <span className="inline-block rounded-full border border-[#56db84]/40 bg-[#56db84]/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#56db84]">
+                Nesco Digital AI
+              </span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold text-white">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />
+                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
+                </span>
+                <span className="font-bold">{fakeCount}</span>
+                {t("persoane înscrise", "people signed up")}
+              </span>
+            </div>
 
-          <h1 className="mt-6 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
-            {t(
-              "Un singur workspace. Tot marketingul tău, înțeles.",
-              "One workspace. Your entire marketing, understood."
-            )}
-          </h1>
+            {/* H1 */}
+            <h1 className="mt-6 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
+              {lang === "ro" ? <>Un singur workspace.<br />Totul despre marketingul tău.</> : <>One workspace.<br />Everything about your marketing.</>}
+            </h1>
 
-          <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-zinc-400">
-            {t(
-              "Un AI care îți cunoaște brandul, audiența și ofertele. Nu mai explici nimic. Creezi direct.",
-              "AI that knows your brand, audience, and offers. No more explaining. Just create."
-            )}
-          </p>
+            {/* Subtitlu */}
+            <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-white">
+              {t(
+                "Un AI care îți cunoaște brandul, audiența și ofertele. Nu mai explici nimic. Creezi direct.",
+                "AI that knows your brand, audience, and offers. No more explaining. Just create."
+              )}
+            </p>
 
-          <a
-            href="#waitlist"
-            className="mt-8 inline-block rounded-full bg-[#56db84] px-8 py-3.5 text-sm font-semibold text-black shadow-md transition hover:bg-[#3ec96d] active:scale-95"
-          >
-            {t("Înscrie-te pe listă", "Join the Waitlist")}
-          </a>
+            {/* CTA */}
+            <a
+              href="#waitlist"
+              className="mt-8 inline-block rounded-full bg-[#56db84] px-8 py-3.5 text-sm font-semibold text-black shadow-md transition hover:bg-[#3ec96d] active:scale-95"
+            >
+              {t("Înscrie-te pe listă", "Join the Waitlist")}
+            </a>
 
-          {/* ── Countdown ── */}
-          <div className="mt-8 flex items-center justify-center gap-3">
-            {[
-              { value: countdown.days, label: t("zile", "days") },
-              { value: countdown.hours, label: t("ore", "hours") },
-              { value: countdown.minutes, label: t("min", "min") },
-              { value: countdown.seconds, label: t("sec", "sec") },
-            ].map(({ value, label }, i) => (
-              <div key={i} className="flex flex-col items-center">
-                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#141414] border border-white/10">
-                  <span className="text-xl font-bold text-[#56db84]">
-                    {String(value).padStart(2, "0")}
-                  </span>
+            <p className="mt-3 text-xs text-white">
+              {t("Acces anticipat gratuit · Fără card.", "Free early access · No credit card.")}
+            </p>
+
+            {/* Countdown */}
+            <div className="mt-8 flex items-center justify-center gap-3">
+              {[
+                { value: countdown.days, label: t("zile", "days") },
+                { value: countdown.hours, label: t("ore", "hours") },
+                { value: countdown.minutes, label: t("min", "min") },
+                { value: countdown.seconds, label: t("sec", "sec") },
+              ].map(({ value, label }, i) => (
+                <div key={i} className="flex flex-col items-center">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#141414] border border-white/10">
+                    <span className="text-xl font-bold text-[#56db84]">
+                      {String(value).padStart(2, "0")}
+                    </span>
+                  </div>
+                  <span className="mt-1 text-[10px] uppercase tracking-widest text-white">{label}</span>
                 </div>
-                <span className="mt-1 text-[10px] uppercase tracking-widest text-zinc-500">{label}</span>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-
-          {/* ── Live counter ── */}
-          <p className="mt-4 text-xs text-zinc-500">
-            <span className="inline-block h-2 w-2 rounded-full bg-red-500 mr-1.5 align-middle" />
-            LIVE · {waitlistCount} {t("persoane înscrise deja", "people already signed up")}
-          </p>
-
-          <p className="mt-2 text-xs text-zinc-500">
-            {t("Acces anticipat gratuit · Fără card.", "Free early access · No credit card.")}
-          </p>
         </section>
 
         {/* ── 2. PROBLEM ── */}
-        <section className="bg-[#111111] py-24">
+        <section className="bg-[#0a0a0a] py-24">
           <div className="mx-auto max-w-3xl px-6">
             <p className="text-xs font-semibold uppercase tracking-widest text-[#56db84]">
               {t("Situația actuală", "The current situation")}
