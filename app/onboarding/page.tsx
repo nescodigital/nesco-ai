@@ -321,9 +321,9 @@ function ToneSlider({ slider, value, onChange }: { slider: SliderDef; value: num
   return (
     <div className="py-1">
       <div className="flex items-center justify-between mb-3">
-        <span className="text-[12px] font-medium text-white/45">{slider.left}</span>
+        <span className="text-[14px] font-bold text-white">{slider.left}</span>
         <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full" style={{ background: "rgba(255,255,255,0.06)", color: labelColor }}>{label}</span>
-        <span className="text-[12px] font-medium text-white/45">{slider.right}</span>
+        <span className="text-[14px] font-bold text-white">{slider.right}</span>
       </div>
       <div
         ref={trackRef}
