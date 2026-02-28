@@ -141,19 +141,17 @@ export async function POST(req: NextRequest) {
       subject: `Waitlist nou: ${name} - ${email}`,
       html: notifHtml,
     }),
-    fetch("https://api.themarketer.com/v1/add_subscriber", {
+    fetch("https://t.themarketer.com/api/v1/add_subscriber", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "User-Agent": "Mozilla/5.0 (compatible; NescoDigital/1.0)",
-      },
+      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        rest_key: process.env.THEMARKETER_REST_KEY || '',
-        customer_id: process.env.THEMARKETER_CUSTOMER_ID || '',
+        k: process.env.THEMARKETER_REST_KEY,
+        u: process.env.THEMARKETER_CUSTOMER_ID,
         email,
         firstname: name,
         phone,
-        tags: ["nesco-ai-waitlist"],
+        add_tags: "nesco-ai-waitlist",
+        channels: "email",
       }),
     }).then(r => r.text()).then(text => { console.log('TheMarketer response:', text); return text; }),
   ]);
