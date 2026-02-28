@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
+import Link from "next/link";
+import { createClient } from "@/lib/supabase/client";
 
 const CONTENT_TYPES = [
   { v: "Post Facebook", l: "👍 Post Facebook" },
@@ -26,6 +28,20 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(false);
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
+  const [credits, setCredits] = useState<number | null>(null);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      supabase
+        .from("user_credits")
+        .select("credits")
+        .eq("user_id", user.id)
+        .single()
+        .then(({ data }) => { if (data) setCredits(data.credits); });
+    });
+  }, []);
 
   async function handleGenerate() {
     setLoading(true);
@@ -38,8 +54,13 @@ export default function DashboardPage() {
         body: JSON.stringify({ contentType, objective, context }),
       });
       const data = await res.json();
+      if (res.status === 402) {
+        setError("no_credits");
+        return;
+      }
       if (!res.ok) throw new Error(data.error || "Eroare la generare");
       setOutput(data.content);
+      if (typeof data.creditsRemaining === "number") setCredits(data.creditsRemaining);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Ceva n-a mers. Încearcă din nou.");
     } finally {
@@ -77,6 +98,59 @@ export default function DashboardPage() {
           AI-ul scrie în stilul brandului tău, gata de publicat.
         </p>
       </div>
+
+      {/* Credits banner */}
+      {credits !== null && (
+        <div
+          className="flex items-center justify-between rounded-2xl px-4 py-3 mb-5"
+          style={{
+            border: `1px solid ${credits < 3 ? "rgba(251,146,60,0.3)" : "rgba(255,255,255,0.07)"}`,
+            background: credits < 3 ? "rgba(251,146,60,0.05)" : "rgba(255,255,255,0.02)",
+          }}
+        >
+          <div className="flex items-center gap-2.5">
+            <span className="text-base">{credits < 3 ? "⚠️" : "⚡"}</span>
+            <div>
+              <span className="text-[13px] font-semibold text-white/80">
+                {credits === 0 ? "Nu mai ai credite" : `${credits} ${credits === 1 ? "credit rămas" : "credite rămase"}`}
+              </span>
+              {credits < 3 && credits > 0 && (
+                <p className="text-[11px] text-white/35 mt-0.5">Ia un plan pentru a continua să generezi conținut.</p>
+              )}
+            </div>
+          </div>
+          {credits < 3 && (
+            <Link
+              href="/pricing"
+              className="flex-shrink-0 px-3 py-1.5 rounded-xl text-[12px] font-bold text-black transition-all active:scale-95"
+              style={{ background: "linear-gradient(135deg,#56db84,#818cf8)" }}
+            >
+              Upgrade
+            </Link>
+          )}
+        </div>
+      )}
+
+      {/* No credits error */}
+      {error === "no_credits" && (
+        <div
+          className="rounded-2xl px-5 py-4 mb-5 flex items-start gap-3"
+          style={{ background: "rgba(251,146,60,0.08)", border: "1px solid rgba(251,146,60,0.25)" }}
+        >
+          <span className="text-xl mt-0.5">⚠️</span>
+          <div>
+            <p className="text-[14px] font-semibold text-orange-300 mb-1">Ai terminat creditele gratuite</p>
+            <p className="text-[13px] text-white/50 mb-3">Ia un plan pentru a continua să generezi conținut personalizat cu AI.</p>
+            <Link
+              href="/pricing"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-[13px] font-bold text-black"
+              style={{ background: "linear-gradient(135deg,#56db84,#818cf8)" }}
+            >
+              Vezi planurile →
+            </Link>
+          </div>
+        </div>
+      )}
 
       {/* Form card */}
       <div
@@ -181,7 +255,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Error */}
-      {error && (
+      {error && error !== "no_credits" && (
         <div
           className="rounded-xl px-4 py-3 mb-4 text-[13px]"
           style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", color: "rgba(252,165,165,0.9)" }}

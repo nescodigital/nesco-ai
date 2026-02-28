@@ -36,9 +36,13 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Claude local config
+.claude/
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
 
 # subscriber data
 /data/waitlist.json
+.env*.local

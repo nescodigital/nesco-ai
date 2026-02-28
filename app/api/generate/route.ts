@@ -8,6 +8,17 @@ export async function POST(request: Request) {
   } = await supabase.auth.getUser();
   if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
+  // Check credits
+  const { data: creditsRow } = await supabase
+    .from("user_credits")
+    .select("credits")
+    .eq("user_id", user.id)
+    .single();
+
+  if (!creditsRow || creditsRow.credits <= 0) {
+    return Response.json({ error: "no_credits" }, { status: 402 });
+  }
+
   const { contentType, objective, context } = await request.json();
 
   const { data: profile } = await supabase
@@ -41,8 +52,14 @@ Scrie DOAR în română. Fără explicații, doar conținutul final gata de publ
     ],
   });
 
+  // Deduct 1 credit after successful generation
+  await supabase
+    .from("user_credits")
+    .update({ credits: creditsRow.credits - 1, updated_at: new Date().toISOString() })
+    .eq("user_id", user.id);
+
   return Response.json({
-    content:
-      message.content[0].type === "text" ? message.content[0].text : "",
+    content: message.content[0].type === "text" ? message.content[0].text : "",
+    creditsRemaining: creditsRow.credits - 1,
   });
 }
