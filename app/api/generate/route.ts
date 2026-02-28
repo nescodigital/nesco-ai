@@ -36,7 +36,12 @@ Canale principale: ${((d.channels as string[]) || []).join(", ")}
 Problema pe care o rezolvi: ${d.audience_pain}
 USP: ${d.usp || ""}
 Cuvinte interzise: ${d.avoid || "niciuna"}
-Scrie DOAR în română. Fără explicații, doar conținutul final gata de publicat.`;
+Scrie DOAR în română. Fără explicații, doar conținutul final gata de publicat.
+
+REGULI ABSOLUTE DE FORMATARE:
+- Nu folosi niciodată "—" (em dash) în niciun context
+- Nu folosi "–" (en dash)
+- Înlocuiește cu virgulă, punct sau rescrie propoziția`;
 
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
