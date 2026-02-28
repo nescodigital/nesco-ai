@@ -40,6 +40,8 @@ export default function DashboardPage() {
   const [credits, setCredits] = useState<number | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [targetLanguage, setTargetLanguage] = useState("ro");
+  const [isTranslating, setIsTranslating] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -95,6 +97,27 @@ export default function DashboardPage() {
       setError(e instanceof Error ? e.message : "Ceva n-a mers. Încearcă din nou.");
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleTranslate() {
+    setIsTranslating(true);
+    try {
+      const res = await fetch("/api/translate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: output, targetLanguage }),
+      });
+      const data = await res.json();
+      if (res.status === 402) { setError("no_credits"); return; }
+      if (data.content) {
+        setOutput(data.content);
+        if (typeof data.creditsRemaining === "number") setCredits(data.creditsRemaining);
+      }
+    } catch {
+      // silent
+    } finally {
+      setIsTranslating(false);
     }
   }
 
@@ -328,6 +351,43 @@ export default function DashboardPage() {
           </div>
           <div className="prose prose-invert prose-sm max-w-none">
             <ReactMarkdown>{output}</ReactMarkdown>
+          </div>
+
+          {/* Translate row */}
+          <div style={{ display: "flex", gap: "12px", alignItems: "center", marginTop: "16px" }}>
+            <select
+              value={targetLanguage}
+              onChange={(e) => setTargetLanguage(e.target.value)}
+              style={{
+                background: "#111113", border: "1px solid rgba(255,255,255,0.1)",
+                color: "#ffffff", padding: "10px 14px", borderRadius: "8px",
+                fontSize: "14px", flex: 1, fontFamily: "var(--font-geist-sans)",
+              }}
+            >
+              <option value="ro">🇷🇴 Română</option>
+              <option value="en">🇬🇧 Engleză</option>
+              <option value="de">🇩🇪 Germană</option>
+              <option value="fr">🇫🇷 Franceză</option>
+              <option value="es">🇪🇸 Spaniolă</option>
+              <option value="it">🇮🇹 Italiană</option>
+              <option value="hu">🇭🇺 Maghiară</option>
+              <option value="pl">🇵🇱 Poloneză</option>
+              <option value="nl">🇳🇱 Olandeză</option>
+              <option value="pt">🇵🇹 Portugheză</option>
+            </select>
+            <button
+              onClick={handleTranslate}
+              disabled={isTranslating || targetLanguage === "ro"}
+              style={{
+                background: "transparent", border: "1px solid #56db84",
+                color: "#56db84", padding: "10px 20px", borderRadius: "8px",
+                fontSize: "14px", fontWeight: 700, cursor: isTranslating || targetLanguage === "ro" ? "not-allowed" : "pointer",
+                whiteSpace: "nowrap", opacity: targetLanguage === "ro" ? 0.4 : 1,
+                fontFamily: "var(--font-geist-sans)",
+              }}
+            >
+              {isTranslating ? "Se traduce..." : "🌍 Traduce — 1 credit"}
+            </button>
           </div>
         </div>
       )}
