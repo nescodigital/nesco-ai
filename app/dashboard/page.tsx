@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import ReactMarkdown from "react-markdown";
 
 const CONTENT_TYPES = [
   { v: "Post Facebook", l: "👍 Post Facebook" },
@@ -236,7 +237,9 @@ export default function DashboardPage() {
               )}
             </button>
           </div>
-          <p className="text-[14px] text-white/85 leading-relaxed whitespace-pre-wrap">{output}</p>
+          <div className="prose prose-invert prose-sm max-w-none">
+            <ReactMarkdown>{output}</ReactMarkdown>
+          </div>
         </div>
       )}
     </div>

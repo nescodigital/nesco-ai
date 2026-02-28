@@ -1,5 +1,4 @@
 import { redirect } from "next/navigation";
-import Image from "next/image";
 import { createClient } from "@/lib/supabase/server";
 import SignOutButton from "./components/SignOutButton";
 
@@ -20,13 +19,9 @@ export default async function DashboardLayout({
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
       <header className="border-b border-white/10 px-6 py-4 flex items-center justify-between">
-        <Image
-          src="/nesco-logo.png"
-          alt="Nesco Digital"
-          height={24}
-          width={181}
-          className="h-6 w-auto"
-        />
+        <span style={{ fontWeight: 800, fontSize: "18px", letterSpacing: "-0.5px", color: "white" }}>
+          nesco<span style={{ color: "#56db84" }}>AI</span>
+        </span>
         <div className="flex items-center gap-4">
           <span className="text-xs text-zinc-500">{user.email}</span>
           <SignOutButton />
