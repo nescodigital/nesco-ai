@@ -560,9 +560,9 @@ export default function Home() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full rounded-xl bg-[#56db84] px-6 py-3 text-sm font-semibold text-black transition hover:bg-[#3ec96d] disabled:opacity-60"
+                  className="w-full rounded-xl bg-[#56db84] px-6 py-4 text-base font-bold text-black shadow-lg shadow-[#56db84]/25 transition hover:bg-[#3ec96d] hover:shadow-[#56db84]/40 active:scale-[0.98] disabled:opacity-60"
                 >
-                  {loading ? t("Se trimite...", "Sending...") : t("Înscrie-mă", "Join now")}
+                  {loading ? t("Se trimite...", "Sending...") : t("Înscrie-mă pe listă acum", "Join the waitlist now")}
                 </button>
               </form>
 
