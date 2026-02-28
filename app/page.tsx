@@ -158,9 +158,6 @@ export default function Home() {
           <div className="relative mx-auto max-w-3xl px-6" style={{ zIndex: 1 }}>
             {/* Badge + Social proof pe același rând */}
             <div className="flex items-center justify-center gap-3 flex-wrap">
-              <span className="inline-block rounded-full border border-[#56db84]/40 bg-[#56db84]/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-widest text-[#56db84]">
-                Nesco Digital AI
-              </span>
               <span className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-1.5 text-xs font-semibold text-white">
                 <span className="relative flex h-2.5 w-2.5">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-500 opacity-75" />

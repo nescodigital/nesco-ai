@@ -172,123 +172,220 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6" style={{ background: "#060810" }}>
+    <div className="min-h-screen flex" style={{ background: "#060810", fontFamily: "var(--font-geist-sans)" }}>
       <NoiseCanvas />
 
-      {/* Glassmorphism card */}
+      {/* ── Left panel: graphic (desktop only) ── */}
       <div
-        className="relative w-full max-w-sm"
+        className="hidden lg:flex lg:flex-1 lg:flex-col lg:items-start lg:justify-between relative overflow-hidden px-12 py-12"
         style={{ zIndex: 1 }}
       >
-        {/* Logo */}
-        <div className="flex justify-center mb-8">
+        {/* Logo top-left */}
+        <Logo />
+
+        {/* Center content */}
+        <div className="flex-1 flex flex-col justify-center max-w-md">
+          {/* Floating orbs */}
+          <div className="relative w-full h-64 mb-10">
+            {/* Large orb */}
+            <div
+              className="absolute rounded-full"
+              style={{
+                width: 220, height: 220,
+                left: "50%", top: "50%",
+                transform: "translate(-50%,-50%)",
+                background: "radial-gradient(circle at 40% 40%, rgba(86,219,132,0.25), rgba(129,140,248,0.1) 60%, transparent 80%)",
+                border: "1px solid rgba(86,219,132,0.15)",
+                boxShadow: "0 0 60px rgba(86,219,132,0.1)",
+              }}
+            />
+            {/* Inner orb */}
+            <div
+              className="absolute rounded-full"
+              style={{
+                width: 120, height: 120,
+                left: "50%", top: "50%",
+                transform: "translate(-50%,-50%)",
+                background: "radial-gradient(circle at 35% 35%, rgba(86,219,132,0.35), rgba(129,140,248,0.2) 70%, transparent)",
+                border: "1px solid rgba(86,219,132,0.25)",
+              }}
+            />
+            {/* Center dot */}
+            <div
+              className="absolute rounded-full"
+              style={{
+                width: 40, height: 40,
+                left: "50%", top: "50%",
+                transform: "translate(-50%,-50%)",
+                background: "linear-gradient(135deg,#56db84,#818cf8)",
+                boxShadow: "0 0 24px rgba(86,219,132,0.5)",
+              }}
+            />
+            {/* Floating mini cards */}
+            {[
+              { top: "8%", left: "5%", label: "Post Instagram", icon: "📸", delay: "0s" },
+              { top: "12%", right: "0%", label: "Email campaign", icon: "📧", delay: "0.4s" },
+              { bottom: "5%", left: "8%", label: "Reclamă Ads", icon: "🎯", delay: "0.8s" },
+              { bottom: "10%", right: "2%", label: "Post LinkedIn", icon: "💼", delay: "0.2s" },
+            ].map((c, i) => (
+              <div
+                key={i}
+                className="absolute flex items-center gap-2 rounded-xl px-3 py-2 text-[12px] font-medium text-white/70"
+                style={{
+                  top: c.top, left: c.left, right: (c as {right?: string}).right, bottom: c.bottom,
+                  background: "rgba(255,255,255,0.05)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  backdropFilter: "blur(8px)",
+                  animation: `float 4s ease-in-out infinite`,
+                  animationDelay: c.delay,
+                }}
+              >
+                <span>{c.icon}</span>
+                <span>{c.label}</span>
+                <div className="w-1.5 h-1.5 rounded-full" style={{ background: "#56db84", boxShadow: "0 0 6px #56db84" }} />
+              </div>
+            ))}
+          </div>
+
+          <h2 className="text-[28px] font-bold text-white leading-tight mb-3">
+            AI care scrie<br />în vocea brandului tău.
+          </h2>
+          <p className="text-[15px] text-white/40 leading-relaxed">
+            Conținut personalizat pentru fiecare canal,<br />generat în secunde.
+          </p>
+
+          {/* Mini testimonial */}
+          <div
+            className="mt-8 rounded-2xl px-5 py-4 flex items-start gap-3"
+            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
+          >
+            <div
+              className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-black"
+              style={{ background: "linear-gradient(135deg,#56db84,#818cf8)" }}
+            >
+              M
+            </div>
+            <div>
+              <p className="text-[13px] text-white/70 leading-relaxed italic">
+                "Am economisit 6 ore pe săptămână. AI-ul știe exact cum să vorbesc cu clienții mei."
+              </p>
+              <p className="text-[11px] text-white/30 mt-1.5">Mihai D. · CEO, agenție digitală</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom footnote */}
+        <p className="text-[11px] text-white/20">© 2025 Nesco Digital</p>
+      </div>
+
+      {/* ── Divider (desktop) ── */}
+      <div className="hidden lg:block w-px" style={{ background: "rgba(255,255,255,0.06)", zIndex: 1 }} />
+
+      {/* ── Right panel: form ── */}
+      <div
+        className="flex flex-1 flex-col items-center justify-center px-6 py-12 relative min-h-screen lg:min-h-0 lg:max-w-[480px]"
+        style={{ zIndex: 1 }}
+      >
+        {/* Logo (mobile only) */}
+        <div className="lg:hidden flex justify-center mb-8">
           <Logo />
         </div>
 
-        {sent ? (
-          <div
-            className="rounded-3xl px-8 py-10 text-center"
-            style={{
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.1)",
-              backdropFilter: "blur(24px)",
-              WebkitBackdropFilter: "blur(24px)",
-              boxShadow: "0 24px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05) inset",
-            }}
-          >
-            <div
-              className="mx-auto mb-5 w-14 h-14 rounded-2xl flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg,#56db84,#818cf8)", boxShadow: "0 8px 24px rgba(86,219,132,0.3)" }}
-            >
-              <svg width="24" height="18" viewBox="0 0 24 18" fill="none">
-                <path d="M2 9l6 7L22 2" stroke="#000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-            <h2 className="text-[20px] font-bold text-white mb-2">Verifică emailul</h2>
-            <p className="text-[14px] text-white/50 leading-relaxed">
-              Am trimis un link magic la{" "}
-              <span className="text-white font-medium">{email}</span>.
-              <br />Click pe el pentru a te autentifica.
-            </p>
-          </div>
-        ) : (
-          <div
-            className="rounded-3xl px-8 py-8"
-            style={{
-              background: "rgba(255,255,255,0.04)",
-              border: "1px solid rgba(255,255,255,0.1)",
-              backdropFilter: "blur(24px)",
-              WebkitBackdropFilter: "blur(24px)",
-              boxShadow: "0 24px 48px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05) inset",
-            }}
-          >
-            <h1 className="text-[20px] font-bold text-white mb-1.5">Intră în cont</h1>
-            <p className="text-[14px] text-white/40 mb-6 leading-relaxed">
-              Introdu emailul și îți trimitem un link de autentificare.
-            </p>
-
-            <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="email@exemplu.com"
-                className="w-full rounded-2xl px-4 py-3.5 text-[14px] text-white placeholder-white/25 outline-none transition-all duration-150"
-                style={{
-                  background: "rgba(255,255,255,0.05)",
-                  border: "1.5px solid rgba(255,255,255,0.1)",
-                  fontFamily: "var(--font-geist-sans)",
-                }}
-                onFocus={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(86,219,132,0.5)";
-                  e.currentTarget.style.boxShadow = "0 0 0 3px rgba(86,219,132,0.08)";
-                  e.currentTarget.style.background = "rgba(255,255,255,0.07)";
-                }}
-                onBlur={(e) => {
-                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
-                  e.currentTarget.style.boxShadow = "none";
-                  e.currentTarget.style.background = "rgba(255,255,255,0.05)";
-                }}
-              />
-
-              {error && (
-                <p className="text-[13px] text-red-400/80">{error}</p>
-              )}
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full rounded-2xl py-3.5 text-[15px] font-bold text-black transition-all duration-150 active:scale-[0.98] disabled:opacity-60 flex items-center justify-center gap-2"
-                style={{
-                  background: loading
-                    ? "rgba(86,219,132,0.6)"
-                    : "linear-gradient(135deg,#56db84,#3ecf8e 60%,#818cf8)",
-                  boxShadow: loading ? "none" : "0 4px 20px rgba(86,219,132,0.3)",
-                  letterSpacing: "-0.01em",
-                  fontFamily: "var(--font-geist-sans)",
-                }}
+        <div className="w-full max-w-sm">
+          {sent ? (
+            <div className="text-center">
+              <div
+                className="mx-auto mb-5 w-14 h-14 rounded-2xl flex items-center justify-center"
+                style={{ background: "linear-gradient(135deg,#56db84,#818cf8)", boxShadow: "0 8px 24px rgba(86,219,132,0.3)" }}
               >
-                {loading ? (
-                  <>
-                    <svg className="animate-spin" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                      <circle cx="8" cy="8" r="6" stroke="rgba(0,0,0,0.3)" strokeWidth="2" />
-                      <path d="M8 2a6 6 0 0 1 6 6" stroke="#000" strokeWidth="2" strokeLinecap="round" />
-                    </svg>
-                    Se trimite...
-                  </>
-                ) : (
-                  "Trimite link magic →"
-                )}
-              </button>
-            </form>
-          </div>
-        )}
+                <svg width="24" height="18" viewBox="0 0 24 18" fill="none">
+                  <path d="M2 9l6 7L22 2" stroke="#000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <h2 className="text-[22px] font-bold text-white mb-2">Verifică emailul</h2>
+              <p className="text-[14px] text-white/50 leading-relaxed">
+                Am trimis un link magic la{" "}
+                <span className="text-white font-medium">{email}</span>.
+                <br />Click pe el pentru a te autentifica.
+              </p>
+            </div>
+          ) : (
+            <>
+              <h1 className="text-[24px] font-bold text-white mb-1.5">Intră în cont</h1>
+              <p className="text-[14px] text-white/40 mb-8 leading-relaxed">
+                Introdu emailul și îți trimitem un link de autentificare.
+              </p>
 
-        <p className="text-center text-[12px] text-white/20 mt-5">
-          Nesco Digital AI · Toate drepturile rezervate
-        </p>
+              <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="email@exemplu.com"
+                  className="w-full rounded-2xl px-4 py-3.5 text-[14px] text-white placeholder-white/25 outline-none transition-all duration-150"
+                  style={{
+                    background: "rgba(255,255,255,0.05)",
+                    border: "1.5px solid rgba(255,255,255,0.1)",
+                    fontFamily: "var(--font-geist-sans)",
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = "rgba(86,219,132,0.5)";
+                    e.currentTarget.style.boxShadow = "0 0 0 3px rgba(86,219,132,0.08)";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.07)";
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
+                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                  }}
+                />
+
+                {error && (
+                  <p className="text-[13px] text-red-400/80">{error}</p>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full rounded-2xl py-3.5 text-[15px] font-bold text-black transition-all duration-150 active:scale-[0.98] disabled:opacity-60 flex items-center justify-center gap-2"
+                  style={{
+                    background: loading
+                      ? "rgba(86,219,132,0.6)"
+                      : "linear-gradient(135deg,#56db84,#3ecf8e 60%,#818cf8)",
+                    boxShadow: loading ? "none" : "0 4px 20px rgba(86,219,132,0.3)",
+                    letterSpacing: "-0.01em",
+                    fontFamily: "var(--font-geist-sans)",
+                  }}
+                >
+                  {loading ? (
+                    <>
+                      <svg className="animate-spin" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <circle cx="8" cy="8" r="6" stroke="rgba(0,0,0,0.3)" strokeWidth="2" />
+                        <path d="M8 2a6 6 0 0 1 6 6" stroke="#000" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                      Se trimite...
+                    </>
+                  ) : (
+                    "Trimite link magic →"
+                  )}
+                </button>
+              </form>
+            </>
+          )}
+
+          <p className="text-center text-[12px] text-white/20 mt-8">
+            Nesco Digital AI · Toate drepturile rezervate
+          </p>
+        </div>
       </div>
+
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-8px); }
+        }
+      `}</style>
     </div>
   );
 }
