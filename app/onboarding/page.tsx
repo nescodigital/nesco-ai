@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
@@ -8,12 +8,7 @@ import { createClient } from "@/lib/supabase/client";
 // ── Types ──────────────────────────────────────────────────────────────────
 type Answers = Record<string, string | string[] | Record<string, number>>;
 
-interface SliderDef {
-  id: string;
-  left: string;
-  right: string;
-  value: number;
-}
+interface SliderDef { id: string; left: string; right: string; value: number }
 interface Option { v: string; l: string }
 interface CardOption { v: string; icon: string; title: string; sub: string }
 interface Question {
@@ -31,7 +26,6 @@ interface Question {
 interface Step {
   id: string;
   label: string;
-  desc: string;
   title: string;
   subtitle: string;
   questions: Question[];
@@ -42,7 +36,6 @@ const STEPS: Step[] = [
   {
     id: "business",
     label: "Afacerea ta",
-    desc: "Industrie & tip",
     title: "Despre afacerea ta",
     subtitle: "Câteva detalii de bază — durează 30 de secunde.",
     questions: [
@@ -90,7 +83,6 @@ const STEPS: Step[] = [
   {
     id: "audience",
     label: "Audiența",
-    desc: "Cine cumpără de la tine",
     title: "Cine sunt clienții tăi?",
     subtitle: "Cu cât știm mai bine cui vorbim, cu atât conținutul e mai relevant.",
     questions: [
@@ -140,7 +132,6 @@ const STEPS: Step[] = [
   {
     id: "tone",
     label: "Ton & voce",
-    desc: "Cum comunici",
     title: "Cum vorbește brandul tău?",
     subtitle: "Ajustează cursoarele — AI-ul va scrie exact în stilul tău.",
     questions: [
@@ -190,7 +181,6 @@ const STEPS: Step[] = [
   {
     id: "content",
     label: "Conținut",
-    desc: "Ce și unde publici",
     title: "Ce conținut creezi?",
     subtitle: "Selectează canalele și tipurile de conținut pe care le vei genera cu AI-ul.",
     questions: [
@@ -247,7 +237,6 @@ const STEPS: Step[] = [
   {
     id: "offers",
     label: "Ofertele tale",
-    desc: "Ce vinzi",
     title: "Ce vinzi?",
     subtitle: "AI-ul va putea crea conținut centrat pe produsele și prețurile tale.",
     questions: [
@@ -283,10 +272,10 @@ const STEPS: Step[] = [
       },
       {
         id: "usp",
-        label: "Care e motivul principal pentru care clienții te aleg pe tine și nu pe concurență?",
+        label: "De ce te aleg clienții pe tine și nu concurența?",
         type: "textarea",
         required: false,
-        placeholder: "ex. Livrăm în 24h, avem cel mai bun raport calitate-preț, suntem singurii care...",
+        placeholder: "ex. Livrăm în 24h, cel mai bun raport calitate-preț, singurii care...",
       },
     ],
   },
@@ -302,163 +291,107 @@ function sliderLabel(s: SliderDef, val: number): string {
 function isStepValid(step: Step, answers: Answers): boolean {
   return step.questions.filter((q) => q.required).every((q) => {
     const a = answers[q.id];
-    if (q.type === "chips" || q.type === "cards") {
+    if (q.type === "chips" || q.type === "cards")
       return q.multi ? Array.isArray(a) && (a as string[]).length > 0 : !!a;
-    }
-    if (q.type === "text" || q.type === "textarea") {
+    if (q.type === "text" || q.type === "textarea")
       return typeof a === "string" && a.trim().length > 0;
-    }
     return true;
   });
 }
 
-// ── Slider component ────────────────────────────────────────────────────────
-function ToneSlider({
-  slider,
-  value,
-  onChange,
-}: {
-  slider: SliderDef;
-  value: number;
-  onChange: (val: number) => void;
-}) {
+// ── Slider ──────────────────────────────────────────────────────────────────
+function ToneSlider({ slider, value, onChange }: { slider: SliderDef; value: number; onChange: (v: number) => void }) {
   const trackRef = useRef<HTMLDivElement>(null);
 
-  function computePct(clientX: number): number {
+  const computePct = useCallback((clientX: number) => {
     if (!trackRef.current) return value;
     const rect = trackRef.current.getBoundingClientRect();
     return Math.round(Math.max(0, Math.min(100, ((clientX - rect.left) / rect.width) * 100)));
-  }
+  }, [value]);
 
-  function onMouseDown(e: React.MouseEvent) {
+  function onPointerDown(e: React.PointerEvent) {
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
     onChange(computePct(e.clientX));
-    const onMove = (ev: MouseEvent) => onChange(computePct(ev.clientX));
-    const onUp = () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-    };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
   }
-
-  function onTouchStart(e: React.TouchEvent) {
-    const touch = e.touches[0];
-    onChange(computePct(touch.clientX));
-    const onMove = (ev: TouchEvent) => onChange(computePct(ev.touches[0].clientX));
-    const onEnd = () => {
-      window.removeEventListener("touchmove", onMove);
-      window.removeEventListener("touchend", onEnd);
-    };
-    window.addEventListener("touchmove", onMove);
-    window.addEventListener("touchend", onEnd);
+  function onPointerMove(e: React.PointerEvent) {
+    if (e.buttons === 0 && e.pressure === 0) return;
+    onChange(computePct(e.clientX));
   }
 
   return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 14,
-        padding: "12px 16px",
-        borderRadius: 8,
-        border: "1px solid rgba(255,255,255,0.07)",
-        background: "rgba(255,255,255,0.02)",
-      }}
-    >
-      <span style={{ width: 90, fontSize: 11, color: "rgba(255,255,255,0.38)", textAlign: "right", flexShrink: 0 }}>
-        {slider.left}
-      </span>
+    <div className="flex flex-col gap-1.5">
+      <div className="flex items-center justify-between text-[11px] text-white/40 px-1">
+        <span>{slider.left}</span>
+        <span className="text-[#56db84] font-semibold">{sliderLabel(slider, value)}</span>
+        <span>{slider.right}</span>
+      </div>
       <div
         ref={trackRef}
-        onMouseDown={onMouseDown}
-        onTouchStart={onTouchStart}
-        style={{
-          flex: 1,
-          height: 4,
-          background: "rgba(255,255,255,0.08)",
-          borderRadius: 99,
-          position: "relative",
-          cursor: "pointer",
-        }}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        className="relative h-8 flex items-center cursor-pointer touch-none"
       >
+        {/* Track */}
+        <div className="absolute inset-x-0 h-1 rounded-full bg-white/8" />
+        {/* Fill */}
+        <div className="absolute left-0 h-1 rounded-full" style={{ width: `${value}%`, background: "linear-gradient(90deg,#56db84,#3b82f6)" }} />
+        {/* Thumb */}
         <div
-          style={{
-            height: "100%",
-            width: `${value}%`,
-            background: "linear-gradient(90deg,#56db84,#3b82f6)",
-            borderRadius: 99,
-          }}
-        />
-        <div
-          style={{
-            width: 16,
-            height: 16,
-            borderRadius: "50%",
-            background: "#fff",
-            position: "absolute",
-            top: "50%",
-            left: `${value}%`,
-            transform: "translate(-50%,-50%)",
-            boxShadow: "0 0 0 3px rgba(86,219,132,0.3)",
-            cursor: "grab",
-          }}
+          className="absolute w-5 h-5 rounded-full bg-white shadow-lg -translate-x-1/2"
+          style={{ left: `${value}%`, boxShadow: "0 0 0 3px rgba(86,219,132,0.35)" }}
         />
       </div>
-      <span style={{ width: 90, fontSize: 11, color: "rgba(255,255,255,0.38)", flexShrink: 0 }}>
-        {slider.right}
-      </span>
-      <span
-        style={{
-          width: 70,
-          fontSize: 11,
-          fontWeight: 600,
-          color: "#56db84",
-          textAlign: "center",
-          flexShrink: 0,
-        }}
-      >
-        {sliderLabel(slider, value)}
-      </span>
     </div>
   );
 }
 
-// ── Main component ──────────────────────────────────────────────────────────
+// ── Main ────────────────────────────────────────────────────────────────────
 export default function OnboardingPage() {
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
   const [saving, setSaving] = useState(false);
-  const contentRef = useRef<HTMLDivElement>(null);
+  const [animDir, setAnimDir] = useState<"forward" | "back">("forward");
+  const [visible, setVisible] = useState(true);
   const isSummary = currentStep >= STEPS.length;
   const step = isSummary ? null : STEPS[currentStep];
-  const pct = Math.round((currentStep / STEPS.length) * 100);
+  const totalSteps = STEPS.length + 1; // +1 for summary
+  const pct = Math.round(((isSummary ? STEPS.length : currentStep) / totalSteps) * 100);
+  const canContinue = step ? isStepValid(step, answers) : true;
 
-  function setAnswer(qid: string, val: string | string[] | Record<string, number>) {
-    setAnswers((prev) => ({ ...prev, [qid]: val }));
-  }
+  // Initialize slider defaults
+  useEffect(() => {
+    setAnswers((prev) => {
+      const defaults: Answers = {};
+      STEPS.forEach((s) => {
+        s.questions.forEach((q) => {
+          if (q.type === "sliders" && q.sliders && !prev[q.id]) {
+            const init: Record<string, number> = {};
+            q.sliders.forEach((sl) => { init[sl.id] = sl.value; });
+            defaults[q.id] = init;
+          }
+        });
+      });
+      return { ...defaults, ...prev };
+    });
+  }, []);
 
   function toggleChip(qid: string, v: string, multi: boolean, maxSelect?: number) {
     setAnswers((prev) => {
-      const cur = prev[qid];
       if (!multi) return { ...prev, [qid]: v };
-      const arr: string[] = Array.isArray(cur) ? [...(cur as string[])] : [];
+      const arr = Array.isArray(prev[qid]) ? [...(prev[qid] as string[])] : [];
       const idx = arr.indexOf(v);
-      if (idx >= 0) {
-        arr.splice(idx, 1);
-      } else {
-        if (maxSelect && arr.length >= maxSelect) return prev;
-        arr.push(v);
-      }
-      return { ...prev, [qid]: arr };
+      if (idx >= 0) { arr.splice(idx, 1); return { ...prev, [qid]: arr }; }
+      if (maxSelect && arr.length >= maxSelect) return prev;
+      return { ...prev, [qid]: [...arr, v] };
     });
   }
 
   function setSlider(qid: string, sid: string, val: number) {
-    setAnswers((prev) => {
-      const cur = (prev[qid] as Record<string, number>) || {};
-      return { ...prev, [qid]: { ...cur, [sid]: val } };
-    });
+    setAnswers((prev) => ({
+      ...prev,
+      [qid]: { ...((prev[qid] as Record<string, number>) || {}), [sid]: val },
+    }));
   }
 
   function isSelected(qid: string, v: string): boolean {
@@ -466,16 +399,13 @@ export default function OnboardingPage() {
     return Array.isArray(a) ? (a as string[]).includes(v) : a === v;
   }
 
-  function goNext() {
-    if (contentRef.current) contentRef.current.scrollTop = 0;
-    setCurrentStep((s) => s + 1);
-  }
-
-  function goBack() {
-    if (currentStep > 0) {
-      if (contentRef.current) contentRef.current.scrollTop = 0;
-      setCurrentStep((s) => s - 1);
-    }
+  function navigate(dir: "forward" | "back") {
+    setAnimDir(dir);
+    setVisible(false);
+    setTimeout(() => {
+      setCurrentStep((s) => dir === "forward" ? s + 1 : s - 1);
+      setVisible(true);
+    }, 180);
   }
 
   async function handleFinish() {
@@ -484,10 +414,7 @@ export default function OnboardingPage() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        await supabase.from("brand_profiles").insert({
-          user_id: user.id,
-          data: answers,
-        });
+        await supabase.from("brand_profiles").insert({ user_id: user.id, data: answers });
       }
     } finally {
       setSaving(false);
@@ -495,39 +422,18 @@ export default function OnboardingPage() {
     }
   }
 
-  // Initialize sliders defaults
-  useEffect(() => {
-    const defaults: Answers = {};
-    STEPS.forEach((s) => {
-      s.questions.forEach((q) => {
-        if (q.type === "sliders" && q.sliders) {
-          const init: Record<string, number> = {};
-          q.sliders.forEach((sl) => { init[sl.id] = sl.value; });
-          defaults[q.id] = init;
-        }
-      });
-    });
-    setAnswers((prev) => ({ ...defaults, ...prev }));
-  }, []);
-
-  const canContinue = step ? isStepValid(step, answers) : true;
-
-  // ── Chip component ─────────────────────────────────────────────────────
-  function Chip({ q, opt }: { q: Question; opt: Option }) {
+  // ── Chips ──────────────────────────────────────────────────────────────
+  function ChipBtn({ q, opt }: { q: Question; opt: Option }) {
     const sel = isSelected(q.id, opt.v);
     return (
       <button
         type="button"
         onClick={() => toggleChip(q.id, opt.v, !!q.multi, q.maxSelect)}
+        className="px-4 py-2.5 rounded-xl text-sm transition-all duration-150 text-left"
         style={{
-          padding: "9px 16px",
-          borderRadius: 8,
-          border: `1px solid ${sel ? "rgba(86,219,132,0.6)" : "rgba(255,255,255,0.07)"}`,
-          background: sel ? "rgba(86,219,132,0.08)" : "rgba(255,255,255,0.02)",
-          color: sel ? "#fff" : "rgba(255,255,255,0.65)",
-          fontSize: 13,
-          cursor: "pointer",
-          transition: "all 0.15s",
+          border: `1px solid ${sel ? "rgba(86,219,132,0.6)" : "rgba(255,255,255,0.1)"}`,
+          background: sel ? "rgba(86,219,132,0.10)" : "rgba(255,255,255,0.03)",
+          color: sel ? "#fff" : "rgba(255,255,255,0.6)",
           fontFamily: "var(--font-geist-sans)",
         }}
       >
@@ -536,27 +442,23 @@ export default function OnboardingPage() {
     );
   }
 
-  // ── Card option component ──────────────────────────────────────────────
-  function CardOpt({ q, opt }: { q: Question; opt: CardOption }) {
+  // ── Cards ──────────────────────────────────────────────────────────────
+  function CardBtn({ q, opt }: { q: Question; opt: CardOption }) {
     const sel = isSelected(q.id, opt.v);
     return (
       <button
         type="button"
-        onClick={() => setAnswer(q.id, opt.v)}
+        onClick={() => setAnswers((prev) => ({ ...prev, [q.id]: opt.v }))}
+        className="w-full p-4 rounded-2xl text-left transition-all duration-150"
         style={{
-          padding: "16px 18px",
-          borderRadius: 10,
-          border: `1px solid ${sel ? "rgba(86,219,132,0.6)" : "rgba(255,255,255,0.07)"}`,
-          background: sel ? "rgba(86,219,132,0.08)" : "rgba(255,255,255,0.02)",
-          cursor: "pointer",
-          transition: "all 0.15s",
-          textAlign: "left",
+          border: `1px solid ${sel ? "rgba(86,219,132,0.6)" : "rgba(255,255,255,0.1)"}`,
+          background: sel ? "rgba(86,219,132,0.10)" : "rgba(255,255,255,0.03)",
           fontFamily: "var(--font-geist-sans)",
         }}
       >
-        <div style={{ fontSize: 22, marginBottom: 8 }}>{opt.icon}</div>
-        <div style={{ fontSize: 13, fontWeight: 500, color: "#fff", marginBottom: 3 }}>{opt.title}</div>
-        <div style={{ fontSize: 11, color: "rgba(255,255,255,0.38)", lineHeight: 1.4 }}>{opt.sub}</div>
+        <div className="text-2xl mb-2">{opt.icon}</div>
+        <div className="text-sm font-semibold text-white mb-1">{opt.title}</div>
+        <div className="text-xs text-white/40 leading-relaxed">{opt.sub}</div>
       </button>
     );
   }
@@ -564,46 +466,37 @@ export default function OnboardingPage() {
   // ── Render question ────────────────────────────────────────────────────
   function renderQuestion(q: Question, qi: number) {
     return (
-      <div key={q.id} style={{ marginBottom: 36 }}>
-        {/* Label */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 14, fontSize: 13, fontWeight: 500, color: "rgba(255,255,255,0.38)" }}>
-          <span style={{ fontSize: 10, background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.07)", padding: "2px 7px", borderRadius: 4 }}>
-            {qi + 1}
-          </span>
-          {q.label}
-          {q.required && <span style={{ color: "#56db84", fontSize: 10 }}>*</span>}
+      <div key={q.id} className="mb-8">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="text-[10px] bg-white/6 border border-white/8 px-2 py-0.5 rounded text-white/40">{qi + 1}</span>
+          <span className="text-sm font-medium text-white/70">{q.label}</span>
+          {q.required && <span className="text-[#56db84] text-[10px]">*</span>}
           {q.multi && (
-            <span style={{ fontSize: 10, color: "rgba(255,255,255,0.38)", fontWeight: 400 }}>
-              {q.maxSelect ? `max ${q.maxSelect}` : "mai multe"}
-            </span>
+            <span className="text-[10px] text-white/30">{q.maxSelect ? `max ${q.maxSelect}` : "mai multe"}</span>
           )}
         </div>
 
-        {/* Chips */}
         {q.type === "chips" && q.options && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-            {q.options.map((opt) => <Chip key={opt.v} q={q} opt={opt} />)}
+          <div className="flex flex-wrap gap-2">
+            {q.options.map((opt) => <ChipBtn key={opt.v} q={q} opt={opt} />)}
           </div>
         )}
 
-        {/* Cards */}
         {q.type === "cards" && q.cardOptions && (
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(160px,1fr))", gap: 10 }}>
-            {q.cardOptions.map((opt) => <CardOpt key={opt.v} q={q} opt={opt} />)}
+          <div className="flex flex-col gap-3">
+            {q.cardOptions.map((opt) => <CardBtn key={opt.v} q={q} opt={opt} />)}
           </div>
         )}
 
-        {/* Sliders */}
         {q.type === "sliders" && q.sliders && (
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+          <div className="flex flex-col gap-4 rounded-2xl border border-white/8 bg-white/2 p-4">
             {q.sliders.map((sl) => {
-              const sliderVals = (answers[q.id] as Record<string, number>) || {};
-              const val = sliderVals[sl.id] !== undefined ? sliderVals[sl.id] : sl.value;
+              const vals = (answers[q.id] as Record<string, number>) || {};
               return (
                 <ToneSlider
                   key={sl.id}
                   slider={sl}
-                  value={val}
+                  value={vals[sl.id] !== undefined ? vals[sl.id] : sl.value}
                   onChange={(v) => setSlider(q.id, sl.id, v)}
                 />
               );
@@ -611,249 +504,182 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* Textarea */}
         {q.type === "textarea" && (
           <textarea
             value={typeof answers[q.id] === "string" ? (answers[q.id] as string) : ""}
-            onChange={(e) => setAnswer(q.id, e.target.value)}
+            onChange={(e) => setAnswers((prev) => ({ ...prev, [q.id]: e.target.value }))}
             placeholder={q.placeholder}
             rows={3}
-            style={{
-              width: "100%",
-              background: "rgba(255,255,255,0.03)",
-              border: "1px solid rgba(255,255,255,0.07)",
-              borderRadius: 10,
-              padding: "13px 16px",
-              color: "#fff",
-              fontSize: 14,
-              fontFamily: "var(--font-geist-sans)",
-              outline: "none",
-              resize: "vertical",
-              minHeight: 80,
-            }}
+            className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 resize-none outline-none focus:ring-1 focus:ring-[#56db84]"
+            style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", fontFamily: "var(--font-geist-sans)" }}
           />
         )}
 
-        {/* Text input */}
         {q.type === "text" && (
           <input
             type="text"
             value={typeof answers[q.id] === "string" ? (answers[q.id] as string) : ""}
-            onChange={(e) => setAnswer(q.id, e.target.value)}
+            onChange={(e) => setAnswers((prev) => ({ ...prev, [q.id]: e.target.value }))}
             placeholder={q.placeholder}
-            style={{
-              width: "100%",
-              background: "rgba(255,255,255,0.03)",
-              border: "1px solid rgba(255,255,255,0.07)",
-              borderRadius: 8,
-              padding: "11px 14px",
-              color: "#fff",
-              fontSize: 13,
-              fontFamily: "var(--font-geist-sans)",
-              outline: "none",
-            }}
+            className="w-full rounded-xl px-4 py-3 text-sm text-white placeholder-white/30 outline-none focus:ring-1 focus:ring-[#56db84]"
+            style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", fontFamily: "var(--font-geist-sans)" }}
           />
         )}
       </div>
     );
   }
 
-  // ── Summary screen ─────────────────────────────────────────────────────
+  // ── Summary ────────────────────────────────────────────────────────────
   const industryMap: Record<string, string> = { ecom: "E-commerce", services: "Servicii B2B", agency: "Agenție marketing", coaching: "Coaching / Cursuri", saas: "SaaS / Tech", horeca: "HoReCa", realestate: "Imobiliare", health: "Sănătate", finance: "Finanțe", other: "Altceva" };
   const audMap: Record<string, string> = { b2c: "Consumatori (B2C)", b2b: "Companii (B2B)", both: "B2C + B2B" };
 
-  function SummaryCard({ label, value }: { label: string; value: string }) {
-    return (
-      <div style={{ padding: "16px 18px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.02)" }}>
-        <div style={{ fontSize: 10, color: "rgba(255,255,255,0.38)", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8 }}>{label}</div>
-        <div style={{ fontSize: 13, color: "#fff", lineHeight: 1.5 }}>{value || "—"}</div>
-      </div>
-    );
-  }
-
   // ── Layout ─────────────────────────────────────────────────────────────
   return (
-    <div style={{ display: "flex", height: "100svh", background: "#0a0a0a", fontFamily: "var(--font-geist-sans)", overflow: "hidden" }}>
+    <div className="min-h-screen bg-[#0a0a0a] flex flex-col" style={{ fontFamily: "var(--font-geist-sans)" }}>
 
-      {/* ── Sidebar (desktop) ── */}
-      <aside style={{ width: 260, flexShrink: 0, borderRight: "1px solid rgba(255,255,255,0.07)", padding: "32px 24px", display: "flex", flexDirection: "column", background: "#111113" }}
-        className="hidden sm:flex">
-        <div style={{ marginBottom: 40 }}>
-          <Image src="/nesco-logo.png" alt="Nesco Digital" height={24} width={181} className="h-6 w-auto" />
-        </div>
-
-        {/* Step list */}
-        <div style={{ display: "flex", flexDirection: "column" }}>
-          {STEPS.map((s, i) => {
-            const isDone = i < currentStep || isSummary;
-            const isActive = i === currentStep && !isSummary;
-            return (
-              <div
-                key={s.id}
-                style={{
-                  display: "flex",
-                  alignItems: "flex-start",
-                  gap: 12,
-                  padding: "14px 0 14px 16px",
-                  marginLeft: -16,
-                  borderLeft: `2px solid ${isDone || isActive ? "#56db84" : "transparent"}`,
-                  transition: "all 0.2s",
-                }}
-              >
-                <div
-                  style={{
-                    width: 22, height: 22, borderRadius: "50%",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    fontSize: 10, fontWeight: 700, flexShrink: 0, marginTop: 1,
-                    background: isActive ? "#56db84" : isDone ? "rgba(86,219,132,0.2)" : "rgba(255,255,255,0.06)",
-                    border: `1px solid ${isActive || isDone ? "#56db84" : "rgba(255,255,255,0.07)"}`,
-                    color: isActive ? "#000" : isDone ? "#56db84" : "rgba(255,255,255,0.38)",
-                  }}
-                >
-                  {isDone ? "✓" : i + 1}
-                </div>
-                <div>
-                  <div style={{ fontSize: 12, fontWeight: 500, color: isActive ? "#fff" : "rgba(255,255,255,0.38)", marginBottom: 3 }}>{s.label}</div>
-                  <div style={{ fontSize: 10, color: "rgba(255,255,255,0.38)", lineHeight: 1.4 }}>{s.desc}</div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Progress */}
-        <div style={{ marginTop: "auto", paddingTop: 24, borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-          <div style={{ height: 3, background: "rgba(255,255,255,0.06)", borderRadius: 99, overflow: "hidden", marginBottom: 10 }}>
-            <div style={{ height: "100%", width: `${isSummary ? 100 : pct}%`, background: "linear-gradient(90deg,#56db84,#3b82f6)", borderRadius: 99, transition: "width 0.4s ease" }} />
-          </div>
-          <div style={{ fontSize: 10, color: "rgba(255,255,255,0.38)" }}>{isSummary ? 100 : pct}% completat</div>
-        </div>
-      </aside>
-
-      {/* ── Mobile progress bar (top) ── */}
-      <div className="sm:hidden" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 10, background: "#111113", borderBottom: "1px solid rgba(255,255,255,0.07)", padding: "12px 16px" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-          <Image src="/nesco-logo.png" alt="Nesco Digital" height={18} width={136} className="h-[18px] w-auto" />
-          <span style={{ fontSize: 11, color: "rgba(255,255,255,0.38)" }}>
-            {isSummary ? "Finalizat" : `Pasul ${currentStep + 1} din ${STEPS.length}`}
+      {/* ── Header: logo + progress ── */}
+      <div className="fixed top-0 inset-x-0 z-20 bg-[#0a0a0a]/90 backdrop-blur-sm border-b border-white/6">
+        <div className="flex items-center justify-between px-5 py-3">
+          <Image src="/nesco-logo.png" alt="Nesco Digital" height={20} width={151} className="h-5 w-auto" />
+          <span className="text-xs text-white/35">
+            {isSummary ? "Gata!" : `${currentStep + 1} / ${STEPS.length}`}
           </span>
         </div>
-        <div style={{ height: 3, background: "rgba(255,255,255,0.06)", borderRadius: 99, overflow: "hidden" }}>
-          <div style={{ height: "100%", width: `${isSummary ? 100 : pct}%`, background: "linear-gradient(90deg,#56db84,#3b82f6)", borderRadius: 99, transition: "width 0.4s ease" }} />
+        {/* Progress bar */}
+        <div className="h-[2px] bg-white/6 mx-0">
+          <div
+            className="h-full transition-all duration-500 ease-out"
+            style={{ width: `${pct}%`, background: "linear-gradient(90deg,#56db84,#3b82f6)" }}
+          />
         </div>
-      </div>
-
-      {/* ── Main content ── */}
-      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-
-        {/* Topbar */}
-        {!isSummary && step && (
-          <div style={{ padding: "20px 32px", borderBottom: "1px solid rgba(255,255,255,0.07)", flexShrink: 0 }}
-            className="sm:pt-5 pt-[72px]">
-            <div style={{ fontWeight: 700, fontSize: 22, color: "#fff" }}>{step.title}</div>
-            <div style={{ fontSize: 13, color: "rgba(255,255,255,0.38)", marginTop: 3 }}>{step.subtitle}</div>
+        {/* Step pills */}
+        {!isSummary && (
+          <div className="flex items-center gap-1.5 px-5 py-2.5 overflow-x-auto scrollbar-none">
+            {STEPS.map((s, i) => (
+              <div
+                key={s.id}
+                className="flex items-center gap-1 flex-shrink-0"
+              >
+                <div
+                  className="h-1.5 rounded-full transition-all duration-300"
+                  style={{
+                    width: i === currentStep ? 24 : 6,
+                    background: i < currentStep ? "#56db84" : i === currentStep ? "#56db84" : "rgba(255,255,255,0.15)",
+                    opacity: i > currentStep ? 0.4 : 1,
+                  }}
+                />
+              </div>
+            ))}
           </div>
         )}
+      </div>
 
-        {/* Scrollable content */}
-        <div ref={contentRef} style={{ flex: 1, overflowY: "auto", padding: "32px 32px" }}
-          className={!isSummary ? "" : "sm:pt-8 pt-[72px]"}>
+      {/* ── Scrollable content ── */}
+      <div
+        className="flex-1 px-5 pb-32 transition-all duration-180"
+        style={{
+          paddingTop: isSummary ? 80 : 112,
+          opacity: visible ? 1 : 0,
+          transform: visible ? "translateY(0)" : animDir === "forward" ? "translateY(16px)" : "translateY(-16px)",
+          transition: "opacity 0.18s ease, transform 0.18s ease",
+        }}
+      >
+        <div className="max-w-lg mx-auto w-full">
 
+          {/* Step header */}
+          {!isSummary && step && (
+            <div className="mb-8">
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-[#56db84] mb-2">
+                {step.label}
+              </p>
+              <h1 className="text-2xl font-bold text-white leading-tight mb-1">{step.title}</h1>
+              <p className="text-sm text-white/40 leading-relaxed">{step.subtitle}</p>
+            </div>
+          )}
+
+          {/* Questions */}
           {!isSummary && step && step.questions.map((q, qi) => renderQuestion(q, qi))}
 
           {/* Summary */}
           {isSummary && (
             <div>
-              <div style={{ fontWeight: 800, fontSize: 28, color: "#fff", marginBottom: 8 }}>
-                🎉 Brand configurat!
-              </div>
-              <div style={{ color: "rgba(255,255,255,0.38)", fontSize: 14, marginBottom: 4 }}>
-                Verifică datele și lansează workspace-ul tău AI.
-              </div>
-              <div style={{ color: "#fff", fontWeight: 600, fontSize: 18, marginTop: 16, marginBottom: 4 }}>
-                {typeof answers["brand_name"] === "string" ? answers["brand_name"] : "Brandul tău"}
-              </div>
-              <div style={{ fontSize: 13, color: "rgba(255,255,255,0.38)", marginBottom: 24 }}>
-                {industryMap[answers["industry"] as string] || ""}{answers["business_size"] ? ` · ${answers["business_size"]}` : ""}
+              <div className="mb-6">
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-[#56db84] mb-2">Configurare completă</p>
+                <h1 className="text-2xl font-bold text-white mb-1">
+                  {typeof answers["brand_name"] === "string" ? answers["brand_name"] : "Brandul tău"} e gata.
+                </h1>
+                <p className="text-sm text-white/40">
+                  {industryMap[answers["industry"] as string] || ""}
+                  {answers["business_size"] ? ` · ${answers["business_size"]}` : ""}
+                </p>
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(220px,1fr))", gap: 12 }}>
-                <SummaryCard label="Audiență" value={`${audMap[answers["audience_type"] as string] || "—"}\n${(answers["audience_age"] as string[] || []).join(", ") || ""}`} />
-                <SummaryCard label="Ton de voce" value={(answers["tone_words"] as string[] || []).join(", ")} />
-                <SummaryCard label="Canale active" value={(answers["channels"] as string[] || []).join(", ")} />
-                <SummaryCard label="Tip ofertă" value={(answers["offer_type"] as string[] || []).join(", ")} />
-                <div style={{ gridColumn: "1 / -1" }}>
-                  <SummaryCard label="De ce te aleg clienții" value={typeof answers["usp"] === "string" ? answers["usp"] : "—"} />
-                </div>
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                {[
+                  { label: "Audiență", value: `${audMap[answers["audience_type"] as string] || "—"} · ${(answers["audience_age"] as string[] || []).join(", ") || "—"}` },
+                  { label: "Ton de voce", value: (answers["tone_words"] as string[] || []).join(", ") || "—" },
+                  { label: "Canale", value: (answers["channels"] as string[] || []).join(", ") || "—" },
+                  { label: "Ofertă", value: (answers["offer_type"] as string[] || []).join(", ") || "—" },
+                ].map(({ label, value }) => (
+                  <div key={label} className="rounded-xl p-4" style={{ border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.02)" }}>
+                    <div className="text-[10px] uppercase tracking-wider text-white/35 mb-1.5">{label}</div>
+                    <div className="text-xs text-white leading-relaxed">{value}</div>
+                  </div>
+                ))}
+                {answers["usp"] && (
+                  <div className="col-span-2 rounded-xl p-4" style={{ border: "1px solid rgba(255,255,255,0.08)", background: "rgba(255,255,255,0.02)" }}>
+                    <div className="text-[10px] uppercase tracking-wider text-white/35 mb-1.5">De ce te aleg clienții</div>
+                    <div className="text-xs text-white leading-relaxed">{answers["usp"] as string}</div>
+                  </div>
+                )}
               </div>
 
               <button
                 onClick={handleFinish}
                 disabled={saving}
-                style={{
-                  marginTop: 32,
-                  padding: "14px 36px",
-                  borderRadius: 10,
-                  border: "none",
-                  background: "linear-gradient(135deg,#56db84,#3b82f6)",
-                  color: "#fff",
-                  fontSize: 15,
-                  fontWeight: 700,
-                  cursor: saving ? "not-allowed" : "pointer",
-                  fontFamily: "var(--font-geist-sans)",
-                  opacity: saving ? 0.7 : 1,
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 10,
-                }}
+                className="w-full py-4 rounded-2xl text-base font-bold text-black transition-all duration-150 active:scale-[0.98] disabled:opacity-60"
+                style={{ background: "linear-gradient(135deg,#56db84,#3b82f6)" }}
               >
                 {saving ? "Se salvează..." : "⚡ Lansează workspace-ul meu"}
               </button>
+
+              <p className="text-center text-xs text-white/25 mt-3">Poți modifica oricând din setări</p>
             </div>
           )}
         </div>
+      </div>
 
-        {/* Footer nav */}
-        {!isSummary && (
-          <div style={{ padding: "18px 32px", borderTop: "1px solid rgba(255,255,255,0.07)", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "space-between", background: "#0a0a0a" }}>
+      {/* ── Footer nav (fixed) ── */}
+      {!isSummary && (
+        <div className="fixed bottom-0 inset-x-0 z-20 bg-[#0a0a0a]/95 backdrop-blur-sm border-t border-white/6 px-5 py-4">
+          <div className="max-w-lg mx-auto flex items-center gap-3">
+            {currentStep > 0 ? (
+              <button
+                onClick={() => navigate("back")}
+                className="flex-shrink-0 h-12 w-12 rounded-xl flex items-center justify-center text-white/40 transition-all"
+                style={{ border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.03)" }}
+              >
+                ←
+              </button>
+            ) : (
+              <div className="flex-shrink-0 w-12" />
+            )}
             <button
-              onClick={goBack}
-              style={{
-                padding: "10px 20px", borderRadius: 8,
-                border: "1px solid rgba(255,255,255,0.07)",
-                background: "transparent", color: "rgba(255,255,255,0.38)",
-                fontSize: 13, cursor: "pointer",
-                fontFamily: "var(--font-geist-sans)",
-                visibility: currentStep === 0 ? "hidden" : "visible",
-              }}
-            >
-              ← Înapoi
-            </button>
-
-            <span style={{ fontSize: 12, color: "rgba(255,255,255,0.38)" }}>
-              Pasul {currentStep + 1} din {STEPS.length}
-            </span>
-
-            <button
-              onClick={goNext}
+              onClick={() => navigate("forward")}
               disabled={!canContinue}
+              className="flex-1 h-12 rounded-xl text-sm font-bold transition-all duration-150 active:scale-[0.98]"
               style={{
-                padding: "11px 28px", borderRadius: 8,
-                border: "none",
-                background: canContinue ? "#56db84" : "rgba(86,219,132,0.2)",
-                color: canContinue ? "#000" : "rgba(255,255,255,0.3)",
-                fontSize: 13, fontWeight: 600,
+                background: canContinue ? "#56db84" : "rgba(86,219,132,0.15)",
+                color: canContinue ? "#000" : "rgba(255,255,255,0.25)",
                 cursor: canContinue ? "pointer" : "not-allowed",
                 fontFamily: "var(--font-geist-sans)",
-                transition: "all 0.15s",
-                display: "flex", alignItems: "center", gap: 8,
               }}
             >
               {currentStep === STEPS.length - 1 ? "Finalizează" : "Continuă"} →
             </button>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }
