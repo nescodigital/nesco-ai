@@ -309,20 +309,29 @@ export default function Home() {
                   placeholder={t("Website (opțional)", "Website (optional)")}
                   className="w-full rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder-zinc-500 outline-none ring-[#56db84] focus:ring-2"
                 />
-                <input
-                  type="text"
+                <select
                   value={fields.budget}
                   onChange={(e) => setField("budget", e.target.value)}
-                  placeholder={t("Buget lunar marketing (ex: 500€, 2000€)", "Monthly marketing budget (e.g. 500€, 2000€)")}
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder-zinc-500 outline-none ring-[#56db84] focus:ring-2"
-                />
-                <input
-                  type="text"
+                  className="w-full rounded-xl border border-white/10 bg-[#1a1a1a] px-5 py-3 text-sm text-white outline-none ring-[#56db84] focus:ring-2"
+                >
+                  <option value="" disabled>{t("Buget lunar marketing", "Monthly marketing budget")}</option>
+                  <option value="sub-500">{t("Sub 500€", "Under €500")}</option>
+                  <option value="500-2000">{t("500€ - 2.000€", "€500 - €2,000")}</option>
+                  <option value="2000-5000">{t("2.000€ - 5.000€", "€2,000 - €5,000")}</option>
+                  <option value="5000-15000">{t("5.000€ - 15.000€", "€5,000 - €15,000")}</option>
+                  <option value="15000+">{t("15.000€+", "€15,000+")}</option>
+                </select>
+                <select
                   value={fields.teamSize}
                   onChange={(e) => setField("teamSize", e.target.value)}
-                  placeholder={t("Mărimea echipei (ex: solo, 2-5, 10+)", "Team size (e.g. solo, 2-5, 10+)")}
-                  className="w-full rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder-zinc-500 outline-none ring-[#56db84] focus:ring-2"
-                />
+                  className="w-full rounded-xl border border-white/10 bg-[#1a1a1a] px-5 py-3 text-sm text-white outline-none ring-[#56db84] focus:ring-2"
+                >
+                  <option value="" disabled>{t("Mărimea echipei", "Team size")}</option>
+                  <option value="solo">{t("Solo / Fondator", "Solo / Founder")}</option>
+                  <option value="2-3">{t("2-3 persoane", "2-3 people")}</option>
+                  <option value="4-10">{t("4-10 persoane", "4-10 people")}</option>
+                  <option value="10+">{t("10+ persoane", "10+ people")}</option>
+                </select>
                 <textarea
                   value={fields.frustration}
                   onChange={(e) => setField("frustration", e.target.value)}
