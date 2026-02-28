@@ -47,7 +47,7 @@ const STEPS: Step[] = [
         multi: false,
         options: [
           { v: "ecom", l: "🛒 E-commerce" },
-          { v: "services", l: "👨‍💼 Servicii B2B" },
+          { v: "services", l: "👨‍💼 Servicii" },
           { v: "coaching", l: "🎓 Coaching / Cursuri" },
           { v: "saas", l: "💻 SaaS / Tech" },
           { v: "horeca", l: "🍽️ HoReCa" },
@@ -581,7 +581,7 @@ export default function OnboardingPage() {
   }
 
   // ── Summary data ──────────────────────────────────────────────────────────
-  const industryMap: Record<string, string> = { ecom: "E-commerce", services: "Servicii B2B", coaching: "Coaching / Cursuri", saas: "SaaS / Tech", horeca: "HoReCa", realestate: "Imobiliare", health: "Sănătate", finance: "Finanțe", other: "Altceva" };
+  const industryMap: Record<string, string> = { ecom: "E-commerce", services: "Servicii", coaching: "Coaching / Cursuri", saas: "SaaS / Tech", horeca: "HoReCa", realestate: "Imobiliare", health: "Sănătate", finance: "Finanțe", other: "Altceva" };
   const audMap: Record<string, string> = { b2c: "B2C", b2b: "B2B", both: "B2C + B2B" };
 
   // ── Layout ─────────────────────────────────────────────────────────────────
