@@ -119,17 +119,17 @@ export default function Home() {
 
       {/* ── NAV ── */}
       <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between bg-black/30 px-6 py-4 backdrop-blur-sm">
-        <div className="w-16" />
         <Image
           src="/nesco-logo.png"
           alt="Nesco Digital"
           height={32}
           width={241}
-          className="h-8 w-auto"
+          className="h-8 w-auto sm:absolute sm:left-1/2 sm:-translate-x-1/2"
         />
+        <div className="hidden sm:block w-16" />
         <button
           onClick={() => setLang(lang === "ro" ? "en" : "ro")}
-          className="rounded-full border border-white/20 px-3 py-1 text-xs font-semibold text-zinc-400 transition hover:border-white/40 hover:text-white flex items-center gap-1.5"
+          className="ml-auto rounded-full border border-white/20 px-3 py-1 text-xs font-semibold text-zinc-400 transition hover:border-white/40 hover:text-white flex items-center gap-1.5"
         >
           {lang === "ro" ? (
             <><img src="https://flagcdn.com/gb.svg" alt="EN" className="h-3.5 w-5 object-cover rounded-sm" /> EN</>
