@@ -9,6 +9,7 @@ type Lang = "ro" | "en";
 
 export default function Home() {
   const [lang, setLang] = useState<Lang>("ro");
+  const [step, setStep] = useState<1 | 2>(1);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [fields, setFields] = useState({
@@ -51,7 +52,6 @@ export default function Home() {
     return () => clearInterval(id);
   }, []);
 
-
   function toggleService(value: string) {
     setServices((prev) =>
       prev.includes(value) ? prev.filter((s) => s !== value) : [...prev, value]
@@ -64,9 +64,24 @@ export default function Home() {
     setFields((prev) => ({ ...prev, [key]: value }));
   }
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleStep1(e: React.SyntheticEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!fields.email) return;
+    if (!fields.name || !fields.email) return;
+    setLoading(true);
+    try {
+      await fetch("/api/waitlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: fields.name, email: fields.email, lang }),
+      });
+    } finally {
+      setLoading(false);
+      setStep(2);
+    }
+  }
+
+  async function handleStep2(e: React.SyntheticEvent<HTMLFormElement>) {
+    e.preventDefault();
     setLoading(true);
     try {
       await fetch("/api/waitlist", {
@@ -405,12 +420,21 @@ export default function Home() {
               )}
             </p>
 
-            <form
-                onSubmit={handleSubmit}
-                className="mt-10 flex flex-col gap-3 text-left"
-              >
-                <input type="hidden" name="lang" value={lang} />
+            {/* ── STEP INDICATOR ── */}
+            <div className="mt-8 flex items-center justify-center gap-2">
+              <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-colors ${step >= 1 ? "bg-[#56db84] text-black" : "bg-white/10 text-zinc-400"}`}>
+                {step > 1 ? "✓" : "1"}
+              </div>
+              <div className={`h-px w-8 transition-colors ${step > 1 ? "bg-[#56db84]" : "bg-white/10"}`} />
+              <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-colors ${step === 2 ? "bg-[#56db84] text-black" : "bg-white/10 text-zinc-400"}`}>
+                2
+              </div>
+            </div>
 
+            {/* ── STEP 1: Nume + Email ── */}
+            {step === 1 && (
+              <form onSubmit={handleStep1} className="mt-8 flex flex-col gap-3 text-left">
+                <input type="hidden" name="lang" value={lang} />
                 <input
                   type="text"
                   required
@@ -427,11 +451,34 @@ export default function Home() {
                   placeholder={t("Email *", "Email *")}
                   className="w-full rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder-zinc-500 outline-none ring-[#56db84] focus:ring-2"
                 />
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full rounded-xl bg-[#56db84] px-6 py-4 text-base font-bold text-black shadow-lg shadow-[#56db84]/25 transition hover:bg-[#3ec96d] hover:shadow-[#56db84]/40 active:scale-[0.98] disabled:opacity-60"
+                >
+                  {loading ? t("Se trimite...", "Sending...") : t("Înscrie-mă pe listă", "Join the waitlist")}
+                </button>
+                <p className="text-center text-xs text-zinc-600">
+                  {t("Nu trimitem spam. Niciodată.", "We never send spam. Ever.")}
+                </p>
+              </form>
+            )}
+
+            {/* ── STEP 2: Detalii suplimentare ── */}
+            {step === 2 && (
+              <form onSubmit={handleStep2} className="mt-8 flex flex-col gap-3 text-left">
+                <p className="text-center text-sm text-zinc-400 mb-1">
+                  {t(
+                    "Locul tău e rezervat! Ajută-ne să înțelegem mai bine cum te putem ajuta.",
+                    "Your spot is reserved! Help us understand how we can best serve you."
+                  )}
+                </p>
+
                 <input
                   type="tel"
                   value={fields.phone}
                   onChange={(e) => setField("phone", e.target.value)}
-                  placeholder={t("Telefon", "Phone")}
+                  placeholder={t("Telefon (opțional)", "Phone (optional)")}
                   className="w-full rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder-zinc-500 outline-none ring-[#56db84] focus:ring-2"
                 />
                 <input
@@ -441,6 +488,7 @@ export default function Home() {
                   placeholder={t("Tip business (ex: eCommerce, servicii, SaaS)", "Business type (e.g. eCommerce, services, SaaS)")}
                   className="w-full rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder-zinc-500 outline-none ring-[#56db84] focus:ring-2"
                 />
+
                 {/* ── Servicii de interes ── */}
                 <div className="rounded-xl border border-white/10 bg-white/5 px-5 py-4">
                   <p className="mb-3 text-sm text-zinc-400">
@@ -521,6 +569,7 @@ export default function Home() {
                   placeholder={t("Care e cea mai mare frustrare cu AI-ul actual? (opțional)", "What's your biggest frustration with AI tools today? (optional)")}
                   className="w-full rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder-zinc-500 outline-none ring-[#56db84] focus:ring-2 resize-none"
                 />
+
                 {/* ── Call radio ── */}
                 <div className="rounded-xl border border-white/10 bg-white/5 px-5 py-4">
                   <p className="mb-3 text-sm text-zinc-400">
@@ -562,16 +611,18 @@ export default function Home() {
                   disabled={loading}
                   className="w-full rounded-xl bg-[#56db84] px-6 py-4 text-base font-bold text-black shadow-lg shadow-[#56db84]/25 transition hover:bg-[#3ec96d] hover:shadow-[#56db84]/40 active:scale-[0.98] disabled:opacity-60"
                 >
-                  {loading ? t("Se trimite...", "Sending...") : t("Înscrie-mă pe listă acum", "Join the waitlist now")}
+                  {loading ? t("Se trimite...", "Sending...") : t("Trimite și finalizează", "Submit and finish")}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSubmitted(true)}
+                  className="text-center text-xs text-zinc-500 transition hover:text-zinc-300"
+                >
+                  {t("Sari peste acest pas", "Skip this step")}
                 </button>
               </form>
-
-            <p className="mt-4 text-xs text-zinc-600">
-              {t(
-                "Nu trimitem spam. Niciodată.",
-                "We never send spam. Ever."
-              )}
-            </p>
+            )}
           </div>
         </section>
 
