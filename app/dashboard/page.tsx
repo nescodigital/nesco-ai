@@ -20,6 +20,15 @@ const OBJECTIVES = [
   { v: "Promovare ofertă specială", l: "🎁 Promovare ofertă specială" },
 ];
 
+interface HistoryItem {
+  id: string;
+  content_type: string;
+  objective: string;
+  context: string;
+  result: string;
+  created_at: string;
+}
+
 export default function DashboardPage() {
   const [contentType, setContentType] = useState(CONTENT_TYPES[0].v);
   const [objective, setObjective] = useState(OBJECTIVES[0].v);
@@ -29,6 +38,8 @@ export default function DashboardPage() {
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
   const [credits, setCredits] = useState<number | null>(null);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -40,6 +51,13 @@ export default function DashboardPage() {
         .eq("user_id", user.id)
         .single()
         .then(({ data }) => { if (data) setCredits(data.credits); });
+      supabase
+        .from("generation_history")
+        .select("id, content_type, objective, context, result, created_at")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending: false })
+        .limit(5)
+        .then(({ data }) => { if (data) setHistory(data); });
     });
   }, []);
 
@@ -61,6 +79,18 @@ export default function DashboardPage() {
       if (!res.ok) throw new Error(data.error || "Eroare la generare");
       setOutput(data.content);
       if (typeof data.creditsRemaining === "number") setCredits(data.creditsRemaining);
+      // Refresh history
+      const supabase = createClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: hist } = await supabase
+          .from("generation_history")
+          .select("id, content_type, objective, context, result, created_at")
+          .eq("user_id", user.id)
+          .order("created_at", { ascending: false })
+          .limit(5);
+        if (hist) setHistory(hist);
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "Ceva n-a mers. Încearcă din nou.");
     } finally {
@@ -91,45 +121,30 @@ export default function DashboardPage() {
       className="max-w-2xl mx-auto"
       style={{ fontFamily: "var(--font-geist-sans)" }}
     >
-      {/* Page title */}
-      <div className="mb-8">
-        <h1 className="text-[22px] font-bold text-white mb-1">Generează conținut</h1>
-        <p className="text-[14px] text-white/40">
-          AI-ul scrie în stilul brandului tău, gata de publicat.
-        </p>
-      </div>
-
-      {/* Credits banner */}
-      {credits !== null && (
-        <div
-          className="flex items-center justify-between rounded-2xl px-4 py-3 mb-5"
-          style={{
-            border: `1px solid ${credits < 3 ? "rgba(251,146,60,0.3)" : "rgba(255,255,255,0.07)"}`,
-            background: credits < 3 ? "rgba(251,146,60,0.05)" : "rgba(255,255,255,0.02)",
-          }}
-        >
-          <div className="flex items-center gap-2.5">
-            <span className="text-base">{credits < 3 ? "⚠️" : "⚡"}</span>
-            <div>
-              <span className="text-[13px] font-semibold text-white/80">
-                {credits === 0 ? "Nu mai ai credite" : `${credits} ${credits === 1 ? "credit rămas" : "credite rămase"}`}
-              </span>
-              {credits < 3 && credits > 0 && (
-                <p className="text-[11px] text-white/35 mt-0.5">Ia un plan pentru a continua să generezi conținut.</p>
-              )}
-            </div>
-          </div>
-          {credits < 3 && (
-            <Link
-              href="/pricing"
-              className="flex-shrink-0 px-3 py-1.5 rounded-xl text-[12px] font-bold text-black transition-all active:scale-95"
-              style={{ background: "linear-gradient(135deg,#56db84,#818cf8)" }}
-            >
-              Upgrade
-            </Link>
-          )}
+      {/* Page title + credits card */}
+      <div className="flex items-start justify-between gap-4 mb-8 flex-wrap">
+        <div>
+          <h1 className="text-[22px] font-bold text-white mb-1">Generează conținut</h1>
+          <p className="text-[14px] text-white/40">
+            AI-ul scrie în stilul brandului tău, gata de publicat.
+          </p>
         </div>
-      )}
+        {credits !== null && (
+          <div style={{
+            display: "flex", alignItems: "center", gap: "12px",
+            background: "#111113", border: "1px solid rgba(86,219,132,0.3)",
+            borderRadius: "10px", padding: "10px 16px", flexShrink: 0,
+          }}>
+            <span style={{ color: "#56db84", fontSize: "20px", fontWeight: 800 }}>{credits}</span>
+            <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px" }}>credite rămase</span>
+            <a href="/pricing" style={{
+              marginLeft: "8px", background: "#56db84", color: "#0a0a0a",
+              padding: "6px 12px", borderRadius: "6px", fontSize: "12px",
+              fontWeight: 700, textDecoration: "none",
+            }}>+ Cumpără</a>
+          </div>
+        )}
+      </div>
 
       {/* No credits error */}
       {error === "no_credits" && (
@@ -267,7 +282,7 @@ export default function DashboardPage() {
       {/* Output */}
       {output && (
         <div
-          className="rounded-2xl p-5"
+          className="rounded-2xl p-5 mb-6"
           style={{
             border: "1.5px solid rgba(86,219,132,0.2)",
             background: "linear-gradient(135deg,rgba(86,219,132,0.04),rgba(129,140,248,0.03))",
@@ -313,6 +328,62 @@ export default function DashboardPage() {
           </div>
           <div className="prose prose-invert prose-sm max-w-none">
             <ReactMarkdown>{output}</ReactMarkdown>
+          </div>
+        </div>
+      )}
+
+      {/* History */}
+      {history.length > 0 && (
+        <div className="mt-2">
+          <p className="text-[11px] font-semibold uppercase tracking-wider text-white/30 mb-3">
+            Ultimele generări
+          </p>
+          <div className="flex flex-col gap-3">
+            {history.map((item) => {
+              const isExpanded = expandedId === item.id;
+              return (
+                <div
+                  key={item.id}
+                  className="rounded-2xl p-4"
+                  style={{
+                    border: "1px solid rgba(255,255,255,0.07)",
+                    background: "rgba(255,255,255,0.02)",
+                  }}
+                >
+                  <div className="flex items-center justify-between gap-3 mb-2">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span
+                        className="text-[11px] font-bold px-2 py-0.5 rounded-full"
+                        style={{ background: "rgba(86,219,132,0.1)", color: "#56db84" }}
+                      >
+                        {item.content_type}
+                      </span>
+                      <span
+                        className="text-[11px] font-medium px-2 py-0.5 rounded-full"
+                        style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.45)" }}
+                      >
+                        {item.objective}
+                      </span>
+                    </div>
+                    <span className="text-[11px] text-white/20 flex-shrink-0">
+                      {new Date(item.created_at).toLocaleDateString("ro-RO", { day: "numeric", month: "short" })}
+                    </span>
+                  </div>
+                  <p className="text-[13px] text-white/55 leading-relaxed">
+                    {isExpanded ? item.result : item.result.slice(0, 100) + (item.result.length > 100 ? "…" : "")}
+                  </p>
+                  {item.result.length > 100 && (
+                    <button
+                      onClick={() => setExpandedId(isExpanded ? null : item.id)}
+                      className="mt-2 text-[12px] font-semibold transition-colors"
+                      style={{ color: "rgba(86,219,132,0.7)" }}
+                    >
+                      {isExpanded ? "Restrânge ↑" : "Vezi tot ↓"}
+                    </button>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

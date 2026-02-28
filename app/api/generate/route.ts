@@ -52,14 +52,25 @@ Scrie DOAR în română. Fără explicații, doar conținutul final gata de publ
     ],
   });
 
+  const generatedContent = message.content[0].type === "text" ? message.content[0].text : "";
+
   // Deduct 1 credit after successful generation
   await supabase
     .from("user_credits")
     .update({ credits: creditsRow.credits - 1, updated_at: new Date().toISOString() })
     .eq("user_id", user.id);
 
+  // Save to history
+  await supabase.from("generation_history").insert({
+    user_id: user.id,
+    content_type: contentType,
+    objective,
+    context,
+    result: generatedContent,
+  });
+
   return Response.json({
-    content: message.content[0].type === "text" ? message.content[0].text : "",
+    content: generatedContent,
     creditsRemaining: creditsRow.credits - 1,
   });
 }
