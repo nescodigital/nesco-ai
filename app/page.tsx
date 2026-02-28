@@ -1,7 +1,7 @@
 // STYLE RULE: Never use em dash (—) in any text. Use commas or rewrite naturally.
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 
 type Lang = "ro" | "en";
@@ -22,6 +22,32 @@ export default function Home() {
     callOpen: "",
   });
   const [services, setServices] = useState<string[]>([]);
+  const [countdown, setCountdown] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+  const [waitlistCount, setWaitlistCount] = useState(0);
+
+  useEffect(() => {
+    const target = new Date("2026-03-15T00:00:00").getTime();
+    function tick() {
+      const now = Date.now();
+      const diff = Math.max(0, target - now);
+      setCountdown({
+        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
+        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
+        minutes: Math.floor((diff / (1000 * 60)) % 60),
+        seconds: Math.floor((diff / 1000) % 60),
+      });
+    }
+    tick();
+    const id = setInterval(tick, 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/waitlist-count")
+      .then((r) => r.json())
+      .then((data) => setWaitlistCount(data.count ?? 0))
+      .catch(() => setWaitlistCount(0));
+  }, []);
 
   function toggleService(value: string) {
     setServices((prev) =>
@@ -134,7 +160,32 @@ export default function Home() {
             {t("Înscrie-te pe listă", "Join the Waitlist")}
           </a>
 
+          {/* ── Countdown ── */}
+          <div className="mt-8 flex items-center justify-center gap-3">
+            {[
+              { value: countdown.days, label: t("zile", "days") },
+              { value: countdown.hours, label: t("ore", "hours") },
+              { value: countdown.minutes, label: t("min", "min") },
+              { value: countdown.seconds, label: t("sec", "sec") },
+            ].map(({ value, label }, i) => (
+              <div key={i} className="flex flex-col items-center">
+                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#141414] border border-white/10">
+                  <span className="text-xl font-bold text-[#56db84]">
+                    {String(value).padStart(2, "0")}
+                  </span>
+                </div>
+                <span className="mt-1 text-[10px] uppercase tracking-widest text-zinc-500">{label}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* ── Live counter ── */}
           <p className="mt-4 text-xs text-zinc-500">
+            <span className="inline-block h-2 w-2 rounded-full bg-red-500 mr-1.5 align-middle" />
+            LIVE · {waitlistCount} {t("persoane înscrise deja", "people already signed up")}
+          </p>
+
+          <p className="mt-2 text-xs text-zinc-500">
             {t("Acces anticipat gratuit · Fără card.", "Free early access · No credit card.")}
           </p>
         </section>
@@ -254,10 +305,76 @@ export default function Home() {
                 </p>
               </div>
             </div>
+
+            <div className="mt-10 text-center">
+              <a
+                href="#waitlist"
+                className="inline-block rounded-full bg-[#56db84] px-8 py-3.5 text-sm font-semibold text-black shadow-md transition hover:bg-[#3ec96d] active:scale-95"
+              >
+                {t("Rezervă-mi locul gratuit", "Reserve My Spot Free")}
+              </a>
+            </div>
           </div>
         </section>
 
-        {/* ── 4. WAITLIST FORM ── */}
+        {/* ── 4. CE NU AM CONSTRUIT ── */}
+        <section className="bg-[#111111] py-24">
+          <div className="mx-auto max-w-3xl px-6">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#56db84]">
+              {t("Decizii conștiente", "Conscious decisions")}
+            </p>
+            <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
+              {t("Ce am refuzat să construim", "What We Refused to Build")}
+            </h2>
+            <p className="mt-4 max-w-xl text-lg leading-relaxed text-zinc-400">
+              {t(
+                "Majoritatea tool-urilor AI adaugă complexitate. Noi am ales altfel.",
+                "Most AI tools add complexity. We chose differently."
+              )}
+            </p>
+
+            <div className="mt-10 grid gap-4 sm:grid-cols-2">
+              {[
+                {
+                  ro: "O bibliotecă de prompturi",
+                  en: "A prompt library",
+                  descRo: "Prompturile sunt un plasture pe un proces stricat.",
+                  descEn: "Prompts are a band-aid for a broken process.",
+                },
+                {
+                  ro: "14 tool-uri lipite laolaltă",
+                  en: "14 tools duct-taped together",
+                  descRo: "Am construit un singur produs care face un lucru excepțional de bine.",
+                  descEn: "We built one product that does one thing exceptionally well.",
+                },
+                {
+                  ro: "Template-uri generice",
+                  en: "Generic templates",
+                  descRo: "Template-urile există când AI-ul nu îți cunoaște business-ul. Al nostru îl cunoaște.",
+                  descEn: "Templates exist when AI doesn't know your business. Ours does.",
+                },
+                {
+                  ro: "Un chatbot general",
+                  en: "A general chatbot",
+                  descRo: "Nu îți răspunde la orice. Îți construiește marketingul.",
+                  descEn: "It doesn't answer everything. It builds your marketing.",
+                },
+              ].map(({ ro, en, descRo, descEn }) => (
+                <div key={ro} className="rounded-2xl border border-white/10 bg-[#141414] p-6">
+                  <div className="mb-3 flex items-center gap-3">
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-500/20 text-xs text-red-400">
+                      ✕
+                    </span>
+                    <h3 className="font-bold text-white">{t(ro, en)}</h3>
+                  </div>
+                  <p className="text-sm leading-relaxed text-zinc-400">{t(descRo, descEn)}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── 5. WAITLIST FORM ── */}
         <section id="waitlist" className="bg-[#111111] py-24 text-white">
           <div className="mx-auto max-w-xl px-6 text-center">
             <p className="text-xs font-semibold uppercase tracking-widest text-[#56db84]">
