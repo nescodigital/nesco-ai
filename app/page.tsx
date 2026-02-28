@@ -396,7 +396,7 @@ export default function Home() {
               {t("Acces anticipat", "Early access")}
             </p>
             <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
-              {t("Fii primul care încearcă.", "Be the first to try it.")}
+              {t("Fii printre primii care încearcă.", "Be among the first to try it.")}
             </h2>
             <p className="mt-4 text-zinc-400">
               {t(
@@ -525,8 +525,8 @@ export default function Home() {
                 <div className="rounded-xl border border-white/10 bg-white/5 px-5 py-4">
                   <p className="mb-3 text-sm text-zinc-400">
                     {t(
-                      "Ești deschis la un call de 15 min cu echipa noastră?",
-                      "Open to a 15-min call with our team?"
+                      "Te-ar ajuta o discuție de 15 min despre provocările din business-ul tău cu un expert?",
+                      "Would a 15-min conversation about your business challenges with an expert help you?"
                     )}
                   </p>
                   <div className="flex gap-6">
