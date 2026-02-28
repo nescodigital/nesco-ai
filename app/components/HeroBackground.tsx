@@ -195,6 +195,7 @@ export default function HeroBackground() {
     }
 
     function resize() {
+      if (!cv) return;
       W = cv.width  = cv.offsetWidth;
       H = cv.height = cv.offsetHeight;
       build();
