@@ -2,7 +2,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import HeroBackground from "./components/HeroBackground";
 
 type Lang = "ro" | "en";
@@ -134,11 +133,9 @@ export default function Home() {
 
       {/* ── NAV ── */}
       <header className="fixed inset-x-0 top-0 z-50 flex items-center justify-between bg-black/30 px-6 py-4 backdrop-blur-sm">
-        <Image
-          src="/nesco-logo.png"
+        <img
+          src="https://zeiysldulaawgqdhhfpx.supabase.co/storage/v1/object/public/assets/ai_nescodigital_logo.png"
           alt="Nesco Digital"
-          height={32}
-          width={241}
           className="h-8 w-auto sm:absolute sm:left-1/2 sm:-translate-x-1/2"
         />
         <div className="hidden sm:block w-16" />
