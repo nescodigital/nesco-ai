@@ -483,7 +483,7 @@ export default function OnboardingPage() {
         )}
 
         {q.type === "cards" && q.cardOptions && (
-          <div className="flex flex-col gap-3">
+          <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
             {q.cardOptions.map((opt) => <CardBtn key={opt.v} q={q} opt={opt} />)}
           </div>
         )}
@@ -538,15 +538,16 @@ export default function OnboardingPage() {
     <div className="min-h-screen bg-[#0a0a0a] flex flex-col" style={{ fontFamily: "var(--font-geist-sans)" }}>
 
       {/* ── Header: logo + progress ── */}
+      {/* Mobile: fixed full-width | Desktop: fixed full-width but content max-w-2xl centered */}
       <div className="fixed top-0 inset-x-0 z-20 bg-[#0a0a0a]/90 backdrop-blur-sm border-b border-white/6">
-        <div className="flex items-center justify-between px-5 py-3">
+        <div className="max-w-2xl mx-auto flex items-center justify-between px-5 py-3 lg:px-0">
           <Image src="/nesco-logo.png" alt="Nesco Digital" height={20} width={151} className="h-5 w-auto" />
           <span className="text-xs text-white/35">
             {isSummary ? "Gata!" : `${currentStep + 1} / ${STEPS.length}`}
           </span>
         </div>
         {/* Progress bar */}
-        <div className="h-[2px] bg-white/6 mx-0">
+        <div className="h-[2px] bg-white/6">
           <div
             className="h-full transition-all duration-500 ease-out"
             style={{ width: `${pct}%`, background: "linear-gradient(90deg,#56db84,#3b82f6)" }}
@@ -554,12 +555,9 @@ export default function OnboardingPage() {
         </div>
         {/* Step pills */}
         {!isSummary && (
-          <div className="flex items-center gap-1.5 px-5 py-2.5 overflow-x-auto scrollbar-none">
+          <div className="max-w-2xl mx-auto flex items-center gap-1.5 px-5 py-2.5 overflow-x-auto scrollbar-none lg:px-0">
             {STEPS.map((s, i) => (
-              <div
-                key={s.id}
-                className="flex items-center gap-1 flex-shrink-0"
-              >
+              <div key={s.id} className="flex items-center gap-1 flex-shrink-0">
                 <div
                   className="h-1.5 rounded-full transition-all duration-300"
                   style={{
@@ -575,8 +573,9 @@ export default function OnboardingPage() {
       </div>
 
       {/* ── Scrollable content ── */}
+      {/* Mobile: full-width | Desktop: centered card with max-w */}
       <div
-        className="flex-1 px-5 pb-32 transition-all duration-180"
+        className="flex-1 px-5 pb-32 lg:flex lg:items-start lg:justify-center lg:px-0"
         style={{
           paddingTop: isSummary ? 80 : 112,
           opacity: visible ? 1 : 0,
@@ -584,7 +583,7 @@ export default function OnboardingPage() {
           transition: "opacity 0.18s ease, transform 0.18s ease",
         }}
       >
-        <div className="max-w-lg mx-auto w-full">
+        <div className="w-full max-w-2xl lg:px-8">
 
           {/* Step header */}
           {!isSummary && step && (
@@ -652,7 +651,7 @@ export default function OnboardingPage() {
       {/* ── Footer nav (fixed) ── */}
       {!isSummary && (
         <div className="fixed bottom-0 inset-x-0 z-20 bg-[#0a0a0a]/95 backdrop-blur-sm border-t border-white/6 px-5 py-4">
-          <div className="max-w-lg mx-auto flex items-center gap-3">
+          <div className="max-w-2xl mx-auto flex items-center gap-3 lg:px-8">
             {currentStep > 0 ? (
               <button
                 onClick={() => navigate("back")}
