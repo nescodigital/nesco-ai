@@ -21,6 +21,13 @@ export default function Home() {
     frustration: "",
     callOpen: "",
   });
+  const [services, setServices] = useState<string[]>([]);
+
+  function toggleService(value: string) {
+    setServices((prev) =>
+      prev.includes(value) ? prev.filter((s) => s !== value) : [...prev, value]
+    );
+  }
 
   const t = (ro: string, en: string) => (lang === "ro" ? ro : en);
 
@@ -36,7 +43,7 @@ export default function Home() {
       await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...fields, lang }),
+        body: JSON.stringify({ ...fields, services: services.join(", "), lang }),
       });
     } finally {
       setLoading(false);
@@ -302,6 +309,49 @@ export default function Home() {
                   placeholder={t("Tip business (ex: eCommerce, servicii, SaaS)", "Business type (e.g. eCommerce, services, SaaS)")}
                   className="w-full rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder-zinc-500 outline-none ring-[#56db84] focus:ring-2"
                 />
+                {/* ── Servicii de interes ── */}
+                <div className="rounded-xl border border-white/10 bg-white/5 px-5 py-4">
+                  <p className="mb-3 text-sm text-zinc-400">
+                    {t(
+                      "Ce vrei să faci cu AI-ul? (selectează tot ce se aplică)",
+                      "What do you want to use AI for? (select all that apply)"
+                    )}
+                  </p>
+                  <div className="flex flex-col gap-2">
+                    {[
+                      { value: "paid-ads", ro: "Reclame plătite (Meta, Google, TikTok)", en: "Paid ads (Meta, Google, TikTok)" },
+                      { value: "email-marketing", ro: "Email marketing și automatizări", en: "Email marketing & automations" },
+                      { value: "copywriting", ro: "Copywriting și texte de vânzare", en: "Copywriting & sales copy" },
+                      { value: "strategy", ro: "Strategie de marketing", en: "Marketing strategy" },
+                      { value: "social-media", ro: "Social media și conținut", en: "Social media & content" },
+                      { value: "seo", ro: "SEO și conținut organic", en: "SEO & organic content" },
+                      { value: "website", ro: "Website și landing pages", en: "Website & landing pages" },
+                      { value: "other", ro: "Altul", en: "Other" },
+                    ].map(({ value, ro, en }) => (
+                      <label key={value} className="flex cursor-pointer items-center gap-3">
+                        <span
+                          className="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-white/20 transition"
+                          style={services.includes(value) ? { background: "#56db84", borderColor: "#56db84" } : {}}
+                        >
+                          {services.includes(value) && (
+                            <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                              <path d="M2 6l3 3 5-5" stroke="#000" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                          )}
+                        </span>
+                        <input
+                          type="checkbox"
+                          className="sr-only"
+                          value={value}
+                          checked={services.includes(value)}
+                          onChange={() => toggleService(value)}
+                        />
+                        <span className="text-sm text-zinc-300">{t(ro, en)}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
                 <input
                   type="url"
                   value={fields.website}
@@ -339,15 +389,41 @@ export default function Home() {
                   placeholder={t("Care e cea mai mare frustrare cu AI-ul actual? (opțional)", "What's your biggest frustration with AI tools today? (optional)")}
                   className="w-full rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder-zinc-500 outline-none ring-[#56db84] focus:ring-2 resize-none"
                 />
-                <select
-                  value={fields.callOpen}
-                  onChange={(e) => setField("callOpen", e.target.value)}
-                  className="w-full rounded-xl border border-white/10 bg-[#1a1a1a] px-5 py-3 text-sm text-white outline-none ring-[#56db84] focus:ring-2"
-                >
-                  <option value="">{t("Ești deschis la un call de 15 min? (opțional)", "Open to a 15-min call? (optional)")}</option>
-                  <option value="yes">{t("Da, cu plăcere", "Yes, happy to")}</option>
-                  <option value="no">{t("Nu, mersi", "No, thanks")}</option>
-                </select>
+                {/* ── Call radio ── */}
+                <div className="rounded-xl border border-white/10 bg-white/5 px-5 py-4">
+                  <p className="mb-3 text-sm text-zinc-400">
+                    {t(
+                      "Ești deschis la un call de 15 min cu echipa noastră?",
+                      "Open to a 15-min call with our team?"
+                    )}
+                  </p>
+                  <div className="flex gap-6">
+                    {[
+                      { value: "yes", ro: "Da", en: "Yes" },
+                      { value: "no", ro: "Nu", en: "No" },
+                    ].map(({ value, ro, en }) => (
+                      <label key={value} className="flex cursor-pointer items-center gap-2">
+                        <span
+                          className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-white/20 transition"
+                          style={fields.callOpen === value ? { borderColor: "#56db84" } : {}}
+                        >
+                          {fields.callOpen === value && (
+                            <span className="h-3 w-3 rounded-full" style={{ background: "#56db84" }} />
+                          )}
+                        </span>
+                        <input
+                          type="radio"
+                          className="sr-only"
+                          name="callOpen"
+                          value={value}
+                          checked={fields.callOpen === value}
+                          onChange={() => setField("callOpen", value)}
+                        />
+                        <span className="text-sm text-zinc-300">{t(ro, en)}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
 
                 <button
                   type="submit"

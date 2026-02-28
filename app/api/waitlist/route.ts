@@ -16,6 +16,7 @@ export async function POST(req: NextRequest) {
     teamSize = "",
     frustration = "",
     callOpen = "",
+    services = "",
     lang = "ro",
   } = body;
 
@@ -41,6 +42,7 @@ export async function POST(req: NextRequest) {
     teamSize,
     frustration,
     callOpen,
+    services,
     lang,
     createdAt: new Date().toISOString(),
   });
@@ -111,6 +113,7 @@ export async function POST(req: NextRequest) {
           ["Buget", budget],
           ["Marime echipa", teamSize],
           ["Frustrare principala", frustration],
+          ["Servicii de interes", services],
           ["Deschis la call", callOpen],
           ["Limba", lang],
         ]
