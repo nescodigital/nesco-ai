@@ -2,8 +2,8 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { createClient } from "@/lib/supabase/client";
+import Logo from "@/app/components/Logo";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 type Answers = Record<string, string | string[] | Record<string, number>>;
@@ -599,7 +599,7 @@ export default function OnboardingPage() {
         <div className="max-w-2xl mx-auto px-5 lg:px-0">
           {/* Top bar: logo + step count */}
           <div className="flex items-center justify-between py-3.5">
-            <Image src="/nesco-logo.png" alt="Nesco Digital" height={18} width={136} className="h-[18px] w-auto opacity-90" />
+            <Logo />
             {!isSummary ? (
               <div className="flex items-center gap-2">
                 <span className="text-[11px] font-medium text-white/30">Pasul</span>

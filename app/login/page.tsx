@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
+import Logo from "@/app/components/Logo";
 
 // ── WebGL noise background ─────────────────────────────────────────────────
 const VERT = `
@@ -180,10 +181,8 @@ export default function LoginPage() {
         style={{ zIndex: 1 }}
       >
         {/* Logo */}
-        <div className="text-center mb-8">
-          <span style={{ fontWeight: 800, fontSize: "26px", letterSpacing: "-0.8px", color: "white" }}>
-            nesco<span style={{ color: "#56db84" }}>AI</span>
-          </span>
+        <div className="flex justify-center mb-8">
+          <Logo />
         </div>
 
         {sent ? (

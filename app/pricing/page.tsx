@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Logo from "@/app/components/Logo";
 
 const PLANS = [
   {
@@ -88,12 +89,7 @@ export default function PricingPage() {
         className="px-6 py-4 flex items-center justify-between border-b"
         style={{ borderColor: "rgba(255,255,255,0.07)" }}
       >
-        <span
-          style={{ fontWeight: 800, fontSize: "18px", letterSpacing: "-0.5px", color: "white", cursor: "pointer" }}
-          onClick={() => router.push("/dashboard")}
-        >
-          nesco<span style={{ color: "#56db84" }}>AI</span>
-        </span>
+        <Logo />
         <button
           onClick={() => router.push("/dashboard")}
           className="text-[13px] text-white/40 hover:text-white/70 transition-colors"
