@@ -6,6 +6,32 @@ import HeroBackground from "./components/HeroBackground";
 
 type Lang = "ro" | "en";
 
+function FaqItem({ question, answer }: { question: string; answer: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div
+      className="rounded-2xl border border-white/10 bg-[#141414] overflow-hidden cursor-pointer"
+      onClick={() => setOpen((v) => !v)}
+    >
+      <div className="flex items-center justify-between px-6 py-5 gap-4">
+        <p className="text-sm font-semibold text-white leading-snug">{question}</p>
+        <svg
+          width="18" height="18" viewBox="0 0 18 18" fill="none"
+          className="flex-shrink-0 transition-transform duration-200"
+          style={{ transform: open ? "rotate(45deg)" : "rotate(0deg)" }}
+        >
+          <path d="M9 3v12M3 9h12" stroke="#56db84" strokeWidth="1.8" strokeLinecap="round" />
+        </svg>
+      </div>
+      {open && (
+        <div className="px-6 pb-5">
+          <p className="text-sm leading-relaxed text-zinc-400">{answer}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function Home() {
   const [lang, setLang] = useState<Lang>("ro");
   const [step, setStep] = useState<1 | 2>(1);
@@ -617,6 +643,211 @@ export default function Home() {
                 </button>
               </form>
             )}
+          </div>
+        </section>
+
+        {/* ── 5B. TESTIMONIALE ── */}
+        <section className="bg-[#0a0a0a] py-24">
+          <div className="mx-auto max-w-3xl px-6">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#56db84]">
+              {t("Ce spun primii utilizatori", "What early users say")}
+            </p>
+            <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
+              {t("Rezultate reale, de la business-uri reale.", "Real results, from real businesses.")}
+            </h2>
+            <div className="mt-10 grid gap-5 sm:grid-cols-2">
+              {[
+                {
+                  quote: { ro: "Înainte petreceam 3 ore pe săptămână să scriu postări. Acum le generez în 5 minute și sună exact ca mine.", en: "I used to spend 3 hours a week writing posts. Now I generate them in 5 minutes and they sound exactly like me." },
+                  name: "Andreea M.",
+                  role: { ro: "Fondatoare, brand de cosmetice naturale", en: "Founder, natural cosmetics brand" },
+                  initial: "A",
+                },
+                {
+                  quote: { ro: "Am crescut engagement-ul pe Instagram cu 40% în prima lună. AI-ul înțelege exact ce vor clienții mei.", en: "I grew Instagram engagement by 40% in the first month. The AI understands exactly what my customers want." },
+                  name: "Radu P.",
+                  role: { ro: "Proprietar, lanț de restaurante", en: "Owner, restaurant chain" },
+                  initial: "R",
+                },
+                {
+                  quote: { ro: "Vindem online și aveam nevoie de texte pentru fiecare produs. Acum generăm tot conținutul în câteva minute.", en: "We sell online and needed copy for every product. Now we generate all content in minutes." },
+                  name: "Cristina V.",
+                  role: { ro: "Co-fondatoare, magazin de mobilă", en: "Co-founder, furniture store" },
+                  initial: "C",
+                },
+                {
+                  quote: { ro: "Reclamele noastre Meta au un CTR dublu față de ce scriam noi. Merită fiecare leu.", en: "Our Meta ads have double the CTR compared to what we used to write. Worth every penny." },
+                  name: "Dan S.",
+                  role: { ro: "Director vânzări, firmă de software", en: "Sales Director, software company" },
+                  initial: "D",
+                },
+              ].map(({ quote, name, role, initial }) => (
+                <div key={name} className="rounded-2xl border border-white/10 bg-[#141414] p-6">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-black" style={{ background: "linear-gradient(135deg,#56db84,#818cf8)" }}>
+                      {initial}
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-white">{name}</p>
+                      <p className="text-xs text-zinc-500">{t(role.ro, role.en)}</p>
+                    </div>
+                    <div className="ml-auto flex gap-0.5">
+                      {[...Array(5)].map((_, i) => (
+                        <svg key={i} width="12" height="12" viewBox="0 0 12 12" fill="#56db84"><path d="M6 1l1.4 2.8 3.1.4-2.2 2.2.5 3.1L6 8l-2.8 1.5.5-3.1L1.5 4.2l3.1-.4z"/></svg>
+                      ))}
+                    </div>
+                  </div>
+                  <p className="text-sm leading-relaxed text-zinc-300 italic">"{t(quote.ro, quote.en)}"</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── 6. PREVIEW DASHBOARD ── */}
+        <section className="py-24" style={{ background: "rgb(9,4,0)" }}>
+          <div className="mx-auto max-w-3xl px-6">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#56db84]">
+              {t("Cum arată în practică", "See it in action")}
+            </p>
+            <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
+              {t("Simplu. Rapid. Al tău.", "Simple. Fast. Yours.")}
+            </h2>
+            <p className="mt-4 text-lg leading-relaxed text-zinc-400">
+              {t(
+                "Alegi tipul de conținut, obiectivul, adaugi context opțional. AI-ul generează în secunde, tu copiezi și publici.",
+                "Choose the content type, objective, add optional context. AI generates in seconds, you copy and publish."
+              )}
+            </p>
+            {/* Dashboard UI mockup */}
+            <div className="mt-10 rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(86,219,132,0.2)", background: "#0d0d0d", boxShadow: "0 0 60px rgba(86,219,132,0.06)" }}>
+              {/* Fake browser bar */}
+              <div className="flex items-center gap-2 px-4 py-3 border-b border-white/5">
+                <div className="w-3 h-3 rounded-full bg-red-500/40" />
+                <div className="w-3 h-3 rounded-full bg-yellow-500/40" />
+                <div className="w-3 h-3 rounded-full bg-green-500/40" />
+                <div className="ml-3 flex-1 rounded-md px-3 py-1 text-xs text-zinc-600" style={{ background: "rgba(255,255,255,0.04)" }}>
+                  ai.nescodigital.com/dashboard
+                </div>
+              </div>
+              {/* Fake dashboard content */}
+              <div className="p-6 sm:p-8">
+                <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
+                  <div>
+                    <div className="h-5 w-40 rounded-md bg-white/10 mb-2" />
+                    <div className="h-3 w-56 rounded-md bg-white/5" />
+                  </div>
+                  <div className="flex items-center gap-3 rounded-xl px-4 py-2.5" style={{ background: "#111113", border: "1px solid rgba(86,219,132,0.3)" }}>
+                    <span className="text-[#56db84] font-bold text-lg">10</span>
+                    <span className="text-xs text-white/40">{t("credite rămase", "credits left")}</span>
+                    <span className="text-xs font-bold text-black px-2 py-1 rounded-md" style={{ background: "#56db84" }}>+ {t("Cumpără", "Buy")}</span>
+                  </div>
+                </div>
+                <div className="rounded-xl p-4 mb-4" style={{ border: "1px solid rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.02)" }}>
+                  <div className="grid grid-cols-2 gap-4 mb-4">
+                    <div>
+                      <div className="h-2.5 w-20 rounded bg-white/10 mb-2" />
+                      <div className="h-10 rounded-lg" style={{ background: "rgba(255,255,255,0.04)", border: "1.5px solid rgba(255,255,255,0.08)" }}>
+                        <div className="h-full flex items-center px-3">
+                          <span className="text-xs text-zinc-500">📸 Post Instagram</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="h-2.5 w-16 rounded bg-white/10 mb-2" />
+                      <div className="h-10 rounded-lg" style={{ background: "rgba(255,255,255,0.04)", border: "1.5px solid rgba(255,255,255,0.08)" }}>
+                        <div className="h-full flex items-center px-3">
+                          <span className="text-xs text-zinc-500">💰 {t("Vânzare", "Sales")}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="h-16 rounded-lg mb-4" style={{ background: "rgba(255,255,255,0.02)", border: "1.5px solid rgba(255,255,255,0.06)" }}>
+                    <div className="p-3">
+                      <span className="text-xs text-zinc-600">{t("Lansăm o nouă colecție de vară...", "Launching a new summer collection...")}</span>
+                    </div>
+                  </div>
+                  <div className="h-11 rounded-xl flex items-center justify-center gap-2" style={{ background: "linear-gradient(135deg,#56db84,#818cf8)" }}>
+                    <span className="text-sm font-bold text-black">⚡ {t("Generează", "Generate")}</span>
+                  </div>
+                </div>
+                {/* Output preview */}
+                <div className="rounded-xl p-4" style={{ border: "1.5px solid rgba(86,219,132,0.2)", background: "linear-gradient(135deg,rgba(86,219,132,0.04),rgba(129,140,248,0.03))" }}>
+                  <div className="flex items-center gap-2 mb-3">
+                    <div className="w-2 h-2 rounded-full" style={{ background: "linear-gradient(135deg,#56db84,#818cf8)" }} />
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-white/30">{t("Conținut generat", "Generated content")}</span>
+                    <div className="ml-auto text-[11px] font-semibold px-2 py-0.5 rounded-md text-zinc-400" style={{ background: "rgba(255,255,255,0.06)" }}>
+                      {t("Copiază", "Copy")}
+                    </div>
+                  </div>
+                  <div className="space-y-1.5">
+                    <div className="h-2.5 w-full rounded bg-white/10" />
+                    <div className="h-2.5 w-5/6 rounded bg-white/8" />
+                    <div className="h-2.5 w-4/6 rounded bg-white/6" />
+                    <div className="h-2.5 w-3/4 rounded bg-white/8 mt-2" />
+                    <div className="h-2.5 w-full rounded bg-white/6" />
+                    <div className="h-2.5 w-2/3 rounded bg-white/5 mt-2 text-[#56db84]" style={{ background: "rgba(86,219,132,0.15)" }} />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── 7. PREȚ MINIM ── */}
+        <section className="bg-[#0a0a0a] py-16">
+          <div className="mx-auto max-w-3xl px-6 text-center">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#56db84] mb-3">
+              {t("Prețuri simple", "Simple pricing")}
+            </p>
+            <p className="text-2xl font-bold text-white mb-2">
+              {t("De la 9€/lună. Anulezi oricând.", "From €9/month. Cancel anytime.")}
+            </p>
+            <p className="text-zinc-400 mb-6">
+              {t("Fără contracte, fără surprize. Planuri pentru orice dimensiune de business.", "No contracts, no surprises. Plans for any business size.")}
+            </p>
+            <a
+              href="/pricing"
+              className="inline-block rounded-full border border-[#56db84]/40 px-6 py-2.5 text-sm font-semibold text-[#56db84] transition hover:bg-[#56db84]/10"
+            >
+              {t("Vezi toate planurile →", "See all plans →")}
+            </a>
+          </div>
+        </section>
+
+        {/* ── 8. FAQ ── */}
+        <section className="bg-[#111111] py-24">
+          <div className="mx-auto max-w-2xl px-6">
+            <p className="text-xs font-semibold uppercase tracking-widest text-[#56db84] mb-3">FAQ</p>
+            <h2 className="text-3xl font-bold text-white mb-10">
+              {t("Întrebări frecvente", "Frequently asked questions")}
+            </h2>
+            <div className="space-y-4">
+              {[
+                {
+                  q: { ro: "Cum știe AI-ul să scrie ca brandul meu?", en: "How does the AI know how to write like my brand?" },
+                  a: { ro: "La prima autentificare completezi un onboarding de 5 minute: industrie, audiență, ton de voce, canale active și USP-ul tău. Toate acestea devin contextul permanent al AI-ului, aplicat la fiecare generare.", en: "At first login you complete a 5-minute onboarding: industry, audience, tone of voice, active channels and your USP. All of this becomes the AI's permanent context, applied to every generation." },
+                },
+                {
+                  q: { ro: "Sunt blocat în abonament?", en: "Am I locked into a subscription?" },
+                  a: { ro: "Nu. Anulezi oricând din cont, fără penalizări și fără să suni pe nimeni. Accesul rămâne activ până la sfârșitul perioadei plătite.", en: "No. Cancel anytime from your account, no penalties, no phone calls needed. Access remains active until the end of the paid period." },
+                },
+                {
+                  q: { ro: "Ce tipuri de conținut pot genera?", en: "What types of content can I generate?" },
+                  a: { ro: "Post Facebook, Post Instagram, Post LinkedIn, Email newsletter și Reclamă Meta Ads, fiecare cu reguli specifice de format, lungime și structură. Poți traduce orice conținut în 10 limbi cu un singur click.", en: "Facebook Post, Instagram Post, LinkedIn Post, Email newsletter and Meta Ads, each with specific format, length and structure rules. You can translate any content into 10 languages with a single click." },
+                },
+                {
+                  q: { ro: "Ce se întâmplă dacă termin creditele?", en: "What happens if I run out of credits?" },
+                  a: { ro: "Generarea se oprește și ești notificat. Poți face upgrade instant din dashboard la orice plan, iar creditele se adaugă imediat după plată.", en: "Generation stops and you're notified. You can instantly upgrade from the dashboard to any plan, and credits are added immediately after payment." },
+                },
+                {
+                  q: { ro: "E legat de Nesco Digital, agenția?", en: "Is this connected to Nesco Digital, the agency?" },
+                  a: { ro: "Da. Nesco Digital AI este construit de echipa Nesco Digital, agenție de marketing cu experiență în zeci de business-uri românești. Produsul distilează tot ce am învățat în ani de campanii într-un tool pe care orice antreprenor îl poate folosi.", en: "Yes. Nesco Digital AI is built by the Nesco Digital team, a marketing agency with experience across dozens of Romanian businesses. The product distills everything we've learned from years of campaigns into a tool any entrepreneur can use." },
+                },
+              ].map(({ q, a }, i) => (
+                <FaqItem key={i} question={t(q.ro, q.en)} answer={t(a.ro, a.en)} />
+              ))}
+            </div>
           </div>
         </section>
 
