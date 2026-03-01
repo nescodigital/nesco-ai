@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
+import { getFormattingInstructions } from "@/lib/formatting";
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -29,19 +30,19 @@ export async function POST(request: Request) {
 
   const d = (profile?.data as Record<string, unknown>) || {};
 
-  const systemPrompt = `Ești un copywriter expert pentru brandul "${d.brand_name || "acest brand"}".
+  const formattingInstructions = getFormattingInstructions(contentType);
+
+  const systemPrompt = `${formattingInstructions}
+
+BRAND VOICE:
+Brand: "${d.brand_name || "acest brand"}"
 Ton: ${((d.tone_words as string[]) || []).join(", ")}
 Audiență: ${d.audience_type}, vârsta ${((d.audience_age as string[]) || []).join(", ")}
 Canale principale: ${((d.channels as string[]) || []).join(", ")}
-Problema pe care o rezolvi: ${d.audience_pain}
+Decizia de cumpărare a clienților: ${d.buying_decision || ""}
 USP: ${d.usp || ""}
 Cuvinte interzise: ${d.avoid || "niciuna"}
-Scrie DOAR în română. Fără explicații, doar conținutul final gata de publicat.
-
-REGULI ABSOLUTE DE FORMATARE:
-- Nu folosi niciodată "—" (em dash) în niciun context
-- Nu folosi "–" (en dash)
-- Înlocuiește cu virgulă, punct sau rescrie propoziția`;
+Scrie DOAR în română.`;
 
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 

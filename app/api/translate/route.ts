@@ -1,5 +1,6 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
+import { TRANSLATE_FORMATTING } from "@/lib/formatting";
 
 export async function POST(request: Request) {
   const supabase = await createClient();
@@ -25,7 +26,7 @@ export async function POST(request: Request) {
     max_tokens: 1024,
     messages: [{
       role: "user",
-      content: `Traduce exact următorul text în ${targetLanguage}. Păstrează același ton, structură și formatare. Nu adăuga explicații, doar textul tradus:\n\n${text}`,
+      content: `Traduce exact următorul text în ${targetLanguage}. Păstrează același ton, structură și formatare. Nu adăuga explicații, doar textul tradus.\n\n${TRANSLATE_FORMATTING}\n\n${text}`,
     }],
   });
 
