@@ -149,6 +149,97 @@ function NoiseCanvas() {
   );
 }
 
+// ── Testimonials ────────────────────────────────────────────────────────────
+const TESTIMONIALS = [
+  {
+    initial: "A",
+    quote: "Înainte petreceam 3 ore pe săptămână să scriu postări. Acum le generez în 5 minute și sună exact ca mine.",
+    name: "Andreea M.",
+    role: "Fondatoare, brand de cosmetice naturale",
+  },
+  {
+    initial: "R",
+    quote: "Am crescut engagement-ul pe Instagram cu 40% în prima lună. AI-ul înțelege exact ce vor clienții mei.",
+    name: "Radu P.",
+    role: "Proprietar, lanț de restaurante",
+  },
+  {
+    initial: "C",
+    quote: "Vindem online și aveam nevoie de texte pentru fiecare produs. Acum generăm tot conținutul în câteva minute.",
+    name: "Cristina V.",
+    role: "Co-fondatoare, magazin de mobilă",
+  },
+  {
+    initial: "D",
+    quote: "Reclamele noastre Meta au un CTR dublu față de ce scriam noi. Merită fiecare credit.",
+    name: "Dan S.",
+    role: "Director vânzări, firma de software",
+  },
+];
+
+function TestimonialSlider() {
+  const [active, setActive] = useState(0);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  function start() {
+    intervalRef.current = setInterval(() => {
+      setActive((prev) => (prev + 1) % TESTIMONIALS.length);
+    }, 4000);
+  }
+
+  useEffect(() => {
+    start();
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  function goTo(i: number) {
+    setActive(i);
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    start();
+  }
+
+  const t = TESTIMONIALS[active];
+
+  return (
+    <div className="mt-8">
+      <div
+        className="rounded-2xl px-5 py-4 flex items-start gap-3 transition-all duration-300"
+        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", minHeight: 96 }}
+      >
+        <div
+          className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-black"
+          style={{ background: "linear-gradient(135deg,#56db84,#818cf8)" }}
+        >
+          {t.initial}
+        </div>
+        <div>
+          <p className="text-[13px] text-white/70 leading-relaxed italic">"{t.quote}"</p>
+          <p className="text-[11px] text-white/30 mt-1.5">{t.name} · {t.role}</p>
+        </div>
+      </div>
+      {/* Dot indicators */}
+      <div className="flex items-center gap-2 mt-3">
+        {TESTIMONIALS.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => goTo(i)}
+            className="rounded-full transition-all duration-300"
+            style={{
+              width: i === active ? 20 : 6,
+              height: 6,
+              background: i === active ? "linear-gradient(90deg,#56db84,#818cf8)" : "rgba(255,255,255,0.15)",
+              border: "none",
+              padding: 0,
+              cursor: "pointer",
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Login page ─────────────────────────────────────────────────────────────
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -254,24 +345,8 @@ export default function LoginPage() {
             Conținut personalizat pentru fiecare canal,<br />generat în secunde.
           </p>
 
-          {/* Mini testimonial */}
-          <div
-            className="mt-8 rounded-2xl px-5 py-4 flex items-start gap-3"
-            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
-          >
-            <div
-              className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-black"
-              style={{ background: "linear-gradient(135deg,#56db84,#818cf8)" }}
-            >
-              M
-            </div>
-            <div>
-              <p className="text-[13px] text-white/70 leading-relaxed italic">
-                "Am economisit 6 ore pe săptămână. AI-ul știe exact cum să vorbesc cu clienții mei."
-              </p>
-              <p className="text-[11px] text-white/30 mt-1.5">Mihai D. · CEO, agenție digitală</p>
-            </div>
-          </div>
+          {/* Testimonial slider */}
+          <TestimonialSlider />
         </div>
 
         {/* Bottom footnote */}
