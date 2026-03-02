@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
+import UserDropdown from "./UserDropdown";
 
 export default function DashboardTopBar() {
   const [credits, setCredits] = useState<number | null>(null);
   const [plan, setPlan] = useState<string | null>(null);
   const [email, setEmail] = useState<string>("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const supabase = createClient();
@@ -80,17 +84,36 @@ export default function DashboardTopBar() {
         </svg>
       </a>
 
-      {/* User icon — always visible, tooltip with email */}
-      <div title={email} style={{
-        width: "28px", height: "28px", borderRadius: "50%",
-        background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        cursor: "default", flexShrink: 0,
-      }}>
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-          <circle cx="8" cy="5.5" r="2.5" stroke="rgba(255,255,255,0.5)" strokeWidth="1.4"/>
-          <path d="M2.5 13.5c0-3.038 2.462-5.5 5.5-5.5s5.5 2.462 5.5 5.5" stroke="rgba(255,255,255,0.5)" strokeWidth="1.4" strokeLinecap="round"/>
-        </svg>
+      {/* User icon — opens dropdown */}
+      <div style={{ position: "relative", flexShrink: 0 }}>
+        <button
+          onClick={() => setDropdownOpen((o) => !o)}
+          title={email}
+          style={{
+            width: "28px", height: "28px", borderRadius: "50%",
+            background: dropdownOpen ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.06)",
+            border: `1px solid ${dropdownOpen ? "rgba(255,255,255,0.2)" : "rgba(255,255,255,0.1)"}`,
+            display: "flex", alignItems: "center", justifyContent: "center",
+            cursor: "pointer", transition: "all 0.15s",
+          }}
+        >
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
+            <circle cx="8" cy="5.5" r="2.5" stroke="rgba(255,255,255,0.5)" strokeWidth="1.4"/>
+            <path d="M2.5 13.5c0-3.038 2.462-5.5 5.5-5.5s5.5 2.462 5.5 5.5" stroke="rgba(255,255,255,0.5)" strokeWidth="1.4" strokeLinecap="round"/>
+          </svg>
+        </button>
+        {dropdownOpen && (
+          <UserDropdown
+            email={email}
+            onClose={() => setDropdownOpen(false)}
+            onSignOut={async () => {
+              const supabase = createClient();
+              await supabase.auth.signOut();
+              router.push("/login");
+              router.refresh();
+            }}
+          />
+        )}
       </div>
     </div>
   );

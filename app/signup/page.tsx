@@ -176,17 +176,25 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get("ref");
+    if (ref) sessionStorage.setItem("referral_code", ref);
+  }, []);
+
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!email) return;
     setLoading(true);
     setError(null);
     const supabase = createClient();
+    const referralCode = sessionStorage.getItem("referral_code");
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
         emailRedirectTo: `${window.location.origin}/auth/callback`,
         shouldCreateUser: true,
+        data: referralCode ? { referral_code: referralCode } : undefined,
       },
     });
     setLoading(false);

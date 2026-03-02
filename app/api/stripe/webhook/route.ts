@@ -50,6 +50,37 @@ export async function POST(request: Request) {
       const customerEmail = session.customer_details?.email ?? null;
       const customerName = session.customer_details?.name ?? null;
 
+      // Referral reward — only on first purchase
+      const { data: referralRow } = await supabase
+        .from("referrals")
+        .select("id, referrer_user_id, rewarded_at")
+        .eq("referred_user_id", userId)
+        .maybeSingle();
+
+      if (referralRow && !referralRow.rewarded_at) {
+        const referrerId = referralRow.referrer_user_id;
+        // Add 30 credits to referrer
+        const { data: refCredits } = await supabase
+          .from("user_credits").select("credits").eq("user_id", referrerId).single();
+        if (refCredits) {
+          await supabase.from("user_credits")
+            .update({ credits: refCredits.credits + 30 })
+            .eq("user_id", referrerId);
+        }
+        // Add 30 credits to referred user (existing record updated above already)
+        const { data: newCredits } = await supabase
+          .from("user_credits").select("credits").eq("user_id", userId).single();
+        if (newCredits) {
+          await supabase.from("user_credits")
+            .update({ credits: newCredits.credits + 30 })
+            .eq("user_id", userId);
+        }
+        // Mark as rewarded
+        await supabase.from("referrals")
+          .update({ rewarded_at: new Date().toISOString() })
+          .eq("id", referralRow.id);
+      }
+
       // Save billing info for SmartBill / accounting
       // (plan already extracted above)
       await supabase.from("billing_info").upsert({
