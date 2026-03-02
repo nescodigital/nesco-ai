@@ -1,17 +1,15 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
 
-// Extract page ID or name from a Facebook page URL
 function extractPageIdentifier(input: string): string {
   const trimmed = input.trim();
   try {
     const url = new URL(trimmed.startsWith("http") ? trimmed : `https://${trimmed}`);
     const parts = url.pathname.split("/").filter(Boolean);
-    // facebook.com/pagename or facebook.com/pages/name/id
     if (parts[0] === "pages" && parts.length >= 3) return parts[2];
     if (parts.length > 0) return parts[parts.length - 1];
   } catch {
-    // Not a URL — treat as page name directly
+    // treat as page name
   }
   return trimmed;
 }
@@ -25,26 +23,41 @@ export async function POST(request: Request) {
   if (!pageUrl) return Response.json({ error: "pageUrl required" }, { status: 400 });
 
   const pageIdentifier = extractPageIdentifier(pageUrl);
-
-  // Fetch ads from Meta Ad Library API
   const token = process.env.META_AD_LIBRARY_TOKEN;
   if (!token) return Response.json({ error: "Meta token not configured" }, { status: 500 });
 
+  // Use search_page_ids if we have a numeric ID, otherwise search by page name
+  const isNumericId = /^\d+$/.test(pageIdentifier);
+
   const params = new URLSearchParams({
     access_token: token,
-    search_terms: pageIdentifier,
-    ad_reached_countries: '["RO"]',
     ad_active_status: "ACTIVE",
-    fields: "id,ad_creative_bodies,ad_creative_link_titles,ad_creative_link_descriptions,ad_snapshot_url,page_name,publisher_platforms,impressions,spend,ad_delivery_start_time",
+    ad_reached_countries: "RO",
+    fields: [
+      "id",
+      "page_name",
+      "ad_creative_bodies",
+      "ad_creative_link_titles",
+      "ad_creative_link_descriptions",
+      "ad_snapshot_url",
+      "publisher_platforms",
+      "ad_delivery_start_time",
+    ].join(","),
     limit: "20",
   });
+
+  if (isNumericId) {
+    params.set("search_page_ids", pageIdentifier);
+  } else {
+    params.set("search_terms", pageIdentifier);
+  }
 
   let ads: Record<string, unknown>[] = [];
   let pageName = pageIdentifier;
 
   try {
     const metaRes = await fetch(
-      `https://graph.facebook.com/v19.0/ads_archive?${params.toString()}`
+      `https://graph.facebook.com/v21.0/ads_archive?${params.toString()}`
     );
     const metaData = await metaRes.json();
 
@@ -60,7 +73,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "Failed to reach Meta API" }, { status: 502 });
   }
 
-  // Save/update competitor in tracked_competitors
+  // Save competitor
   await supabase.from("tracked_competitors").upsert(
     {
       user_id: user.id,
@@ -76,7 +89,7 @@ export async function POST(request: Request) {
     return Response.json({ ads: [], analysis: null, pageName });
   }
 
-  // Build AI analysis prompt
+  // AI analysis
   const adSummaries = ads.slice(0, 10).map((ad, i) => {
     const body = (ad.ad_creative_bodies as string[] | undefined)?.[0] ?? "";
     const title = (ad.ad_creative_link_titles as string[] | undefined)?.[0] ?? "";
@@ -84,7 +97,6 @@ export async function POST(request: Request) {
     return `Reclamă ${i + 1}:\nTitlu: ${title}\nText: ${body.slice(0, 300)}\nPlatforme: ${platforms}`;
   }).join("\n\n");
 
-  // Get user's brand profile for differentiation suggestions
   const { data: profileData } = await supabase
     .from("brand_profiles")
     .select("data")
@@ -132,7 +144,6 @@ Returnează DOAR un JSON valid, fără explicații sau markdown:
 
     return Response.json({ ads, analysis, pageName });
   } catch {
-    // Return ads without analysis if AI fails
     return Response.json({ ads, analysis: null, pageName });
   }
 }

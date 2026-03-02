@@ -245,7 +245,7 @@ export default function DashboardPage() {
               key={tab}
               onClick={() => setActiveTab(tab)}
               style={{
-                padding: "8px 16px", borderRadius: "8px", fontSize: "13px", fontWeight: 600,
+                padding: "8px 12px", borderRadius: "8px", fontSize: "12px", fontWeight: 600,
                 border: "none", cursor: "pointer", transition: "all 0.15s",
                 fontFamily: "var(--font-geist-sans)",
                 background: activeTab === tab
@@ -253,6 +253,7 @@ export default function DashboardPage() {
                   : "transparent",
                 color: activeTab === tab ? "#ffffff" : "rgba(255,255,255,0.35)",
                 boxShadow: activeTab === tab ? "0 0 0 1px rgba(86,219,132,0.2) inset" : "none",
+                whiteSpace: "nowrap",
               }}
             >
               {tab === "generator" ? "Generator" : tab === "calendar" ? "Calendar" : "Vision AI"}
