@@ -5,10 +5,13 @@ import { useState, useEffect, useRef } from "react";
 interface Analysis {
   competitorName: string;
   strategy: string;
+  painPoints: string[];
   hooks: string[];
   tone: string;
   offers: string[];
+  weaknesses: string[];
   differentiation: string;
+  actionableMove: string;
 }
 
 interface Competitor {
@@ -108,6 +111,11 @@ export default function VisionView({ brandId = 1 }: Props) {
       setLoading(false);
     }
   }
+
+  const labelStyle: React.CSSProperties = {
+    fontSize: "11px", fontWeight: 600, color: "rgba(255,255,255,0.3)",
+    textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "8px",
+  };
 
   const inputStyle: React.CSSProperties = {
     width: "100%",
@@ -252,115 +260,90 @@ export default function VisionView({ brandId = 1 }: Props) {
             Analiză pentru <strong style={{ color: "#fff" }}>{analysis.competitorName || domain}</strong>
           </p>
 
-          <div style={{
-            background: "linear-gradient(135deg,rgba(86,219,132,0.06),rgba(129,140,248,0.04))",
-            border: "1px solid rgba(86,219,132,0.18)",
-            borderRadius: "14px",
-            padding: "20px",
-            marginBottom: "16px",
-          }}>
-            <p style={{ fontSize: "11px", fontWeight: 700, color: "#56db84", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "20px" }}>
-              Analiză AI
-            </p>
-
-            {/* Strategy */}
-            <div style={{ marginBottom: "20px" }}>
-              <p style={{ fontSize: "11px", fontWeight: 600, color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "6px" }}>
-                Strategia lor
-              </p>
-              <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.8)", lineHeight: 1.6, margin: 0 }}>
-                {analysis.strategy}
-              </p>
+          {/* Strategy + Tone row */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+            <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "12px", padding: "16px" }}>
+              <p style={labelStyle}>Strategia lor</p>
+              <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.75)", lineHeight: 1.6, margin: 0 }}>{analysis.strategy}</p>
             </div>
+            <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "12px", padding: "16px" }}>
+              <p style={labelStyle}>Ton comunicare</p>
+              <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.75)", lineHeight: 1.6, margin: "0 0 12px" }}>{analysis.tone}</p>
+              {analysis.offers?.length > 0 && (
+                <>
+                  <p style={{ ...labelStyle, marginTop: "12px" }}>Servicii / Produse</p>
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
+                    {analysis.offers.map((o, i) => (
+                      <span key={i} style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "5px", padding: "3px 8px", fontSize: "11px", color: "rgba(255,255,255,0.55)" }}>{o}</span>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+          </div>
 
-            {/* Tone */}
-            {analysis.tone && (
-              <div style={{ marginBottom: "20px" }}>
-                <p style={{ fontSize: "11px", fontWeight: 600, color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "6px" }}>
-                  Ton comunicare
-                </p>
-                <span style={{
-                  display: "inline-block",
-                  background: "rgba(129,140,248,0.12)",
-                  border: "1px solid rgba(129,140,248,0.2)",
-                  borderRadius: "6px",
-                  padding: "4px 12px",
-                  fontSize: "13px",
-                  color: "#818cf8",
-                }}>
-                  {analysis.tone}
-                </span>
-              </div>
-            )}
-
-            {/* Hooks */}
-            {analysis.hooks?.length > 0 && (
-              <div style={{ marginBottom: "20px" }}>
-                <p style={{ fontSize: "11px", fontWeight: 600, color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "8px" }}>
-                  Mesaje cheie
-                </p>
+          {/* Pain points + Hooks row */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
+            {analysis.painPoints?.length > 0 && (
+              <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "12px", padding: "16px" }}>
+                <p style={labelStyle}>Frici / Dureri adresate</p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                  {analysis.hooks.map((hook, i) => (
-                    <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "8px", fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>
-                      <span style={{ color: "#818cf8", flexShrink: 0, marginTop: "1px" }}>→</span>
-                      {hook}
+                  {analysis.painPoints.map((p, i) => (
+                    <div key={i} style={{ display: "flex", gap: "8px", fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>
+                      <span style={{ color: "#f87171", flexShrink: 0 }}>!</span>{p}
                     </div>
                   ))}
                 </div>
               </div>
             )}
-
-            {/* Offers */}
-            {analysis.offers?.length > 0 && (
-              <div style={{ marginBottom: "20px" }}>
-                <p style={{ fontSize: "11px", fontWeight: 600, color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "8px" }}>
-                  Produse / Servicii principale
-                </p>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
-                  {analysis.offers.map((offer, i) => (
-                    <span key={i} style={{
-                      background: "rgba(255,255,255,0.05)",
-                      border: "1px solid rgba(255,255,255,0.1)",
-                      borderRadius: "6px",
-                      padding: "4px 10px",
-                      fontSize: "12px",
-                      color: "rgba(255,255,255,0.6)",
-                    }}>
-                      {offer}
-                    </span>
+            {analysis.hooks?.length > 0 && (
+              <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "12px", padding: "16px" }}>
+                <p style={labelStyle}>Mesaje / Hook-uri cheie</p>
+                <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                  {analysis.hooks.map((h, i) => (
+                    <div key={i} style={{ display: "flex", gap: "8px", fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>
+                      <span style={{ color: "#818cf8", flexShrink: 0 }}>→</span>{h}
+                    </div>
                   ))}
                 </div>
               </div>
             )}
+          </div>
 
-            {/* Differentiation */}
-            <div style={{
-              background: "rgba(86,219,132,0.06)",
-              border: "1px solid rgba(86,219,132,0.15)",
-              borderRadius: "10px",
-              padding: "14px 16px",
-            }}>
-              <p style={{ fontSize: "11px", fontWeight: 600, color: "#56db84", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "6px" }}>
-                Cum te diferențiezi
-              </p>
-              <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.85)", lineHeight: 1.6, margin: 0 }}>
-                {analysis.differentiation}
-              </p>
+          {/* Weaknesses */}
+          {analysis.weaknesses?.length > 0 && (
+            <div style={{ background: "rgba(251,191,36,0.04)", border: "1px solid rgba(251,191,36,0.15)", borderRadius: "12px", padding: "16px", marginBottom: "12px" }}>
+              <p style={{ ...labelStyle, color: "#fbbf24" }}>Puncte slabe identificate</p>
+              <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                {analysis.weaknesses.map((w, i) => (
+                  <div key={i} style={{ display: "flex", gap: "8px", fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>
+                    <span style={{ color: "#fbbf24", flexShrink: 0 }}>↓</span>{w}
+                  </div>
+                ))}
+              </div>
             </div>
+          )}
+
+          {/* Differentiation + Actionable move */}
+          <div style={{ background: "linear-gradient(135deg,rgba(86,219,132,0.07),rgba(129,140,248,0.05))", border: "1px solid rgba(86,219,132,0.2)", borderRadius: "12px", padding: "20px", marginBottom: "16px" }}>
+            <p style={{ fontSize: "11px", fontWeight: 700, color: "#56db84", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "14px" }}>
+              Avantajul tău competitiv
+            </p>
+            <div style={{ marginBottom: "16px" }}>
+              <p style={labelStyle}>Cum te diferențiezi</p>
+              <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.85)", lineHeight: 1.6, margin: 0 }}>{analysis.differentiation}</p>
+            </div>
+            {analysis.actionableMove && (
+              <div style={{ background: "rgba(86,219,132,0.08)", border: "1px solid rgba(86,219,132,0.2)", borderRadius: "8px", padding: "12px 14px" }}>
+                <p style={{ ...labelStyle, color: "#56db84" }}>Acțiunea de făcut acum</p>
+                <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.85)", lineHeight: 1.6, margin: 0 }}>{analysis.actionableMove}</p>
+              </div>
+            )}
           </div>
 
           <button
             onClick={() => { setAnalysis(null); setDomain(""); setInput(""); }}
-            style={{
-              background: "transparent",
-              border: "1px solid rgba(255,255,255,0.1)",
-              borderRadius: "8px",
-              padding: "8px 16px",
-              color: "rgba(255,255,255,0.4)",
-              fontSize: "13px",
-              cursor: "pointer",
-              fontFamily: "var(--font-geist-sans)",
-            }}
+            style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", padding: "8px 16px", color: "rgba(255,255,255,0.4)", fontSize: "13px", cursor: "pointer", fontFamily: "var(--font-geist-sans)" }}
           >
             ← Analizează alt competitor
           </button>
