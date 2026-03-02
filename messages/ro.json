@@ -1,0 +1,794 @@
+{
+  "metadata": {
+    "title": "Nesco Digital AI — Workspace AI pentru Marketing",
+    "titleTemplate": "%s | Nesco Digital AI",
+    "description": "Un AI care îți cunoaște brandul, audiența și ofertele. Generează conținut personalizat pentru fiecare canal, generat în secunde.",
+    "ogTitle": "Nesco Digital AI — Workspace AI pentru Marketing",
+    "ogDescription": "Un AI care îți cunoaște brandul, audiența și ofertele. Generează conținut personalizat în câteva secunde.",
+    "twitterDescription": "Generează conținut personalizat pentru brandul tău în câteva secunde."
+  },
+  "common": {
+    "cancel": "Anulează",
+    "save": "Salvează",
+    "back": "Înapoi",
+    "loading": "Se încarcă...",
+    "error": "Ceva n-a mers. Încearcă din nou.",
+    "copy": "Copiază",
+    "copied": "Copiat ✓",
+    "sending": "Se trimite...",
+    "sent": "Trimis pe email",
+    "rights": "Toate drepturile rezervate.",
+    "nescoRights": "Nesco Digital AI · Toate drepturile rezervate"
+  },
+  "landing": {
+    "hero": {
+      "tagline": "Un singur workspace. Totul despre marketingul tău.",
+      "subtitle": "Un AI care îți cunoaște brandul, audiența și ofertele. Nu mai explici nimic. Creezi direct.",
+      "cta": "Înscrie-te pe listă",
+      "ctaNote": "Acces anticipat gratuit · Fără card.",
+      "countdown": {
+        "days": "zile",
+        "hours": "ore",
+        "min": "min",
+        "sec": "sec"
+      }
+    },
+    "waitlistSuccess": {
+      "title": "Locul tău e rezervat.",
+      "subtitle": "Vei fi printre primii care testează și vei primi cel mai bun preț disponibil."
+    },
+    "step2": {
+      "title": "Locul tău e rezervat! Ajută-ne să înțelegem mai bine cum te putem ajuta.",
+      "phone": "Telefon (opțional)",
+      "businessType": "Tip business (ex: eCommerce, servicii, SaaS)",
+      "goals": "Ce vrei să faci cu AI-ul? (selectează tot ce se aplică)",
+      "goalOptions": {
+        "ads": "Reclame plătite (Meta, Google, TikTok)",
+        "email": "Email marketing și automatizări",
+        "copywriting": "Copywriting și texte de vânzare",
+        "strategy": "Strategie de marketing",
+        "social": "Social media și conținut",
+        "seo": "SEO și conținut organic",
+        "web": "Website și landing pages",
+        "other": "Altul"
+      },
+      "website": "Website (opțional)",
+      "budget": "Buget lunar marketing",
+      "budgetOptions": {
+        "low": "Sub 500€",
+        "mid1": "500€ - 2.000€",
+        "mid2": "2.000€ - 5.000€",
+        "mid3": "5.000€ - 15.000€",
+        "high": "15.000€+"
+      },
+      "teamSize": "Mărimea echipei",
+      "teamOptions": {
+        "solo": "Solo / Fondator",
+        "small": "2-3 persoane",
+        "medium": "4-10 persoane",
+        "large": "10+ persoane"
+      },
+      "frustration": "Care e cea mai mare frustrare cu AI-ul actual? (opțional)",
+      "call": "Te-ar ajuta o discuție de 15 min despre provocările din business-ul tău cu un expert?",
+      "yes": "Da",
+      "no": "Nu",
+      "submit": "Trimite și finalizează",
+      "skip": "Sari peste acest pas"
+    },
+    "waitlistForm": {
+      "name": "Nume *",
+      "email": "Email *",
+      "cta": "Înscrie-mă pe listă",
+      "noSpam": "Nu trimitem spam. Niciodată."
+    },
+    "situation": {
+      "title": "Situația actuală",
+      "subtitle": "Știi deja cum merge...",
+      "steps": {
+        "open": "Deschizi ChatGPT. Sau Claude. Sau oricare alt instrument.",
+        "explain1": "Explici brandul tău. Din nou.",
+        "explain2": "Explici audiența. Din nou.",
+        "explain3": "Explici oferta, tonul, contextul. Din nou.",
+        "result": "45 de minute mai târziu... ai un text mediocru care nu sună ca tine."
+      },
+      "conclusion": "Nu AI-ul e problema. Problema e că îl resetezi de fiecare dată. Îl tratezi ca pe un freelancer nou, și el te tratează la fel."
+    },
+    "difference": {
+      "title": "De ce e diferit",
+      "subtitle": "Un AI care te cunoaște. Și nu uită.",
+      "body": "Nu e un prompt mai lung. E un sistem care gândește marketingul tău de la zero, cu contextul tău deja înăuntru.",
+      "features": {
+        "memory": {
+          "title": "Memorie permanentă de business",
+          "desc": "Brandul tău, audiența, ofertele, tonul de voce. Stocate o dată, folosite de fiecare dată."
+        },
+        "focused": {
+          "title": "Construit doar pentru marketing",
+          "desc": "Nu e un tool general. Fiecare funcție e gândită pentru campanii, email-uri, reclame și pagini care convertesc."
+        },
+        "psychology": {
+          "title": "Psihologia cumpărătorului integrată",
+          "desc": "Modelul înțelege de ce cumpără oamenii și îți ajustează mesajele în consecință, nu doar le formatează."
+        },
+        "conscious": {
+          "title": "Decizii conștiente",
+          "desc": "Ce am refuzat să construim"
+        }
+      }
+    },
+    "refused": {
+      "title": "Ce am refuzat să construim",
+      "subtitle": "Majoritatea tool-urilor AI adaugă complexitate. Noi am ales altfel.",
+      "items": {
+        "prompts": {
+          "title": "O bibliotecă de prompturi",
+          "desc": "Prompturile sunt un plasture pe un proces stricat."
+        },
+        "tools": {
+          "title": "14 tool-uri lipite laolaltă",
+          "desc": "Am construit un singur produs care face un lucru excepțional de bine."
+        },
+        "templates": {
+          "title": "Template-uri generice",
+          "desc": "Template-urile există când AI-ul nu îți cunoaște business-ul. Al nostru îl cunoaște."
+        },
+        "chatbot": {
+          "title": "Un chatbot general",
+          "desc": "Nu îți răspunde la orice. Îți construiește marketingul."
+        }
+      }
+    },
+    "earlyAccess": {
+      "title": "Acces anticipat",
+      "subtitle": "Fii printre primii care încearcă.",
+      "body": "Înscriere gratuită. Vei primi acces înaintea lansării publice și vei influența ce construim."
+    },
+    "testimonials": {
+      "title": "Ce spun primii utilizatori",
+      "subtitle": "Rezultate reale, de la business-uri reale.",
+      "items": {
+        "andreea": {
+          "text": "Înainte petreceam 3 ore pe săptămână să scriu postări. Acum le generez în 5 minute și sună exact ca mine.",
+          "name": "Andreea M.",
+          "role": "Fondatoare, brand de cosmetice naturale"
+        },
+        "radu": {
+          "text": "Am crescut engagement-ul pe Instagram cu 40% în prima lună. AI-ul înțelege exact ce vor clienții mei.",
+          "name": "Radu P.",
+          "role": "Proprietar, lanț de restaurante"
+        },
+        "cristina": {
+          "text": "Vindem online și aveam nevoie de texte pentru fiecare produs. Acum generăm tot conținutul în câteva minute.",
+          "name": "Cristina V.",
+          "role": "Co-fondatoare, magazin de mobilă"
+        },
+        "dan": {
+          "text": "Reclamele noastre Meta au un CTR dublu față de ce scriam noi. Merită fiecare leu.",
+          "name": "Dan S.",
+          "role": "Director vânzări, firmă de software"
+        }
+      }
+    },
+    "demo": {
+      "title": "Cum arată în practică",
+      "subtitle": "Simplu. Rapid. Al tău.",
+      "body": "Alegi tipul de conținut, obiectivul, adaugi context opțional. AI-ul generează în secunde, tu copiezi și publici.",
+      "creditsLeft": "credite rămase",
+      "buy": "Cumpără",
+      "generate": "Generează",
+      "generatedContent": "Conținut generat",
+      "copy": "Copiază"
+    },
+    "pricing": {
+      "title": "Prețuri simple",
+      "subtitle": "De la 9€/lună. Anulezi oricând.",
+      "body": "Fără contracte, fără surprize. Planuri pentru orice dimensiune de business.",
+      "cta": "Vezi toate planurile →"
+    },
+    "faq": {
+      "title": "Întrebări frecvente",
+      "items": {
+        "q1": {
+          "q": "Cum știe AI-ul să scrie ca brandul meu?",
+          "a": "La prima autentificare completezi un onboarding de 5 minute: industrie, audiență, ton de voce, canale active și USP-ul tău. Toate acestea devin contextul permanent al AI-ului, aplicat la fiecare generare."
+        },
+        "q2": {
+          "q": "Sunt blocat în abonament?",
+          "a": "Nu. Anulezi oricând din cont, fără penalizări și fără să suni pe nimeni. Accesul rămâne activ până la sfârșitul perioadei plătite."
+        },
+        "q3": {
+          "q": "Ce tipuri de conținut pot genera?",
+          "a": "Post Facebook, Post Instagram, Post LinkedIn, Email newsletter și Reclamă Meta Ads, fiecare cu reguli specifice de format, lungime și structură. Poți traduce orice conținut în 10 limbi cu un singur click."
+        },
+        "q4": {
+          "q": "Ce se întâmplă dacă termin creditele?",
+          "a": "Generarea se oprește și ești notificat. Poți face upgrade instant din dashboard la orice plan, iar creditele se adaugă imediat după plată."
+        },
+        "q5": {
+          "q": "E legat de Nesco Digital, agenția?",
+          "a": "Da. Nesco Digital AI este construit de echipa Nesco Digital, agenție de marketing cu experiență în zeci de business-uri românești. Produsul distilează tot ce am învățat în ani de campanii într-un tool pe care orice antreprenor îl poate folosi."
+        }
+      }
+    },
+    "footer": {
+      "rights": "Toate drepturile rezervate.",
+      "signups": "persoane înscrise"
+    }
+  },
+  "auth": {
+    "login": {
+      "tagline": "AI care scrie în vocea brandului tău.",
+      "subtitle": "Conținut personalizat pentru fiecare canal, generat în secunde.",
+      "checkEmail": "Verifică emailul",
+      "magicLinkSent": "Am trimis un link magic la {email}. Click pe el pentru a te autentifica.",
+      "title": "Intră în cont",
+      "body": "Introdu emailul și îți trimitem un link de autentificare.",
+      "placeholder": "email@exemplu.com",
+      "submitting": "Se trimite...",
+      "submit": "Trimite link magic →",
+      "noAccount": "Nu ai cont?",
+      "createFree": "Creează cont gratuit",
+      "footer": "Nesco Digital AI · Toate drepturile rezervate",
+      "copyright": "© 2025 Nesco Digital",
+      "reviewsLabel": "Recenzii de la utilizatori timpurii:",
+      "testimonials": {
+        "andreea": {
+          "text": "Înainte petreceam 3 ore pe săptămână să scriu postări. Acum le generez în 5 minute și sună exact ca mine.",
+          "name": "Andreea M.",
+          "role": "Fondatoare, brand de cosmetice naturale"
+        },
+        "radu": {
+          "text": "Am crescut engagement-ul pe Instagram cu 40% în prima lună. AI-ul înțelege exact ce vor clienții mei.",
+          "name": "Radu P.",
+          "role": "Proprietar, lanț de restaurante"
+        },
+        "cristina": {
+          "text": "Vindem online și aveam nevoie de texte pentru fiecare produs. Acum generăm tot conținutul în câteva minute.",
+          "name": "Cristina V.",
+          "role": "Co-fondatoare, magazin de mobilă"
+        },
+        "dan": {
+          "text": "Reclamele noastre Meta au un CTR dublu față de ce scriam noi. Merită fiecare credit.",
+          "name": "Dan S.",
+          "role": "Director vânzări, firma de software"
+        }
+      }
+    },
+    "signup": {
+      "tagline": "AI care scrie în vocea brandului tău.",
+      "subtitle": "Configurezi profilul brandului o singură dată. De acolo, fiecare postare sună exact ca tine.",
+      "socialProof": "+200 branduri folosesc deja AI-ul",
+      "freeCredits": "10 credite gratuite la înregistrare",
+      "checkEmail": "Verifică emailul",
+      "confirmationSent": "Am trimis un link de confirmare la {email}. Click pe el și îți configurăm profilul brandului.",
+      "creditsNote": "10 credite gratuite",
+      "title": "Creează cont gratuit",
+      "body": "Introdu emailul — îți trimitem un link de activare. Fără parolă, fără card.",
+      "placeholder": "email@exemplu.com",
+      "submitting": "Se trimite...",
+      "submit": "Creează cont gratuit →",
+      "terms": "Prin înregistrare ești de acord cu Termenii de utilizare și Politica de confidențialitate.",
+      "hasAccount": "Ai deja cont?",
+      "signIn": "Intră în cont",
+      "footer": "Nesco Digital AI · Toate drepturile rezervate",
+      "benefits": {
+        "credits": {
+          "title": "10 credite gratuite",
+          "desc": "Generezi primele postări fără card, fără angajament."
+        },
+        "voice": {
+          "title": "Conținut în vocea ta",
+          "desc": "AI-ul învață stilul brandului din profilul pe care îl creezi la înregistrare."
+        },
+        "speed": {
+          "title": "Gata în 30 de secunde",
+          "desc": "Post Facebook, email, reclamă Meta — oricare platformă, instant."
+        }
+      }
+    }
+  },
+  "pricing": {
+    "eyebrow": "Planuri și prețuri",
+    "title": "Alege planul potrivit afacerii tale",
+    "subtitle": "Anulezi oricând. Fără contracte.",
+    "perMonth": "/lună",
+    "creditsInfo": "{credits} texte sau {images} imagini AI / lună",
+    "mostPopular": "Cel mai popular",
+    "processing": "Se procesează...",
+    "selectPlan": "Alege planul",
+    "footer": "Plăți securizate prin Stripe · Anulezi oricând din cont",
+    "backToDashboard": "← Înapoi la dashboard",
+    "plans": {
+      "starter": {
+        "description": "Perfect pentru început",
+        "features": ["60 credite / lună", "Text + imagini AI", "Calendar editorial", "Personalizare brand completă", "Suport email"]
+      },
+      "pro": {
+        "description": "Pentru afaceri active",
+        "features": ["200 credite / lună", "Text + imagini AI", "Calendar editorial", "Personalizare brand completă", "Suport prioritar"]
+      },
+      "multi-brand": {
+        "description": "Pentru agenții și freelanceri",
+        "features": ["600 credite / lună", "Text + imagini AI", "Calendar editorial", "Multiple branduri", "Personalizare brand completă", "Suport dedicat"]
+      }
+    }
+  },
+  "dashboard": {
+    "tabs": {
+      "generator": "Generator",
+      "calendar": "Calendar",
+      "vision": "Spy AI",
+      "score": "Persuasion Score",
+      "hooks": "Hook Generator"
+    },
+    "contentTypes": {
+      "facebookPost": "Post Facebook",
+      "instagramPost": "Post Instagram",
+      "linkedinPost": "Post LinkedIn",
+      "emailNewsletter": "Email newsletter",
+      "metaAd": "Reclamă Meta Ads"
+    },
+    "objectives": {
+      "sale": "Vânzare",
+      "awareness": "Awareness",
+      "engagement": "Engagement",
+      "specialOffer": "Promovare ofertă specială"
+    },
+    "form": {
+      "contentType": "Tip conținut",
+      "objective": "Obiectiv",
+      "context": "Context",
+      "contextOptional": "(opțional)",
+      "contextPlaceholder": "Despre ce vrei să scriem? Ex: lansăm un produs nou, avem o promoție...",
+      "writeAsMe": "Scrie ca mine",
+      "generate": "Generează",
+      "generating": "Se generează..."
+    },
+    "result": {
+      "title": "Conținut generat",
+      "copy": "Copiază",
+      "copied": "Copiat!",
+      "sendEmail": "Trimite pe email",
+      "sending": "Se trimite...",
+      "sent": "Trimis",
+      "translate": "Traducere - 1 credit",
+      "translating": "Se traduce...",
+      "generateImage": "Generează imagine pentru post",
+      "imageCredits": "2 credite",
+      "generatingImage": "Se generează imaginea...",
+      "generateImageCta": "Generează imagine — 2 credite",
+      "download": "↓ Descarcă",
+      "regenerate": "↺ Regenerează"
+    },
+    "imageFormats": {
+      "square": "Pătrat",
+      "portrait": "Portrait",
+      "landscape": "Landscape"
+    },
+    "history": {
+      "title": "Ultimele generări",
+      "showMore": "Vezi tot ↓",
+      "collapse": "Restrânge ↑"
+    },
+    "noCredits": {
+      "title": "Credite insuficiente",
+      "body": "Ia un plan pentru a continua să generezi conținut personalizat cu AI.",
+      "cta": "Vezi planurile →"
+    },
+    "languages": {
+      "ro": "Română",
+      "en": "Engleză",
+      "de": "Germană",
+      "fr": "Franceză",
+      "es": "Spaniolă",
+      "it": "Italiană",
+      "hu": "Maghiară",
+      "pl": "Poloneză",
+      "nl": "Olandeză",
+      "pt": "Portugheză"
+    }
+  },
+  "topbar": {
+    "credits": "credite",
+    "buy": "+ Cumpără",
+    "buyTitle": "Cumpără credite",
+    "plans": {
+      "multiBrand": "Multi-Brand",
+      "pro": "Pro",
+      "starter": "Starter"
+    }
+  },
+  "userDropdown": {
+    "referral": {
+      "title": "Invită prieteni",
+      "badge": "+30 credite fiecare",
+      "desc": "Tu și prietenul tău primiți câte 30 credite când face primul purchase.",
+      "copy": "Copiază",
+      "copied": "Copiat ✓",
+      "invited": "{count} invitat",
+      "invitedPlural": "{count} invitați",
+      "rewarded": "{count} recompensați"
+    },
+    "signOut": "Ieși din cont"
+  },
+  "memory": {
+    "reminder": "Ai ceva nou în business săptămâna asta?",
+    "add": "+ Adaugă",
+    "title": "Memorie activă",
+    "addUpdate": "+ Update",
+    "cancel": "Anulează",
+    "noUpdates": "Nicio noutate activă. Adaugă ce s-a schimbat în business — lansări, promoții, events.",
+    "placeholder": "ex. Am lansat colecția de primăvară, Reducere 20% weekend...",
+    "addBtn": "Adaugă",
+    "archive": "Arhivează",
+    "ideasLabel": "💡 Idei bazate pe noutăți"
+  },
+  "calendar": {
+    "title": "Calendar editorial",
+    "subtitle": "Alege platforma, numărul de posturi și lasă AI-ul să construiască planul.",
+    "platform": "Platformă",
+    "postsPerWeek": "Posturi săptămâna aceasta",
+    "creditsInfo": "{count} {singular} × 1 credit/generare = până la {count} credite consumate",
+    "post": "post",
+    "posts": "posturi",
+    "generating": "AI construiește planul…",
+    "regenerate": "Regenerează",
+    "generatePosts": "Generează {count} {label}",
+    "sending": "Se trimite...",
+    "emailSent": "Trimis pe email",
+    "sendPlan": "Trimite planul ({count})",
+    "noPosts": "Nicio propunere pentru {platform} săptămâna asta",
+    "generateHint": "Apasă \"Generează\" pentru a construi planul editorial.",
+    "moveHere": "Mută aici",
+    "dragHint": "↕ Trage cardurile pentru a le muta",
+    "statuses": {
+      "suggested": "Sugestie",
+      "approved": "Aprobat",
+      "generated": "Generat"
+    },
+    "platforms": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "linkedin": "LinkedIn",
+      "email": "Email",
+      "metaAds": "Meta Ads"
+    },
+    "days": {
+      "mon": "Lun",
+      "tue": "Mar",
+      "wed": "Mie",
+      "thu": "Joi",
+      "fri": "Vin",
+      "sat": "Sâm",
+      "sun": "Dum"
+    },
+    "months": {
+      "jan": "ianuarie",
+      "feb": "februarie",
+      "mar": "martie",
+      "apr": "aprilie",
+      "may": "mai",
+      "jun": "iunie",
+      "jul": "iulie",
+      "aug": "august",
+      "sep": "septembrie",
+      "oct": "octombrie",
+      "nov": "noiembrie",
+      "dec": "decembrie"
+    }
+  },
+  "vision": {
+    "title": "Spy AI",
+    "credits": "5 credite",
+    "subtitle": "Introdu URL-ul site-ului unui competitor — AI analizează strategia lor și îți spune exact cum să câștigi.",
+    "tabUrl": "🌐 Website",
+    "tabText": "📋 Text / Bio / Posturi",
+    "urlPlaceholder": "ex: competitor.ro sau https://competitor.ro",
+    "analyzing": "Analizez…",
+    "analyze": "Analizează",
+    "competitorName": "Nume competitor (ex: Vodafone Romania) — opțional",
+    "textPlaceholder": "Lipește bio-ul, postările sau descrierea competitorului de pe Instagram, TikTok, Facebook etc.\n\nEx: \"Ajutăm antreprenorii să crească online. 🚀 Social media | Ads | Branding. DM pentru colaborări.\"",
+    "noCredits": {
+      "title": "Credite insuficiente",
+      "body": "Spy AI costă 5 credite per analiză.",
+      "cta": "+ Cumpără credite"
+    },
+    "error": "Ceva n-a mers. Încearcă din nou.",
+    "history": "Competitori analizați",
+    "reload": "↩ Reîncarcă",
+    "reanalyze": "↺ Reanalizează",
+    "sections": {
+      "strategy": "Strategia lor",
+      "tone": "Ton comunicare",
+      "services": "Servicii / Produse",
+      "pains": "Frici / Dureri adresate",
+      "hooks": "Mesaje / Hook-uri cheie",
+      "weaknesses": "Puncte slabe identificate",
+      "advantage": "Avantajul tău competitiv",
+      "differentiation": "Cum te diferențiezi",
+      "action": "Acțiunea de făcut acum"
+    },
+    "apply": {
+      "title": "Actualizează profilul brandului tău",
+      "subtitle": "Aplică automat USP-ul, tonul și decizia de cumpărare sugerate de AI.",
+      "applied": "✓ Aplicat",
+      "applying": "Se aplică…",
+      "cta": "Aplică la brandul tău",
+      "success": "Profilul a fost actualizat cu recomandările din această analiză."
+    },
+    "email": {
+      "sent": "✓ Trimis pe email",
+      "sending": "Se trimite…",
+      "cta": "Trimite pe email"
+    },
+    "backBtn": "← Analizează alt competitor",
+    "loadingSteps": {
+      "step1": "Accesez site-ul competitorului…",
+      "step2": "Extrag conținutul de marketing…",
+      "step3": "Analizez strategia și mesajele cheie…",
+      "step4": "Generez recomandări de diferențiere…"
+    }
+  },
+  "hooks": {
+    "title": "Hook Generator",
+    "credits": "1 credit",
+    "subject": "Subiect / temă",
+    "subjectPlaceholder": "Ex: lansăm o reducere de 50%, beneficiile somnului bun...",
+    "contentType": "Tip conținut (opțional)",
+    "anyType": "Orice tip",
+    "generate": "Generează hookuri — 1 credit",
+    "generating": "Se generează hookurile...",
+    "noCredits": {
+      "title": "Credite insuficiente",
+      "body": "Ia un plan pentru a continua.",
+      "cta": "Vezi planurile →"
+    },
+    "hooksGenerated": "{count} hookuri generate",
+    "use": "Folosește →",
+    "hookTypes": {
+      "curiosity": "curiozitate",
+      "shock": "șoc",
+      "controversy": "controversă",
+      "statistic": "statistică",
+      "story": "poveste personală",
+      "question": "întrebare directă"
+    }
+  },
+  "persuasion": {
+    "title": "Persuasion Score",
+    "credits": "1 credit",
+    "label": "Textul tău",
+    "placeholder": "Paste-uiești orice text — post, email, reclamă, descriere produs...",
+    "analyzing": "Se analizează...",
+    "analyze": "Analizează — 1 credit",
+    "noCredits": {
+      "title": "Credite insuficiente",
+      "body": "Ia un plan pentru a continua.",
+      "cta": "Vezi planurile →"
+    },
+    "score": "Scor persuasiune",
+    "weakPoint": "Punct slab — unde pierzi cititorul",
+    "improvements": "Îmbunătățiri recomandate"
+  },
+  "strategist": {
+    "title": "Recomandare AI",
+    "generateNow": "Generează acum"
+  },
+  "onboarding": {
+    "step": "Pasul",
+    "complete": "✓ Complet",
+    "chooseUpTo": "Alege până la {max}",
+    "chooseMultiple": "Poți alege mai multe",
+    "balanced": "Echilibrat",
+    "saving": "Se salvează...",
+    "launch": "⚡ Lansează workspace-ul meu",
+    "editAnytime": "Poți modifica oricând din setări",
+    "continue": "Continuă",
+    "finish": "Finalizează",
+    "setupComplete": "Configurare completă",
+    "brandReady": "{name} e gata.",
+    "defaultBrandName": "Brandul tău",
+    "summaryAudience": "Audiență",
+    "summaryTone": "Ton de voce",
+    "summaryChannels": "Canale active",
+    "summaryOffer": "Ofertă",
+    "summaryWhyMe": "De ce te aleg clienții",
+    "steps": {
+      "business": {
+        "label": "Afacerea ta",
+        "title": "Despre afacerea ta",
+        "subtitle": "Câteva detalii de bază — durează 30 de secunde."
+      },
+      "audience": {
+        "label": "Audiența",
+        "title": "Cine sunt clienții tăi?",
+        "subtitle": "Cu cât știm mai bine cui vorbim, cu atât conținutul e mai relevant."
+      },
+      "tone": {
+        "label": "Ton & voce",
+        "title": "Cum vorbește brandul tău?",
+        "subtitle": "Ajustează cursoarele — AI-ul va scrie exact în stilul tău."
+      },
+      "content": {
+        "label": "Conținut",
+        "title": "Ce conținut creezi?",
+        "subtitle": "Selectează canalele și tipurile de conținut pe care le vei genera cu AI-ul."
+      },
+      "offers": {
+        "label": "Ofertele tale",
+        "title": "Ce vinzi?",
+        "subtitle": "AI-ul va putea crea conținut centrat pe produsele și prețurile tale."
+      }
+    },
+    "questions": {
+      "industry": {
+        "label": "În ce industrie activezi?",
+        "options": {
+          "ecom": "🛒 E-commerce",
+          "services": "👨‍💼 Servicii",
+          "coaching": "🎓 Coaching / Cursuri",
+          "saas": "💻 SaaS / Tech",
+          "horeca": "🍽️ HoReCa",
+          "realestate": "🏠 Imobiliare",
+          "health": "🩺 Sănătate / Wellness",
+          "finance": "💰 Finanțe / Contabilitate",
+          "other": "… Altceva"
+        }
+      },
+      "business_size": {
+        "label": "Câți angajați are compania?",
+        "options": {
+          "solo": "Solo / Freelancer",
+          "2-5": "2–5 persoane",
+          "6-20": "6–20 persoane",
+          "20plus": "20+ persoane"
+        }
+      },
+      "brand_name": {
+        "label": "Numele brandului tău",
+        "placeholder": "ex. Nesco Digital, FreshBurger Cluj..."
+      },
+      "audience_type": {
+        "label": "Vinzi către...",
+        "options": {
+          "b2c": { "title": "Consumatori (B2C)", "sub": "Persoane fizice care cumpără pentru ei" },
+          "b2b": { "title": "Companii (B2B)", "sub": "Decizii de business, facturi, contracte" },
+          "both": { "title": "Ambele", "sub": "Atât persoane fizice cât și companii" }
+        }
+      },
+      "audience_age": { "label": "Vârsta principală a clienților tăi" },
+      "buying_decision": {
+        "label": "Cum iau decizia de cumpărare clienții tăi?",
+        "options": {
+          "impulsive": "⚡ Impulsiv / rapid",
+          "compare": "🔍 Compară mai multe opțiuni",
+          "research": "🕐 Au nevoie de timp și informații",
+          "social": "💬 Recomandări de la alții"
+        }
+      },
+      "tone_sliders": {
+        "label": "Tonul de comunicare",
+        "formal": { "left": "Formal", "right": "Relaxat" },
+        "serious": { "left": "Serios", "right": "Jucăuș" },
+        "simple": { "left": "Tehnic", "right": "Simplu" },
+        "bold": { "left": "Discret", "right": "Îndrăzneț" }
+      },
+      "tone_words": {
+        "label": "Alege 3 cuvinte care descriu cel mai bine brandul tău",
+        "options": {
+          "professional": "Profesionist",
+          "trustworthy": "De încredere",
+          "innovative": "Inovator",
+          "friendly": "Prietenos",
+          "bold": "Îndrăzneț",
+          "premium": "Premium",
+          "accessible": "Accesibil",
+          "expert": "Expert",
+          "authentic": "Autentic",
+          "dynamic": "Dinamic",
+          "calm": "Calm",
+          "passionate": "Pasionat"
+        }
+      },
+      "avoid": {
+        "label": "Cuvinte sau fraze pe care NU vrei să le folosim",
+        "placeholder": "ex. \"revoluționar\", \"de vis\", clișee motivaționale... Lasă gol dacă nu ai restricții."
+      },
+      "channels": {
+        "label": "Pe ce canale ești activ?",
+        "options": {
+          "facebook": "👍 Facebook",
+          "instagram": "📸 Instagram",
+          "linkedin": "💼 LinkedIn",
+          "tiktok": "🎵 TikTok",
+          "email": "📧 Email marketing",
+          "blog": "✍️ Blog / SEO",
+          "whatsapp": "💬 WhatsApp / SMS",
+          "google": "🔍 Google Ads",
+          "meta": "🎯 Meta Ads"
+        }
+      },
+      "content_types": {
+        "label": "Ce tipuri de conținut creezi cel mai des?",
+        "options": {
+          "posts": "📱 Postări sociale",
+          "ads": "🎯 Reclame",
+          "emails": "📧 Email-uri",
+          "captions": "🖼️ Capturi / Descrieri",
+          "stories": "⚡ Stories / Reels script",
+          "offers": "💰 Pagini de ofertă",
+          "blogs": "📝 Articole blog",
+          "scripts": "🎙️ Scripturi video"
+        }
+      },
+      "frequency": {
+        "label": "Cât de des publici?",
+        "options": {
+          "daily": "Zilnic",
+          "2-3week": "De 2–3 ori/săpt",
+          "weekly": "Săptămânal",
+          "monthly": "Lunar sau mai rar"
+        }
+      },
+      "offer_type": {
+        "label": "Ce tipuri de produse / servicii oferi?",
+        "options": {
+          "physical": "📦 Produse fizice",
+          "digital": "💾 Produse digitale",
+          "service": "👨‍💼 Servicii / Consultanță",
+          "subscription": "🔄 Abonament lunar",
+          "course": "📚 Cursuri / Programe",
+          "event": "🎤 Evenimente",
+          "software": "💻 Software / SaaS"
+        }
+      },
+      "price_range": {
+        "label": "Care e prețul mediu al ofertei principale?",
+        "options": {
+          "lt50": "Sub 50€",
+          "50-200": "50–200€",
+          "200-500": "200–500€",
+          "500-2000": "500–2.000€",
+          "2000plus": "Peste 2.000€"
+        }
+      },
+      "usp": {
+        "label": "De ce te aleg clienții pe tine și nu concurența?",
+        "placeholder": "ex. Livrăm în 24h, cel mai bun raport calitate-preț, singurii care..."
+      }
+    },
+    "industryMap": {
+      "ecom": "E-commerce",
+      "services": "Servicii",
+      "coaching": "Coaching / Cursuri",
+      "saas": "SaaS / Tech",
+      "horeca": "HoReCa",
+      "realestate": "Imobiliare",
+      "health": "Sănătate",
+      "finance": "Finanțe",
+      "other": "Altceva"
+    },
+    "audMap": {
+      "b2c": "B2C",
+      "b2b": "B2B",
+      "both": "B2C + B2B"
+    }
+  },
+  "voice": {
+    "title": "Scrie ca mine",
+    "active": "activ",
+    "badgePro": "Pro",
+    "locked": "Clonarea vocii tale e disponibilă din planul Pro.",
+    "upgradeCta": "Upgrade la Pro →",
+    "readyDesc": "AI-ul a învățat stilul tău. Activează toggle-ul de mai jos pentru a genera în vocea ta.",
+    "rulesTitle": "Regulile tale de scriere",
+    "updateBtn": "Actualizează stilul",
+    "setupDesc": "Paste-uiești {min}–{max} texte scrise de tine — postări, emailuri, mesaje. AI-ul îți clonează stilul exact.",
+    "textPlaceholder": "Text {index} — scris de tine...",
+    "addExample": "+ Adaugă exemplu",
+    "analyzing": "Se analizează...",
+    "analyzeBtn": "Analizează stilul meu",
+    "analyzeBtnCount": "Analizează stilul meu ({filled}/{min})",
+    "cancel": "Anulează"
+  }
+}

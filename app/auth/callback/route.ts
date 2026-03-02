@@ -5,6 +5,8 @@ export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const next = searchParams.get("next");
+  const locale = searchParams.get("locale") ?? "ro";
+  const prefix = locale === "en" ? "/en" : "";
 
   if (code) {
     const supabase = await createClient();
@@ -44,10 +46,10 @@ export async function GET(request: Request) {
           .select("id")
           .eq("user_id", user.id)
           .single();
-        return NextResponse.redirect(`${origin}${profile ? "/dashboard" : "/onboarding"}`);
+        return NextResponse.redirect(`${origin}${prefix}${profile ? "/dashboard" : "/onboarding"}`);
       }
     }
   }
 
-  return NextResponse.redirect(`${origin}/login?error=auth_callback_failed`);
+  return NextResponse.redirect(`${origin}${prefix}/login?error=auth_callback_failed`);
 }

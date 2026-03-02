@@ -1,0 +1,794 @@
+{
+  "metadata": {
+    "title": "Nesco Digital AI — AI Marketing Workspace",
+    "titleTemplate": "%s | Nesco Digital AI",
+    "description": "An AI that knows your brand, audience, and offers. Generate personalized content for every channel in seconds.",
+    "ogTitle": "Nesco Digital AI — AI Marketing Workspace",
+    "ogDescription": "An AI that knows your brand, audience, and offers. Generate personalized content in seconds.",
+    "twitterDescription": "Generate personalized content for your brand in seconds."
+  },
+  "common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "back": "Back",
+    "loading": "Loading...",
+    "error": "Something went wrong. Please try again.",
+    "copy": "Copy",
+    "copied": "Copied ✓",
+    "sending": "Sending...",
+    "sent": "Sent via email",
+    "rights": "All rights reserved.",
+    "nescoRights": "Nesco Digital AI · All rights reserved"
+  },
+  "landing": {
+    "hero": {
+      "tagline": "One workspace. Everything about your marketing.",
+      "subtitle": "An AI that knows your brand, audience, and offers. No more explaining. Just create.",
+      "cta": "Join the waitlist",
+      "ctaNote": "Free early access · No credit card.",
+      "countdown": {
+        "days": "days",
+        "hours": "hrs",
+        "min": "min",
+        "sec": "sec"
+      }
+    },
+    "waitlistSuccess": {
+      "title": "Your spot is reserved.",
+      "subtitle": "You'll be among the first to test it and get the best available price."
+    },
+    "step2": {
+      "title": "Your spot is reserved! Help us understand how we can help you better.",
+      "phone": "Phone (optional)",
+      "businessType": "Business type (e.g. eCommerce, services, SaaS)",
+      "goals": "What do you want to do with AI? (select all that apply)",
+      "goalOptions": {
+        "ads": "Paid ads (Meta, Google, TikTok)",
+        "email": "Email marketing & automations",
+        "copywriting": "Copywriting & sales copy",
+        "strategy": "Marketing strategy",
+        "social": "Social media & content",
+        "seo": "SEO & organic content",
+        "web": "Website & landing pages",
+        "other": "Other"
+      },
+      "website": "Website (optional)",
+      "budget": "Monthly marketing budget",
+      "budgetOptions": {
+        "low": "Under €500",
+        "mid1": "€500 - €2,000",
+        "mid2": "€2,000 - €5,000",
+        "mid3": "€5,000 - €15,000",
+        "high": "€15,000+"
+      },
+      "teamSize": "Team size",
+      "teamOptions": {
+        "solo": "Solo / Founder",
+        "small": "2-3 people",
+        "medium": "4-10 people",
+        "large": "10+ people"
+      },
+      "frustration": "What's your biggest frustration with current AI tools? (optional)",
+      "call": "Would a 15-min call about your business challenges with an expert help?",
+      "yes": "Yes",
+      "no": "No",
+      "submit": "Submit & finish",
+      "skip": "Skip this step"
+    },
+    "waitlistForm": {
+      "name": "Name *",
+      "email": "Email *",
+      "cta": "Join the waitlist",
+      "noSpam": "We never spam. Ever."
+    },
+    "situation": {
+      "title": "The current situation",
+      "subtitle": "You already know how it goes...",
+      "steps": {
+        "open": "You open ChatGPT. Or Claude. Or any other tool.",
+        "explain1": "You explain your brand. Again.",
+        "explain2": "You explain your audience. Again.",
+        "explain3": "You explain your offer, tone, context. Again.",
+        "result": "45 minutes later... you have mediocre copy that doesn't sound like you."
+      },
+      "conclusion": "AI isn't the problem. The problem is you reset it every time. You treat it like a new freelancer, and it treats you the same."
+    },
+    "difference": {
+      "title": "Why it's different",
+      "subtitle": "An AI that knows you. And doesn't forget.",
+      "body": "It's not a longer prompt. It's a system that thinks your marketing from scratch, with your context already inside.",
+      "features": {
+        "memory": {
+          "title": "Permanent business memory",
+          "desc": "Your brand, audience, offers, tone of voice. Stored once, used every time."
+        },
+        "focused": {
+          "title": "Built only for marketing",
+          "desc": "Not a general tool. Every feature is designed for campaigns, emails, ads and pages that convert."
+        },
+        "psychology": {
+          "title": "Buyer psychology built in",
+          "desc": "The model understands why people buy and adjusts your messages accordingly, not just formats them."
+        },
+        "conscious": {
+          "title": "Conscious decisions",
+          "desc": "What we refused to build"
+        }
+      }
+    },
+    "refused": {
+      "title": "What we refused to build",
+      "subtitle": "Most AI tools add complexity. We chose differently.",
+      "items": {
+        "prompts": {
+          "title": "A prompt library",
+          "desc": "Prompts are a bandaid on a broken process."
+        },
+        "tools": {
+          "title": "14 tools duct-taped together",
+          "desc": "We built one product that does one thing exceptionally well."
+        },
+        "templates": {
+          "title": "Generic templates",
+          "desc": "Templates exist when AI doesn't know your business. Ours does."
+        },
+        "chatbot": {
+          "title": "A general chatbot",
+          "desc": "It doesn't answer everything. It builds your marketing."
+        }
+      }
+    },
+    "earlyAccess": {
+      "title": "Early access",
+      "subtitle": "Be among the first to try it.",
+      "body": "Free sign-up. You'll get access before the public launch and influence what we build."
+    },
+    "testimonials": {
+      "title": "What early users say",
+      "subtitle": "Real results, from real businesses.",
+      "items": {
+        "andreea": {
+          "text": "I used to spend 3 hours a week writing posts. Now I generate them in 5 minutes and they sound exactly like me.",
+          "name": "Andreea M.",
+          "role": "Founder, natural cosmetics brand"
+        },
+        "radu": {
+          "text": "I grew Instagram engagement by 40% in the first month. The AI understands exactly what my customers want.",
+          "name": "Radu P.",
+          "role": "Owner, restaurant chain"
+        },
+        "cristina": {
+          "text": "We sell online and needed copy for every product. Now we generate all content in minutes.",
+          "name": "Cristina V.",
+          "role": "Co-founder, furniture store"
+        },
+        "dan": {
+          "text": "Our Meta ads have double the CTR vs what we used to write. Worth every credit.",
+          "name": "Dan S.",
+          "role": "Sales Director, software company"
+        }
+      }
+    },
+    "demo": {
+      "title": "How it looks in practice",
+      "subtitle": "Simple. Fast. Yours.",
+      "body": "Choose the content type, objective, add optional context. AI generates in seconds, you copy and publish.",
+      "creditsLeft": "credits left",
+      "buy": "Buy",
+      "generate": "Generate",
+      "generatedContent": "Generated content",
+      "copy": "Copy"
+    },
+    "pricing": {
+      "title": "Simple pricing",
+      "subtitle": "From €9/month. Cancel anytime.",
+      "body": "No contracts, no surprises. Plans for every business size.",
+      "cta": "See all plans →"
+    },
+    "faq": {
+      "title": "Frequently asked questions",
+      "items": {
+        "q1": {
+          "q": "How does the AI know how to write like my brand?",
+          "a": "At first login you complete a 5-minute onboarding: industry, audience, tone of voice, active channels and your USP. These become the AI's permanent context, applied to every generation."
+        },
+        "q2": {
+          "q": "Am I locked into a subscription?",
+          "a": "No. Cancel anytime from your account, no penalties, no phone calls needed. Access stays active until the end of the paid period."
+        },
+        "q3": {
+          "q": "What types of content can I generate?",
+          "a": "Facebook Post, Instagram Post, LinkedIn Post, Email newsletter and Meta Ads, each with specific format, length and structure rules. You can translate any content into 10 languages with one click."
+        },
+        "q4": {
+          "q": "What happens when I run out of credits?",
+          "a": "Generation stops and you're notified. You can upgrade instantly from the dashboard to any plan, and credits are added immediately after payment."
+        },
+        "q5": {
+          "q": "Is this related to Nesco Digital agency?",
+          "a": "Yes. Nesco Digital AI is built by the Nesco Digital team, a marketing agency with experience across dozens of businesses. The product distills everything we've learned from years of campaigns into a tool any entrepreneur can use."
+        }
+      }
+    },
+    "footer": {
+      "rights": "All rights reserved.",
+      "signups": "people signed up"
+    }
+  },
+  "auth": {
+    "login": {
+      "tagline": "AI that writes in your brand's voice.",
+      "subtitle": "Personalized content for every channel, generated in seconds.",
+      "checkEmail": "Check your email",
+      "magicLinkSent": "We sent a magic link to {email}. Click it to sign in.",
+      "title": "Sign in",
+      "body": "Enter your email and we'll send you a sign-in link.",
+      "placeholder": "your@email.com",
+      "submitting": "Sending...",
+      "submit": "Send magic link →",
+      "noAccount": "Don't have an account?",
+      "createFree": "Create free account",
+      "footer": "Nesco Digital AI · All rights reserved",
+      "copyright": "© 2025 Nesco Digital",
+      "reviewsLabel": "Reviews from early users:",
+      "testimonials": {
+        "andreea": {
+          "text": "I used to spend 3 hours a week writing posts. Now I generate them in 5 minutes and they sound exactly like me.",
+          "name": "Andreea M.",
+          "role": "Founder, natural cosmetics brand"
+        },
+        "radu": {
+          "text": "I grew Instagram engagement by 40% in the first month. The AI understands exactly what my customers want.",
+          "name": "Radu P.",
+          "role": "Owner, restaurant chain"
+        },
+        "cristina": {
+          "text": "We sell online and needed copy for every product. Now we generate all content in minutes.",
+          "name": "Cristina V.",
+          "role": "Co-founder, furniture store"
+        },
+        "dan": {
+          "text": "Our Meta ads have double the CTR vs what we used to write. Worth every credit.",
+          "name": "Dan S.",
+          "role": "Sales Director, software company"
+        }
+      }
+    },
+    "signup": {
+      "tagline": "AI that writes in your brand's voice.",
+      "subtitle": "Set up your brand profile once. From there, every post sounds exactly like you.",
+      "socialProof": "+200 brands already use the AI",
+      "freeCredits": "10 free credits on sign-up",
+      "checkEmail": "Check your email",
+      "confirmationSent": "We sent a confirmation link to {email}. Click it and we'll set up your brand profile.",
+      "creditsNote": "10 free credits",
+      "title": "Create free account",
+      "body": "Enter your email — we'll send you an activation link. No password, no credit card.",
+      "placeholder": "your@email.com",
+      "submitting": "Sending...",
+      "submit": "Create free account →",
+      "terms": "By signing up you agree to the Terms of Service and Privacy Policy.",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "footer": "Nesco Digital AI · All rights reserved",
+      "benefits": {
+        "credits": {
+          "title": "10 free credits",
+          "desc": "Generate your first posts without a card or commitment."
+        },
+        "voice": {
+          "title": "Content in your voice",
+          "desc": "The AI learns your brand style from the profile you create at sign-up."
+        },
+        "speed": {
+          "title": "Ready in 30 seconds",
+          "desc": "Facebook post, email, Meta ad — any platform, instantly."
+        }
+      }
+    }
+  },
+  "pricing": {
+    "eyebrow": "Plans & pricing",
+    "title": "Choose the right plan for your business",
+    "subtitle": "Cancel anytime. No contracts.",
+    "perMonth": "/mo",
+    "creditsInfo": "{credits} texts or {images} AI images / month",
+    "mostPopular": "Most popular",
+    "processing": "Processing...",
+    "selectPlan": "Choose plan",
+    "footer": "Secure payments via Stripe · Cancel anytime from your account",
+    "backToDashboard": "← Back to dashboard",
+    "plans": {
+      "starter": {
+        "description": "Perfect for getting started",
+        "features": ["60 credits / month", "Text + AI images", "Editorial calendar", "Complete brand customization", "Email support"]
+      },
+      "pro": {
+        "description": "For active businesses",
+        "features": ["200 credits / month", "Text + AI images", "Editorial calendar", "Complete brand customization", "Priority support"]
+      },
+      "multi-brand": {
+        "description": "For agencies & freelancers",
+        "features": ["600 credits / month", "Text + AI images", "Editorial calendar", "Multiple brands", "Complete brand customization", "Dedicated support"]
+      }
+    }
+  },
+  "dashboard": {
+    "tabs": {
+      "generator": "Generator",
+      "calendar": "Calendar",
+      "vision": "Spy AI",
+      "score": "Persuasion Score",
+      "hooks": "Hook Generator"
+    },
+    "contentTypes": {
+      "facebookPost": "Facebook Post",
+      "instagramPost": "Instagram Post",
+      "linkedinPost": "LinkedIn Post",
+      "emailNewsletter": "Email newsletter",
+      "metaAd": "Meta Ad"
+    },
+    "objectives": {
+      "sale": "Sale",
+      "awareness": "Awareness",
+      "engagement": "Engagement",
+      "specialOffer": "Promote special offer"
+    },
+    "form": {
+      "contentType": "Content type",
+      "objective": "Objective",
+      "context": "Context",
+      "contextOptional": "(optional)",
+      "contextPlaceholder": "What do you want to write about? E.g. launching a new product, we have a promotion...",
+      "writeAsMe": "Write like me",
+      "generate": "Generate",
+      "generating": "Generating..."
+    },
+    "result": {
+      "title": "Generated content",
+      "copy": "Copy",
+      "copied": "Copied!",
+      "sendEmail": "Send via email",
+      "sending": "Sending...",
+      "sent": "Sent",
+      "translate": "Translate - 1 credit",
+      "translating": "Translating...",
+      "generateImage": "Generate image for post",
+      "imageCredits": "2 credits",
+      "generatingImage": "Generating image...",
+      "generateImageCta": "Generate image — 2 credits",
+      "download": "↓ Download",
+      "regenerate": "↺ Regenerate"
+    },
+    "imageFormats": {
+      "square": "Square",
+      "portrait": "Portrait",
+      "landscape": "Landscape"
+    },
+    "history": {
+      "title": "Recent generations",
+      "showMore": "Show all ↓",
+      "collapse": "Collapse ↑"
+    },
+    "noCredits": {
+      "title": "Insufficient credits",
+      "body": "Get a plan to keep generating personalized AI content.",
+      "cta": "See plans →"
+    },
+    "languages": {
+      "ro": "Romanian",
+      "en": "English",
+      "de": "German",
+      "fr": "French",
+      "es": "Spanish",
+      "it": "Italian",
+      "hu": "Hungarian",
+      "pl": "Polish",
+      "nl": "Dutch",
+      "pt": "Portuguese"
+    }
+  },
+  "topbar": {
+    "credits": "credits",
+    "buy": "+ Buy",
+    "buyTitle": "Buy credits",
+    "plans": {
+      "multiBrand": "Multi-Brand",
+      "pro": "Pro",
+      "starter": "Starter"
+    }
+  },
+  "userDropdown": {
+    "referral": {
+      "title": "Invite friends",
+      "badge": "+30 credits each",
+      "desc": "You and your friend each get 30 credits when they make their first purchase.",
+      "copy": "Copy",
+      "copied": "Copied ✓",
+      "invited": "{count} invited",
+      "invitedPlural": "{count} invited",
+      "rewarded": "{count} rewarded"
+    },
+    "signOut": "Sign out"
+  },
+  "memory": {
+    "reminder": "Anything new in your business this week?",
+    "add": "+ Add",
+    "title": "Active memory",
+    "addUpdate": "+ Update",
+    "cancel": "Cancel",
+    "noUpdates": "No active updates. Add what's changed in your business — launches, promotions, events.",
+    "placeholder": "e.g. Launched spring collection, 20% discount this weekend...",
+    "addBtn": "Add",
+    "archive": "Archive",
+    "ideasLabel": "💡 Ideas based on updates"
+  },
+  "calendar": {
+    "title": "Editorial calendar",
+    "subtitle": "Choose the platform, number of posts and let AI build the plan.",
+    "platform": "Platform",
+    "postsPerWeek": "Posts this week",
+    "creditsInfo": "{count} {singular} × 1 credit/generation = up to {count} credits used",
+    "post": "post",
+    "posts": "posts",
+    "generating": "AI is building the plan…",
+    "regenerate": "Regenerate",
+    "generatePosts": "Generate {count} {label}",
+    "sending": "Sending...",
+    "emailSent": "Sent via email",
+    "sendPlan": "Send plan ({count})",
+    "noPosts": "No suggestions for {platform} this week",
+    "generateHint": "Press \"Generate\" to build the editorial plan.",
+    "moveHere": "Move here",
+    "dragHint": "↕ Drag cards to move them",
+    "statuses": {
+      "suggested": "Suggestion",
+      "approved": "Approved",
+      "generated": "Generated"
+    },
+    "platforms": {
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "linkedin": "LinkedIn",
+      "email": "Email",
+      "metaAds": "Meta Ads"
+    },
+    "days": {
+      "mon": "Mon",
+      "tue": "Tue",
+      "wed": "Wed",
+      "thu": "Thu",
+      "fri": "Fri",
+      "sat": "Sat",
+      "sun": "Sun"
+    },
+    "months": {
+      "jan": "January",
+      "feb": "February",
+      "mar": "March",
+      "apr": "April",
+      "may": "May",
+      "jun": "June",
+      "jul": "July",
+      "aug": "August",
+      "sep": "September",
+      "oct": "October",
+      "nov": "November",
+      "dec": "December"
+    }
+  },
+  "vision": {
+    "title": "Spy AI",
+    "credits": "5 credits",
+    "subtitle": "Enter a competitor's website URL — AI analyzes their strategy and tells you exactly how to win.",
+    "tabUrl": "🌐 Website",
+    "tabText": "📋 Text / Bio / Posts",
+    "urlPlaceholder": "e.g. competitor.com or https://competitor.com",
+    "analyzing": "Analyzing…",
+    "analyze": "Analyze",
+    "competitorName": "Competitor name (e.g. Nike) — optional",
+    "textPlaceholder": "Paste the competitor's bio, posts or description from Instagram, TikTok, Facebook etc.\n\nE.g. \"We help entrepreneurs grow online. 🚀 Social media | Ads | Branding. DM for collaborations.\"",
+    "noCredits": {
+      "title": "Insufficient credits",
+      "body": "Spy AI costs 5 credits per analysis.",
+      "cta": "+ Buy credits"
+    },
+    "error": "Something went wrong. Please try again.",
+    "history": "Analyzed competitors",
+    "reload": "↩ Reload",
+    "reanalyze": "↺ Re-analyze",
+    "sections": {
+      "strategy": "Their strategy",
+      "tone": "Communication tone",
+      "services": "Services / Products",
+      "pains": "Fears / Pains addressed",
+      "hooks": "Key messages / Hooks",
+      "weaknesses": "Identified weaknesses",
+      "advantage": "Your competitive advantage",
+      "differentiation": "How you differentiate",
+      "action": "Action to take now"
+    },
+    "apply": {
+      "title": "Update your brand profile",
+      "subtitle": "Automatically apply the AI-suggested USP, tone and buying decision.",
+      "applied": "✓ Applied",
+      "applying": "Applying…",
+      "cta": "Apply to my brand",
+      "success": "Profile updated with recommendations from this analysis."
+    },
+    "email": {
+      "sent": "✓ Sent via email",
+      "sending": "Sending…",
+      "cta": "Send via email"
+    },
+    "backBtn": "← Analyze another competitor",
+    "loadingSteps": {
+      "step1": "Accessing competitor website…",
+      "step2": "Extracting marketing content…",
+      "step3": "Analyzing strategy and key messages…",
+      "step4": "Generating differentiation recommendations…"
+    }
+  },
+  "hooks": {
+    "title": "Hook Generator",
+    "credits": "1 credit",
+    "subject": "Subject / topic",
+    "subjectPlaceholder": "E.g. launching a 50% discount, benefits of good sleep...",
+    "contentType": "Content type (optional)",
+    "anyType": "Any type",
+    "generate": "Generate hooks — 1 credit",
+    "generating": "Generating hooks...",
+    "noCredits": {
+      "title": "Insufficient credits",
+      "body": "Get a plan to continue.",
+      "cta": "See plans →"
+    },
+    "hooksGenerated": "{count} hooks generated",
+    "use": "Use →",
+    "hookTypes": {
+      "curiosity": "curiosity",
+      "shock": "shock",
+      "controversy": "controversy",
+      "statistic": "statistic",
+      "story": "personal story",
+      "question": "direct question"
+    }
+  },
+  "persuasion": {
+    "title": "Persuasion Score",
+    "credits": "1 credit",
+    "label": "Your text",
+    "placeholder": "Paste any text — post, email, ad, product description...",
+    "analyzing": "Analyzing...",
+    "analyze": "Analyze — 1 credit",
+    "noCredits": {
+      "title": "Insufficient credits",
+      "body": "Get a plan to continue.",
+      "cta": "See plans →"
+    },
+    "score": "Persuasion score",
+    "weakPoint": "Weak point — where you lose the reader",
+    "improvements": "Recommended improvements"
+  },
+  "strategist": {
+    "title": "AI Recommendation",
+    "generateNow": "Generate now"
+  },
+  "onboarding": {
+    "step": "Step",
+    "complete": "✓ Complete",
+    "chooseUpTo": "Choose up to {max}",
+    "chooseMultiple": "You can choose multiple",
+    "balanced": "Balanced",
+    "saving": "Saving...",
+    "launch": "⚡ Launch my workspace",
+    "editAnytime": "You can edit at any time in settings",
+    "continue": "Continue",
+    "finish": "Finish",
+    "setupComplete": "Setup complete",
+    "brandReady": "{name} is ready.",
+    "defaultBrandName": "Your brand",
+    "summaryAudience": "Audience",
+    "summaryTone": "Tone of voice",
+    "summaryChannels": "Active channels",
+    "summaryOffer": "Offer",
+    "summaryWhyMe": "Why customers choose you",
+    "steps": {
+      "business": {
+        "label": "Your business",
+        "title": "About your business",
+        "subtitle": "A few basic details — takes 30 seconds."
+      },
+      "audience": {
+        "label": "Audience",
+        "title": "Who are your customers?",
+        "subtitle": "The better we know who we're talking to, the more relevant the content."
+      },
+      "tone": {
+        "label": "Tone & voice",
+        "title": "How does your brand speak?",
+        "subtitle": "Adjust the sliders — AI will write exactly in your style."
+      },
+      "content": {
+        "label": "Content",
+        "title": "What content do you create?",
+        "subtitle": "Select the channels and content types you'll generate with AI."
+      },
+      "offers": {
+        "label": "Your offers",
+        "title": "What do you sell?",
+        "subtitle": "AI will be able to create content focused on your products and prices."
+      }
+    },
+    "questions": {
+      "industry": {
+        "label": "What industry are you in?",
+        "options": {
+          "ecom": "🛒 E-commerce",
+          "services": "👨‍💼 Services",
+          "coaching": "🎓 Coaching / Courses",
+          "saas": "💻 SaaS / Tech",
+          "horeca": "🍽️ HoReCa",
+          "realestate": "🏠 Real Estate",
+          "health": "🩺 Health / Wellness",
+          "finance": "💰 Finance / Accounting",
+          "other": "… Other"
+        }
+      },
+      "business_size": {
+        "label": "How many employees does your company have?",
+        "options": {
+          "solo": "Solo / Freelancer",
+          "2-5": "2–5 people",
+          "6-20": "6–20 people",
+          "20plus": "20+ people"
+        }
+      },
+      "brand_name": {
+        "label": "Your brand name",
+        "placeholder": "e.g. Acme Corp, FreshBurger NYC..."
+      },
+      "audience_type": {
+        "label": "You sell to...",
+        "options": {
+          "b2c": { "title": "Consumers (B2C)", "sub": "Individuals buying for themselves" },
+          "b2b": { "title": "Companies (B2B)", "sub": "Business decisions, invoices, contracts" },
+          "both": { "title": "Both", "sub": "Both individuals and companies" }
+        }
+      },
+      "audience_age": { "label": "Primary age of your customers" },
+      "buying_decision": {
+        "label": "How do your customers make purchase decisions?",
+        "options": {
+          "impulsive": "⚡ Impulsive / fast",
+          "compare": "🔍 Compare multiple options",
+          "research": "🕐 Need time and information",
+          "social": "💬 Recommendations from others"
+        }
+      },
+      "tone_sliders": {
+        "label": "Communication tone",
+        "formal": { "left": "Formal", "right": "Casual" },
+        "serious": { "left": "Serious", "right": "Playful" },
+        "simple": { "left": "Technical", "right": "Simple" },
+        "bold": { "left": "Subtle", "right": "Bold" }
+      },
+      "tone_words": {
+        "label": "Choose 3 words that best describe your brand",
+        "options": {
+          "professional": "Professional",
+          "trustworthy": "Trustworthy",
+          "innovative": "Innovative",
+          "friendly": "Friendly",
+          "bold": "Bold",
+          "premium": "Premium",
+          "accessible": "Accessible",
+          "expert": "Expert",
+          "authentic": "Authentic",
+          "dynamic": "Dynamic",
+          "calm": "Calm",
+          "passionate": "Passionate"
+        }
+      },
+      "avoid": {
+        "label": "Words or phrases you do NOT want us to use",
+        "placeholder": "e.g. \"revolutionary\", \"game-changing\", motivational clichés... Leave blank if no restrictions."
+      },
+      "channels": {
+        "label": "Which channels are you active on?",
+        "options": {
+          "facebook": "👍 Facebook",
+          "instagram": "📸 Instagram",
+          "linkedin": "💼 LinkedIn",
+          "tiktok": "🎵 TikTok",
+          "email": "📧 Email marketing",
+          "blog": "✍️ Blog / SEO",
+          "whatsapp": "💬 WhatsApp / SMS",
+          "google": "🔍 Google Ads",
+          "meta": "🎯 Meta Ads"
+        }
+      },
+      "content_types": {
+        "label": "What types of content do you create most?",
+        "options": {
+          "posts": "📱 Social posts",
+          "ads": "🎯 Ads",
+          "emails": "📧 Emails",
+          "captions": "🖼️ Captions / Descriptions",
+          "stories": "⚡ Stories / Reels script",
+          "offers": "💰 Offer pages",
+          "blogs": "📝 Blog articles",
+          "scripts": "🎙️ Video scripts"
+        }
+      },
+      "frequency": {
+        "label": "How often do you publish?",
+        "options": {
+          "daily": "Daily",
+          "2-3week": "2–3 times/week",
+          "weekly": "Weekly",
+          "monthly": "Monthly or less"
+        }
+      },
+      "offer_type": {
+        "label": "What types of products / services do you offer?",
+        "options": {
+          "physical": "📦 Physical products",
+          "digital": "💾 Digital products",
+          "service": "👨‍💼 Services / Consulting",
+          "subscription": "🔄 Monthly subscription",
+          "course": "📚 Courses / Programs",
+          "event": "🎤 Events",
+          "software": "💻 Software / SaaS"
+        }
+      },
+      "price_range": {
+        "label": "What is the average price of your main offer?",
+        "options": {
+          "lt50": "Under €50",
+          "50-200": "€50–200",
+          "200-500": "€200–500",
+          "500-2000": "€500–2,000",
+          "2000plus": "Over €2,000"
+        }
+      },
+      "usp": {
+        "label": "Why do customers choose you over the competition?",
+        "placeholder": "e.g. We deliver in 24h, best value for money, the only ones who..."
+      }
+    },
+    "industryMap": {
+      "ecom": "E-commerce",
+      "services": "Services",
+      "coaching": "Coaching / Courses",
+      "saas": "SaaS / Tech",
+      "horeca": "HoReCa",
+      "realestate": "Real Estate",
+      "health": "Health",
+      "finance": "Finance",
+      "other": "Other"
+    },
+    "audMap": {
+      "b2c": "B2C",
+      "b2b": "B2B",
+      "both": "B2C + B2B"
+    }
+  },
+  "voice": {
+    "title": "Write like me",
+    "active": "active",
+    "badgePro": "Pro",
+    "locked": "Voice cloning is available from the Pro plan.",
+    "upgradeCta": "Upgrade to Pro →",
+    "readyDesc": "The AI has learned your style. Activate the toggle below to generate in your voice.",
+    "rulesTitle": "Your writing rules",
+    "updateBtn": "Update style",
+    "setupDesc": "Paste {min}–{max} texts written by you — posts, emails, messages. The AI will clone your exact style.",
+    "textPlaceholder": "Text {index} — written by you...",
+    "addExample": "+ Add example",
+    "analyzing": "Analyzing...",
+    "analyzeBtn": "Analyze my style",
+    "analyzeBtnCount": "Analyze my style ({filled}/{min})",
+    "cancel": "Cancel"
+  }
+}

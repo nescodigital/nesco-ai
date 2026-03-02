@@ -1,10 +1,11 @@
 import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
+import { PLAN_CONFIG, type Locale, type PlanId } from "@/lib/plans";
 
-const PLANS: Record<string, { priceId: string; credits: number }> = {
-  starter: { priceId: process.env.STRIPE_PRICE_STARTER!, credits: 60 },
-  pro: { priceId: process.env.STRIPE_PRICE_PRO!, credits: 200 },
-  "multi-brand": { priceId: process.env.STRIPE_PRICE_MULTI_BRAND!, credits: 600 },
+const PLAN_CREDITS: Record<PlanId, number> = {
+  starter: 60,
+  pro: 200,
+  "multi-brand": 600,
 };
 
 export async function POST(request: Request) {
@@ -15,11 +16,17 @@ export async function POST(request: Request) {
   } = await supabase.auth.getUser();
   if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { plan } = await request.json();
-  const planData = PLANS[plan];
-  if (!planData) return Response.json({ error: "Invalid plan" }, { status: 400 });
+  const { plan, locale = "ro" } = await request.json();
+  const loc = (locale === "en" ? "en" : "ro") as Locale;
+  const planConfig = PLAN_CONFIG[loc][plan as PlanId];
+  if (!planConfig) return Response.json({ error: "Invalid plan" }, { status: 400 });
 
+  const priceId = planConfig.priceId;
+  if (!priceId) return Response.json({ error: "Price not configured" }, { status: 500 });
+
+  const credits = PLAN_CREDITS[plan as PlanId] ?? 0;
   const origin = new URL(request.url).origin;
+  const prefix = loc === "en" ? "/en" : "";
 
   const session = await stripe.checkout.sessions.create({
     mode: "subscription",
@@ -29,21 +36,21 @@ export async function POST(request: Request) {
     custom_fields: [
       {
         key: "company_name",
-        label: { type: "custom", custom: "Nume firmă (opțional)" },
+        label: { type: "custom", custom: "Nume firmă / Company name (opțional)" },
         type: "text",
         optional: true,
       },
       {
         key: "cui",
-        label: { type: "custom", custom: "CUI / cod fiscal (opțional)" },
+        label: { type: "custom", custom: "CUI / VAT ID (opțional)" },
         type: "text",
         optional: true,
       },
     ],
-    line_items: [{ price: planData.priceId, quantity: 1 }],
-    success_url: `${origin}/dashboard?upgrade=success`,
-    cancel_url: `${origin}/pricing`,
-    metadata: { user_id: user.id, plan, credits: planData.credits.toString() },
+    line_items: [{ price: priceId, quantity: 1 }],
+    success_url: `${origin}${prefix}/dashboard?upgrade=success`,
+    cancel_url: `${origin}${prefix}/pricing`,
+    metadata: { user_id: user.id, plan, credits: credits.toString() },
     tax_id_collection: { enabled: true },
   });
 

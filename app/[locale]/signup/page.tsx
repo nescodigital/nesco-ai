@@ -1,0 +1,376 @@
+"use client";
+
+import { useState, useEffect, useRef } from "react";
+import { createClient } from "@/lib/supabase/client";
+import Logo from "@/app/components/Logo";
+import Link from "next/link";
+import { useTranslations, useLocale } from "next-intl";
+
+// ── WebGL noise background ───────────────────────────────────────────────────
+const VERT = `
+attribute vec2 aPosition;
+void main() { gl_Position = vec4(aPosition, 0.0, 1.0); }
+`;
+
+const FRAG = `
+precision mediump float;
+uniform float uTime;
+uniform vec2 uResolution;
+
+vec3 mod289(vec3 x) { return x - floor(x * (1.0/289.0)) * 289.0; }
+vec4 mod289(vec4 x) { return x - floor(x * (1.0/289.0)) * 289.0; }
+vec4 permute(vec4 x) { return mod289(((x*34.0)+1.0)*x); }
+vec4 taylorInvSqrt(vec4 r) { return 1.79284291400159 - 0.85373472095314 * r; }
+
+float snoise(vec3 v) {
+  const vec2 C = vec2(1.0/6.0, 1.0/3.0);
+  vec4 i = floor(v.xyzz + dot(v, C.yyyy));
+  vec4 x0 = v.xyzz - i.xyzz + dot(i.xyzz, C.xxxx);
+  vec4 i1 = vec4(0.0);
+  i1.xyz = step(x0.yzw, x0.xxx);
+  i1.w = 1.0 - i1.x - i1.y - i1.z;
+  vec4 i2 = clamp(i1 + vec4(i1.yzwx) - 1.0, 0.0, 1.0);
+  vec4 x1 = x0 - i1 + C.xxxx;
+  vec4 x2 = x0 - i2 + C.yyyy;
+  vec4 x3 = x0 - 0.5;
+  i = mod289(i);
+  vec4 p = permute(permute(permute(i.w + vec4(0.0, i1.w, i2.w, 1.0))
+    + i.z + vec4(0.0, i1.z, i2.z, 1.0))
+    + i.y + vec4(0.0, i1.y, i2.y, 1.0))
+    + i.x + vec4(0.0, i1.x, i2.x, 1.0));
+  vec3 ns = 0.142857142857 * vec3(0.0, 1.0, -1.0) - vec3(0.0, 0.5, 0.5);
+  vec4 j = p - 49.0 * floor(p * ns.z * ns.z);
+  vec4 x_ = floor(j * ns.z);
+  vec4 y_ = floor(j - 7.0 * x_);
+  vec4 x = (x_ * ns.x + ns.yyyy);
+  vec4 y = (y_ * ns.x + ns.yyyy);
+  vec4 h = 1.0 - abs(x) - abs(y);
+  vec4 b0 = vec4(x.xy, y.xy);
+  vec4 b1 = vec4(x.zw, y.zw);
+  vec4 s0 = floor(b0) * 2.0 + 1.0;
+  vec4 s1 = floor(b1) * 2.0 + 1.0;
+  vec4 sh = -step(h, vec4(0.0));
+  vec4 a0 = b0.xzyw + s0.xzyw * sh.xxyy;
+  vec4 a1 = b1.xzyw + s1.xzyw * sh.zzww;
+  vec3 p0 = vec3(a0.xy, h.x);
+  vec3 p1 = vec3(a0.zw, h.y);
+  vec3 p2 = vec3(a1.xy, h.z);
+  vec3 p3 = vec3(a1.zw, h.w);
+  vec4 norm = taylorInvSqrt(vec4(dot(p0,p0), dot(p1,p1), dot(p2,p2), dot(p3,p3)));
+  p0 *= norm.x; p1 *= norm.y; p2 *= norm.z; p3 *= norm.w;
+  vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
+  m = m * m;
+  return 42.0 * dot(m*m, vec4(dot(p0,x0), dot(p1,x1), dot(p2,x2), dot(p3,x3)));
+}
+
+void main() {
+  vec2 uv = gl_FragCoord.xy / uResolution.xy;
+  float t = uTime * 0.15;
+  float n1 = snoise(vec3(uv * 2.5, t));
+  float n2 = snoise(vec3(uv * 2.0 + 1.5, t + 1.0));
+  float n3 = snoise(vec3(uv * 1.5 + 3.0, t + 2.0));
+  float n = (n1 + n2 * 0.5 + n3 * 0.25) / 1.75;
+  n = n * 0.5 + 0.5;
+  vec3 col1 = vec3(0.04, 0.04, 0.08);
+  vec3 col2 = vec3(0.08, 0.15, 0.25);
+  vec3 col3 = vec3(0.05, 0.25, 0.15);
+  vec3 color = mix(col1, col2, n);
+  color = mix(color, col3, snoise(vec3(uv * 3.0, t + 3.0)) * 0.3 + 0.3);
+  gl_FragColor = vec4(color, 1.0);
+}
+`;
+
+function NoiseCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const rafRef = useRef<number>(0);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const gl = canvas.getContext("webgl");
+    if (!gl) return;
+
+    function compileShader(type: number, src: string) {
+      const s = gl!.createShader(type)!;
+      gl!.shaderSource(s, src);
+      gl!.compileShader(s);
+      return s;
+    }
+
+    const prog = gl.createProgram()!;
+    gl.attachShader(prog, compileShader(gl.VERTEX_SHADER, VERT));
+    gl.attachShader(prog, compileShader(gl.FRAGMENT_SHADER, FRAG));
+    gl.linkProgram(prog);
+    gl.useProgram(prog);
+
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+
+    const aPos = gl.getAttribLocation(prog, "aPosition");
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+    const uTime = gl.getUniformLocation(prog, "uTime");
+    const uRes = gl.getUniformLocation(prog, "uResolution");
+
+    function resize() {
+      if (!canvas) return;
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      gl!.viewport(0, 0, canvas.width, canvas.height);
+      gl!.uniform2f(uRes, canvas.width, canvas.height);
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    const start = performance.now();
+    function render() {
+      gl!.uniform1f(uTime, (performance.now() - start) / 1000);
+      gl!.drawArrays(gl!.TRIANGLE_STRIP, 0, 4);
+      rafRef.current = requestAnimationFrame(render);
+    }
+    render();
+
+    return () => {
+      window.removeEventListener("resize", resize);
+      cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{ position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 0 }}
+    />
+  );
+}
+
+export default function SignupPage() {
+  const t = useTranslations("auth.signup");
+  const locale = useLocale();
+  const [email, setEmail] = useState("");
+  const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const ref = params.get("ref");
+    if (ref) sessionStorage.setItem("referral_code", ref);
+  }, []);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!email) return;
+    setLoading(true);
+    setError(null);
+    const supabase = createClient();
+    const referralCode = sessionStorage.getItem("referral_code");
+    const { error } = await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback?locale=${locale}`,
+        shouldCreateUser: true,
+        data: referralCode ? { referral_code: referralCode } : undefined,
+      },
+    });
+    setLoading(false);
+    if (error) setError(error.message);
+    else setSent(true);
+  }
+
+  const benefits = [
+    { icon: "⚡", title: t("benefits.credits.title"), sub: t("benefits.credits.desc") },
+    { icon: "🎯", title: t("benefits.voice.title"), sub: t("benefits.voice.desc") },
+    { icon: "🚀", title: t("benefits.speed.title"), sub: t("benefits.speed.desc") },
+  ];
+
+  return (
+    <div className="min-h-screen flex" style={{ background: "#060810", fontFamily: "var(--font-geist-sans)" }}>
+      <NoiseCanvas />
+
+      {/* ── Left panel (desktop only) ── */}
+      <div
+        className="hidden lg:flex lg:flex-1 lg:flex-col lg:items-start lg:justify-between relative overflow-hidden px-12 py-12"
+        style={{ zIndex: 1 }}
+      >
+        <Logo />
+        <div className="flex-1 flex flex-col justify-center max-w-md">
+          <div
+            className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 mb-6 text-[12px] font-semibold"
+            style={{ background: "rgba(86,219,132,0.1)", border: "1px solid rgba(86,219,132,0.2)", color: "#56db84" }}
+          >
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#56db84", display: "inline-block", boxShadow: "0 0 6px #56db84" }} />
+            {t("freeCredits")}
+          </div>
+
+          <h2 className="text-[32px] font-bold text-white leading-tight mb-4" style={{ letterSpacing: "-0.02em" }}>
+            {t("tagline")}
+          </h2>
+          <p className="text-[15px] text-white/40 leading-relaxed mb-10">
+            {t("subtitle")}
+          </p>
+
+          <div className="flex flex-col gap-4">
+            {benefits.map((b, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <div
+                  className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center text-[16px]"
+                  style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)" }}
+                >
+                  {b.icon}
+                </div>
+                <div>
+                  <p className="text-[14px] font-semibold text-white mb-0.5">{b.title}</p>
+                  <p className="text-[13px] text-white/40 leading-relaxed">{b.sub}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div
+            className="mt-10 rounded-2xl px-4 py-3 flex items-center gap-3"
+            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
+          >
+            <div className="flex -space-x-2">
+              {["A", "R", "C", "D"].map((initial, i) => (
+                <div
+                  key={i}
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold text-black ring-2"
+                  style={{ background: i % 2 === 0 ? "linear-gradient(135deg,#56db84,#3ecf8e)" : "linear-gradient(135deg,#818cf8,#a78bfa)" }}
+                >
+                  {initial}
+                </div>
+              ))}
+            </div>
+            <p className="text-[13px] text-white/50">
+              <span className="text-white font-semibold">+200 {locale === "en" ? "brands" : "branduri"}</span> {t("socialProof").replace("+200 brands ", "").replace("+200 branduri ", "")}
+            </p>
+          </div>
+        </div>
+        <p className="text-[11px] text-white/20">© 2025 Nesco Digital</p>
+      </div>
+
+      <div className="hidden lg:block w-px" style={{ background: "rgba(255,255,255,0.06)", zIndex: 1 }} />
+
+      {/* ── Right panel: form ── */}
+      <div
+        className="flex flex-1 flex-col items-center justify-center px-6 py-12 relative min-h-screen lg:min-h-0 lg:max-w-[480px]"
+        style={{ zIndex: 1 }}
+      >
+        <div className="lg:hidden flex justify-center mb-8">
+          <Logo />
+        </div>
+
+        <div className="w-full max-w-sm">
+          {sent ? (
+            <div className="text-center">
+              <div
+                className="mx-auto mb-5 w-14 h-14 rounded-2xl flex items-center justify-center"
+                style={{ background: "linear-gradient(135deg,#56db84,#818cf8)", boxShadow: "0 8px 24px rgba(86,219,132,0.3)" }}
+              >
+                <svg width="24" height="18" viewBox="0 0 24 18" fill="none">
+                  <path d="M2 9l6 7L22 2" stroke="#000" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+              <h2 className="text-[22px] font-bold text-white mb-2">{t("checkEmail")}</h2>
+              <p className="text-[14px] text-white/50 leading-relaxed">
+                {t("confirmationSent", { email }).split(email).flatMap((part, i, arr) => i < arr.length - 1 ? [part, <span key={i} className="text-white font-medium">{email}</span>] : [part])}
+              </p>
+            </div>
+          ) : (
+            <>
+              <div
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 mb-6 text-[12px] font-semibold lg:hidden"
+                style={{ background: "rgba(86,219,132,0.1)", border: "1px solid rgba(86,219,132,0.2)", color: "#56db84" }}
+              >
+                <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#56db84", display: "inline-block" }} />
+                {t("creditsNote")}
+              </div>
+
+              <h1 className="text-[24px] font-bold text-white mb-1.5" style={{ letterSpacing: "-0.02em" }}>
+                {t("title")}
+              </h1>
+              <p className="text-[14px] text-white/40 mb-8 leading-relaxed">{t("body")}</p>
+
+              <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={t("placeholder")}
+                  className="w-full rounded-2xl px-4 py-3.5 text-[14px] text-white placeholder-white/25 outline-none transition-all duration-150"
+                  style={{
+                    background: "rgba(255,255,255,0.05)",
+                    border: "1.5px solid rgba(255,255,255,0.1)",
+                    fontFamily: "var(--font-geist-sans)",
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = "rgba(86,219,132,0.5)";
+                    e.currentTarget.style.boxShadow = "0 0 0 3px rgba(86,219,132,0.08)";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.07)";
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
+                    e.currentTarget.style.boxShadow = "none";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                  }}
+                />
+
+                {error && <p className="text-[13px] text-red-400/80">{error}</p>}
+
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full rounded-2xl py-3.5 text-[15px] font-bold text-black transition-all duration-150 active:scale-[0.98] disabled:opacity-60 flex items-center justify-center gap-2"
+                  style={{
+                    background: loading ? "rgba(86,219,132,0.6)" : "linear-gradient(135deg,#56db84,#3ecf8e 60%,#818cf8)",
+                    boxShadow: loading ? "none" : "0 4px 20px rgba(86,219,132,0.3)",
+                    letterSpacing: "-0.01em",
+                    fontFamily: "var(--font-geist-sans)",
+                  }}
+                >
+                  {loading ? (
+                    <>
+                      <svg className="animate-spin" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                        <circle cx="8" cy="8" r="6" stroke="rgba(0,0,0,0.3)" strokeWidth="2" />
+                        <path d="M8 2a6 6 0 0 1 6 6" stroke="#000" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                      {t("submitting")}
+                    </>
+                  ) : (
+                    t("submit")
+                  )}
+                </button>
+              </form>
+
+              <p className="text-[12px] text-white/25 mt-4 leading-relaxed text-center">
+                {t("terms")}
+              </p>
+
+              <div className="mt-6 pt-5 text-center" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+                <p className="text-[13px] text-white/40">
+                  {t("hasAccount")}{" "}
+                  <Link href="/login" className="font-semibold" style={{ color: "#56db84" }}>
+                    {t("signIn")}
+                  </Link>
+                </p>
+              </div>
+            </>
+          )}
+
+          <p className="text-center text-[12px] text-white/20 mt-8">{t("footer")}</p>
+        </div>
+      </div>
+
+      <style>{`
+        @keyframes float {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-8px); }
+        }
+      `}</style>
+    </div>
+  );
+}

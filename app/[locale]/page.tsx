@@ -2,9 +2,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import HeroBackground from "./components/HeroBackground";
-
-type Lang = "ro" | "en";
+import { useTranslations, useLocale } from "next-intl";
+import HeroBackground from "../components/HeroBackground";
+import LocaleSwitcher from "../components/LocaleSwitcher";
 
 function FaqItem({ question, answer }: { question: string; answer: string }) {
   const [open, setOpen] = useState(false);
@@ -33,7 +33,8 @@ function FaqItem({ question, answer }: { question: string; answer: string }) {
 }
 
 export default function Home() {
-  const [lang, setLang] = useState<Lang>("ro");
+  const t = useTranslations("landing");
+  const locale = useLocale();
   const [step, setStep] = useState<1 | 2>(1);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -83,8 +84,6 @@ export default function Home() {
     );
   }
 
-  const t = (ro: string, en: string) => (lang === "ro" ? ro : en);
-
   function setField(key: keyof typeof fields, value: string) {
     setFields((prev) => ({ ...prev, [key]: value }));
   }
@@ -97,7 +96,7 @@ export default function Home() {
       await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: fields.name, email: fields.email, lang }),
+        body: JSON.stringify({ name: fields.name, email: fields.email, lang: locale }),
       });
     } finally {
       setLoading(false);
@@ -112,7 +111,7 @@ export default function Home() {
       await fetch("/api/waitlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...fields, services: services.join(", "), lang }),
+        body: JSON.stringify({ ...fields, services: services.join(", "), lang: locale }),
       });
     } finally {
       setLoading(false);
@@ -145,13 +144,10 @@ export default function Home() {
               <span className="text-2xl font-bold text-black">✓</span>
             </div>
             <p className="text-2xl font-bold text-white">
-              {t("Locul tău e rezervat.", "Your spot is reserved.")}
+              {t("waitlistSuccess.title")}
             </p>
             <p className="mt-3 leading-relaxed text-zinc-400">
-              {t(
-                "Vei fi printre primii care testează și vei primi cel mai bun preț disponibil.",
-                "You'll be among the first to test it and you'll get the best price available."
-              )}
+              {t("waitlistSuccess.subtitle")}
             </p>
           </div>
         </div>
@@ -164,17 +160,7 @@ export default function Home() {
           alt="Nesco Digital"
           className="h-8 w-auto sm:absolute sm:left-1/2 sm:-translate-x-1/2"
         />
-        <div className="hidden sm:block w-16" />
-        <button
-          onClick={() => setLang(lang === "ro" ? "en" : "ro")}
-          className="ml-auto rounded-full border border-white/20 px-3 py-1 text-xs font-semibold text-zinc-400 transition hover:border-white/40 hover:text-white flex items-center gap-1.5"
-        >
-          {lang === "ro" ? (
-            <><img src="https://flagcdn.com/gb.svg" alt="EN" className="h-3.5 w-5 object-cover rounded-sm" /> EN</>
-          ) : (
-            <><img src="https://flagcdn.com/ro.svg" alt="RO" className="h-3.5 w-5 object-cover rounded-sm" /> RO</>
-          )}
-        </button>
+        <LocaleSwitcher />
       </header>
 
       <main>
@@ -190,21 +176,18 @@ export default function Home() {
                   <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
                 </span>
                 <span className="font-bold">{fakeCount}</span>
-                {t("persoane înscrise", "people signed up")}
+                {t("footer.signups")}
               </span>
             </div>
 
             {/* H1 */}
             <h1 className="mt-6 text-4xl font-extrabold leading-tight tracking-tight text-white sm:text-5xl">
-              {lang === "ro" ? <>Un singur workspace.<br />Totul despre marketingul tău.</> : <>One workspace.<br />Everything about your marketing.</>}
+              {t("hero.tagline")}
             </h1>
 
             {/* Subtitlu */}
             <p className="mx-auto mt-6 max-w-xl text-lg leading-relaxed text-white">
-              {t(
-                "Un AI care îți cunoaște brandul, audiența și ofertele. Nu mai explici nimic. Creezi direct.",
-                "AI that knows your brand, audience, and offers. No more explaining. Just create."
-              )}
+              {t("hero.subtitle")}
             </p>
 
             {/* CTA */}
@@ -212,20 +195,20 @@ export default function Home() {
               href="#waitlist"
               className="mt-8 inline-block rounded-full bg-[#56db84] px-8 py-3.5 text-sm font-semibold text-black shadow-md transition hover:bg-[#3ec96d] active:scale-95"
             >
-              {t("Înscrie-te pe listă", "Join the Waitlist")}
+              {t("hero.cta")}
             </a>
 
             <p className="mt-3 text-xs text-white">
-              {t("Acces anticipat gratuit · Fără card.", "Free early access · No credit card.")}
+              {t("hero.ctaNote")}
             </p>
 
             {/* Countdown */}
             <div className="mt-8 flex items-center justify-center gap-3">
               {[
-                { value: countdown.days, label: t("zile", "days") },
-                { value: countdown.hours, label: t("ore", "hours") },
-                { value: countdown.minutes, label: t("min", "min") },
-                { value: countdown.seconds, label: t("sec", "sec") },
+                { value: countdown.days, label: t("hero.countdown.days") },
+                { value: countdown.hours, label: t("hero.countdown.hours") },
+                { value: countdown.minutes, label: t("hero.countdown.min") },
+                { value: countdown.seconds, label: t("hero.countdown.sec") },
               ].map(({ value, label }, i) => (
                 <div key={i} className="flex flex-col items-center">
                   <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-[#141414] border border-white/10">
@@ -244,29 +227,23 @@ export default function Home() {
         <section className="bg-[#0a0a0a] py-24">
           <div className="mx-auto max-w-3xl px-6">
             <p className="text-xs font-semibold uppercase tracking-widest text-[#56db84]">
-              {t("Situația actuală", "The current situation")}
+              {t("situation.title")}
             </p>
             <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
-              {t("Știi deja cum merge...", "You already know how this goes...")}
+              {t("situation.subtitle")}
             </h2>
 
             <div className="mt-10 space-y-6 text-zinc-400">
               <p className="text-lg leading-relaxed">
-                {t(
-                  "Deschizi ChatGPT. Sau Claude. Sau oricare alt instrument.",
-                  "You open ChatGPT. Or Claude. Or whatever tool you're using."
-                )}
+                {t("situation.steps.open")}
               </p>
 
               <ul className="space-y-3 pl-5">
                 {[
-                  t("Explici brandul tău. Din nou.", "You explain your brand. Again."),
-                  t("Explici audiența. Din nou.", "You explain your audience. Again."),
-                  t("Explici oferta, tonul, contextul. Din nou.", "You explain the offer, the tone, the context. Again."),
-                  t(
-                    "45 de minute mai târziu... ai un text mediocru care nu sună ca tine.",
-                    "45 minutes later... you have generic copy that sounds nothing like you."
-                  ),
+                  t("situation.steps.explain1"),
+                  t("situation.steps.explain2"),
+                  t("situation.steps.explain3"),
+                  t("situation.steps.result"),
                 ].map((item) => (
                   <li key={item} className="flex items-start gap-3">
                     <span className="mt-1 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-red-500/20 text-xs text-red-400">
@@ -278,10 +255,7 @@ export default function Home() {
               </ul>
 
               <p className="text-lg leading-relaxed text-zinc-200">
-                {t(
-                  "Nu AI-ul e problema. Problema e că îl resetezi de fiecare dată. Îl tratezi ca pe un freelancer nou, și el te tratează la fel.",
-                  "It's not the AI that's broken. The problem is you reset it every single time. You treat it like a new freelancer, and it treats you the same way."
-                )}
+                {t("situation.conclusion")}
               </p>
             </div>
           </div>
@@ -291,19 +265,13 @@ export default function Home() {
         <section className="py-24">
           <div className="mx-auto max-w-3xl px-6">
             <p className="text-xs font-semibold uppercase tracking-widest text-[#56db84]">
-              {t("De ce e diferit", "Why it's different")}
+              {t("difference.title")}
             </p>
             <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
-              {t(
-                "Un AI care te cunoaște. Și nu uită.",
-                "An AI that knows you. And never forgets."
-              )}
+              {t("difference.subtitle")}
             </h2>
             <p className="mt-4 max-w-xl text-lg leading-relaxed text-zinc-400">
-              {t(
-                "Nu e un prompt mai lung. E un sistem care gândește marketingul tău de la zero, cu contextul tău deja înăuntru.",
-                "It's not a longer prompt. It's a system that thinks your marketing from scratch, with your context already baked in."
-              )}
+              {t("difference.body")}
             </p>
 
             <div className="mt-12 grid gap-6 sm:grid-cols-3">
@@ -313,13 +281,10 @@ export default function Home() {
                   🧠
                 </div>
                 <h3 className="font-bold text-white">
-                  {t("Memorie permanentă de business", "Permanent business memory")}
+                  {t("difference.features.memory.title")}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-zinc-400">
-                  {t(
-                    "Brandul tău, audiența, ofertele, tonul de voce. Stocate o dată, folosite de fiecare dată.",
-                    "Your brand, audience, offers, and tone of voice. Stored once, applied every time."
-                  )}
+                  {t("difference.features.memory.desc")}
                 </p>
               </div>
 
@@ -329,13 +294,10 @@ export default function Home() {
                   🎯
                 </div>
                 <h3 className="font-bold text-white">
-                  {t("Construit doar pentru marketing", "Built solely for marketing")}
+                  {t("difference.features.focused.title")}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-zinc-400">
-                  {t(
-                    "Nu e un tool general. Fiecare funcție e gândită pentru campanii, email-uri, reclame și pagini care convertesc.",
-                    "Not a general-purpose tool. Every feature is built for campaigns, emails, ads, and pages that convert."
-                  )}
+                  {t("difference.features.focused.desc")}
                 </p>
               </div>
 
@@ -345,13 +307,10 @@ export default function Home() {
                   💡
                 </div>
                 <h3 className="font-bold text-white">
-                  {t("Psihologia cumpărătorului integrată", "Buyer psychology built-in")}
+                  {t("difference.features.psychology.title")}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-zinc-400">
-                  {t(
-                    "Modelul înțelege de ce cumpără oamenii și îți ajustează mesajele în consecință, nu doar le formatează.",
-                    "The model understands why people buy and shapes your messaging accordingly, not just formats it."
-                  )}
+                  {t("difference.features.psychology.desc")}
                 </p>
               </div>
             </div>
@@ -361,7 +320,7 @@ export default function Home() {
                 href="#waitlist"
                 className="inline-block rounded-full bg-[#56db84] px-8 py-3.5 text-sm font-semibold text-black shadow-md transition hover:bg-[#3ec96d] active:scale-95"
               >
-                {t("Rezervă-mi locul gratuit", "Reserve My Spot Free")}
+                {t("hero.cta")}
               </a>
             </div>
           </div>
@@ -371,53 +330,42 @@ export default function Home() {
         <section className="bg-[#111111] py-24">
           <div className="mx-auto max-w-3xl px-6">
             <p className="text-xs font-semibold uppercase tracking-widest text-[#56db84]">
-              {t("Decizii conștiente", "Conscious decisions")}
+              {t("difference.features.conscious.title")}
             </p>
             <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
-              {t("Ce am refuzat să construim", "What We Refused to Build")}
+              {t("refused.title")}
             </h2>
             <p className="mt-4 max-w-xl text-lg leading-relaxed text-zinc-400">
-              {t(
-                "Majoritatea tool-urilor AI adaugă complexitate. Noi am ales altfel.",
-                "Most AI tools add complexity. We chose differently."
-              )}
+              {t("refused.subtitle")}
             </p>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-2">
               {[
                 {
-                  ro: "O bibliotecă de prompturi",
-                  en: "A prompt library",
-                  descRo: "Prompturile sunt un plasture pe un proces stricat.",
-                  descEn: "Prompts are a band-aid for a broken process.",
+                  titleKey: "refused.items.prompts.title",
+                  descKey: "refused.items.prompts.desc",
                 },
                 {
-                  ro: "14 tool-uri lipite laolaltă",
-                  en: "14 tools duct-taped together",
-                  descRo: "Am construit un singur produs care face un lucru excepțional de bine.",
-                  descEn: "We built one product that does one thing exceptionally well.",
+                  titleKey: "refused.items.tools.title",
+                  descKey: "refused.items.tools.desc",
                 },
                 {
-                  ro: "Template-uri generice",
-                  en: "Generic templates",
-                  descRo: "Template-urile există când AI-ul nu îți cunoaște business-ul. Al nostru îl cunoaște.",
-                  descEn: "Templates exist when AI doesn't know your business. Ours does.",
+                  titleKey: "refused.items.templates.title",
+                  descKey: "refused.items.templates.desc",
                 },
                 {
-                  ro: "Un chatbot general",
-                  en: "A general chatbot",
-                  descRo: "Nu îți răspunde la orice. Îți construiește marketingul.",
-                  descEn: "It doesn't answer everything. It builds your marketing.",
+                  titleKey: "refused.items.chatbot.title",
+                  descKey: "refused.items.chatbot.desc",
                 },
-              ].map(({ ro, en, descRo, descEn }) => (
-                <div key={ro} className="rounded-2xl border border-white/10 bg-[#141414] p-6">
+              ].map(({ titleKey, descKey }) => (
+                <div key={titleKey} className="rounded-2xl border border-white/10 bg-[#141414] p-6">
                   <div className="mb-3 flex items-center gap-3">
                     <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-red-500/20 text-xs text-red-400">
                       ✕
                     </span>
-                    <h3 className="font-bold text-white">{t(ro, en)}</h3>
+                    <h3 className="font-bold text-white">{t(titleKey as Parameters<typeof t>[0])}</h3>
                   </div>
-                  <p className="text-sm leading-relaxed text-zinc-400">{t(descRo, descEn)}</p>
+                  <p className="text-sm leading-relaxed text-zinc-400">{t(descKey as Parameters<typeof t>[0])}</p>
                 </div>
               ))}
             </div>
@@ -428,16 +376,13 @@ export default function Home() {
         <section id="waitlist" className="bg-[#111111] py-24 text-white">
           <div className="mx-auto max-w-xl px-6 text-center">
             <p className="text-xs font-semibold uppercase tracking-widest text-[#56db84]">
-              {t("Acces anticipat", "Early access")}
+              {t("earlyAccess.title")}
             </p>
             <h2 className="mt-3 text-3xl font-bold sm:text-4xl">
-              {t("Fii printre primii care încearcă.", "Be among the first to try it.")}
+              {t("earlyAccess.subtitle")}
             </h2>
             <p className="mt-4 text-zinc-400">
-              {t(
-                "Înscriere gratuită. Vei primi acces înaintea lansării publice și vei influența ce construim.",
-                "Free to join. You'll get access before the public launch and help shape what we build."
-              )}
+              {t("earlyAccess.body")}
             </p>
 
             {/* ── STEP INDICATOR ── */}
@@ -454,13 +399,13 @@ export default function Home() {
             {/* ── STEP 1: Nume + Email ── */}
             {step === 1 && (
               <form onSubmit={handleStep1} className="mt-8 flex flex-col gap-3 text-left">
-                <input type="hidden" name="lang" value={lang} />
+                <input type="hidden" name="lang" value={locale} />
                 <input
                   type="text"
                   required
                   value={fields.name}
                   onChange={(e) => setField("name", e.target.value)}
-                  placeholder={t("Nume *", "Name *")}
+                  placeholder={t("waitlistForm.name")}
                   className="w-full rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder-zinc-500 outline-none ring-[#56db84] focus:ring-2"
                 />
                 <input
@@ -468,7 +413,7 @@ export default function Home() {
                   required
                   value={fields.email}
                   onChange={(e) => setField("email", e.target.value)}
-                  placeholder={t("Email *", "Email *")}
+                  placeholder={t("waitlistForm.email")}
                   className="w-full rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder-zinc-500 outline-none ring-[#56db84] focus:ring-2"
                 />
                 <button
@@ -476,10 +421,10 @@ export default function Home() {
                   disabled={loading}
                   className="w-full rounded-xl bg-[#56db84] px-6 py-4 text-base font-bold text-black shadow-lg shadow-[#56db84]/25 transition hover:bg-[#3ec96d] hover:shadow-[#56db84]/40 active:scale-[0.98] disabled:opacity-60"
                 >
-                  {loading ? t("Se trimite...", "Sending...") : t("Înscrie-mă pe listă", "Join the waitlist")}
+                  {loading ? t("waitlistForm.cta") : t("waitlistForm.cta")}
                 </button>
                 <p className="text-center text-xs text-zinc-600">
-                  {t("Nu trimitem spam. Niciodată.", "We never send spam. Ever.")}
+                  {t("waitlistForm.noSpam")}
                 </p>
               </form>
             )}
@@ -488,46 +433,40 @@ export default function Home() {
             {step === 2 && (
               <form onSubmit={handleStep2} className="mt-8 flex flex-col gap-3 text-left">
                 <p className="text-center text-sm text-zinc-400 mb-1">
-                  {t(
-                    "Locul tău e rezervat! Ajută-ne să înțelegem mai bine cum te putem ajuta.",
-                    "Your spot is reserved! Help us understand how we can best serve you."
-                  )}
+                  {t("step2.title")}
                 </p>
 
                 <input
                   type="tel"
                   value={fields.phone}
                   onChange={(e) => setField("phone", e.target.value)}
-                  placeholder={t("Telefon (opțional)", "Phone (optional)")}
+                  placeholder={t("step2.phone")}
                   className="w-full rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder-zinc-500 outline-none ring-[#56db84] focus:ring-2"
                 />
                 <input
                   type="text"
                   value={fields.businessType}
                   onChange={(e) => setField("businessType", e.target.value)}
-                  placeholder={t("Tip business (ex: eCommerce, servicii, SaaS)", "Business type (e.g. eCommerce, services, SaaS)")}
+                  placeholder={t("step2.businessType")}
                   className="w-full rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder-zinc-500 outline-none ring-[#56db84] focus:ring-2"
                 />
 
                 {/* ── Servicii de interes ── */}
                 <div className="rounded-xl border border-white/10 bg-white/5 px-5 py-4">
                   <p className="mb-3 text-sm text-zinc-400">
-                    {t(
-                      "Ce vrei să faci cu AI-ul? (selectează tot ce se aplică)",
-                      "What do you want to use AI for? (select all that apply)"
-                    )}
+                    {t("step2.goals")}
                   </p>
                   <div className="flex flex-col gap-2">
                     {[
-                      { value: "paid-ads", ro: "Reclame plătite (Meta, Google, TikTok)", en: "Paid ads (Meta, Google, TikTok)" },
-                      { value: "email-marketing", ro: "Email marketing și automatizări", en: "Email marketing & automations" },
-                      { value: "copywriting", ro: "Copywriting și texte de vânzare", en: "Copywriting & sales copy" },
-                      { value: "strategy", ro: "Strategie de marketing", en: "Marketing strategy" },
-                      { value: "social-media", ro: "Social media și conținut", en: "Social media & content" },
-                      { value: "seo", ro: "SEO și conținut organic", en: "SEO & organic content" },
-                      { value: "website", ro: "Website și landing pages", en: "Website & landing pages" },
-                      { value: "other", ro: "Altul", en: "Other" },
-                    ].map(({ value, ro, en }) => (
+                      { value: "paid-ads", labelKey: "step2.goalOptions.ads" },
+                      { value: "email-marketing", labelKey: "step2.goalOptions.email" },
+                      { value: "copywriting", labelKey: "step2.goalOptions.copywriting" },
+                      { value: "strategy", labelKey: "step2.goalOptions.strategy" },
+                      { value: "social-media", labelKey: "step2.goalOptions.social" },
+                      { value: "seo", labelKey: "step2.goalOptions.seo" },
+                      { value: "website", labelKey: "step2.goalOptions.web" },
+                      { value: "other", labelKey: "step2.goalOptions.other" },
+                    ].map(({ value, labelKey }) => (
                       <label key={value} className="flex cursor-pointer items-center gap-3">
                         <span
                           className="flex h-5 w-5 shrink-0 items-center justify-center rounded border border-white/20 transition"
@@ -546,7 +485,7 @@ export default function Home() {
                           checked={services.includes(value)}
                           onChange={() => toggleService(value)}
                         />
-                        <span className="text-sm text-zinc-300">{t(ro, en)}</span>
+                        <span className="text-sm text-zinc-300">{t(labelKey as Parameters<typeof t>[0])}</span>
                       </label>
                     ))}
                   </div>
@@ -556,7 +495,7 @@ export default function Home() {
                   type="url"
                   value={fields.website}
                   onChange={(e) => setField("website", e.target.value)}
-                  placeholder={t("Website (opțional)", "Website (optional)")}
+                  placeholder={t("step2.website")}
                   className="w-full rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder-zinc-500 outline-none ring-[#56db84] focus:ring-2"
                 />
                 <select
@@ -564,45 +503,42 @@ export default function Home() {
                   onChange={(e) => setField("budget", e.target.value)}
                   className="w-full rounded-xl border border-white/10 bg-[#1a1a1a] px-5 py-3 text-sm text-white outline-none ring-[#56db84] focus:ring-2"
                 >
-                  <option value="" disabled>{t("Buget lunar marketing", "Monthly marketing budget")}</option>
-                  <option value="sub-500">{t("Sub 500€", "Under €500")}</option>
-                  <option value="500-2000">{t("500€ - 2.000€", "€500 - €2,000")}</option>
-                  <option value="2000-5000">{t("2.000€ - 5.000€", "€2,000 - €5,000")}</option>
-                  <option value="5000-15000">{t("5.000€ - 15.000€", "€5,000 - €15,000")}</option>
-                  <option value="15000+">{t("15.000€+", "€15,000+")}</option>
+                  <option value="" disabled>{t("step2.budget")}</option>
+                  <option value="sub-500">{t("step2.budgetOptions.low")}</option>
+                  <option value="500-2000">{t("step2.budgetOptions.mid1")}</option>
+                  <option value="2000-5000">{t("step2.budgetOptions.mid2")}</option>
+                  <option value="5000-15000">{t("step2.budgetOptions.mid3")}</option>
+                  <option value="15000+">{t("step2.budgetOptions.high")}</option>
                 </select>
                 <select
                   value={fields.teamSize}
                   onChange={(e) => setField("teamSize", e.target.value)}
                   className="w-full rounded-xl border border-white/10 bg-[#1a1a1a] px-5 py-3 text-sm text-white outline-none ring-[#56db84] focus:ring-2"
                 >
-                  <option value="" disabled>{t("Mărimea echipei", "Team size")}</option>
-                  <option value="solo">{t("Solo / Fondator", "Solo / Founder")}</option>
-                  <option value="2-3">{t("2-3 persoane", "2-3 people")}</option>
-                  <option value="4-10">{t("4-10 persoane", "4-10 people")}</option>
-                  <option value="10+">{t("10+ persoane", "10+ people")}</option>
+                  <option value="" disabled>{t("step2.teamSize")}</option>
+                  <option value="solo">{t("step2.teamOptions.solo")}</option>
+                  <option value="2-3">{t("step2.teamOptions.small")}</option>
+                  <option value="4-10">{t("step2.teamOptions.medium")}</option>
+                  <option value="10+">{t("step2.teamOptions.large")}</option>
                 </select>
                 <textarea
                   value={fields.frustration}
                   onChange={(e) => setField("frustration", e.target.value)}
                   rows={3}
-                  placeholder={t("Care e cea mai mare frustrare cu AI-ul actual? (opțional)", "What's your biggest frustration with AI tools today? (optional)")}
+                  placeholder={t("step2.frustration")}
                   className="w-full rounded-xl border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder-zinc-500 outline-none ring-[#56db84] focus:ring-2 resize-none"
                 />
 
                 {/* ── Call radio ── */}
                 <div className="rounded-xl border border-white/10 bg-white/5 px-5 py-4">
                   <p className="mb-3 text-sm text-zinc-400">
-                    {t(
-                      "Te-ar ajuta o discuție de 15 min despre provocările din business-ul tău cu un expert?",
-                      "Would a 15-min conversation about your business challenges with an expert help you?"
-                    )}
+                    {t("step2.call")}
                   </p>
                   <div className="flex gap-6">
                     {[
-                      { value: "yes", ro: "Da", en: "Yes" },
-                      { value: "no", ro: "Nu", en: "No" },
-                    ].map(({ value, ro, en }) => (
+                      { value: "yes", labelKey: "step2.yes" },
+                      { value: "no", labelKey: "step2.no" },
+                    ].map(({ value, labelKey }) => (
                       <label key={value} className="flex cursor-pointer items-center gap-2">
                         <span
                           className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-white/20 transition"
@@ -620,7 +556,7 @@ export default function Home() {
                           checked={fields.callOpen === value}
                           onChange={() => setField("callOpen", value)}
                         />
-                        <span className="text-sm text-zinc-300">{t(ro, en)}</span>
+                        <span className="text-sm text-zinc-300">{t(labelKey as Parameters<typeof t>[0])}</span>
                       </label>
                     ))}
                   </div>
@@ -631,7 +567,7 @@ export default function Home() {
                   disabled={loading}
                   className="w-full rounded-xl bg-[#56db84] px-6 py-4 text-base font-bold text-black shadow-lg shadow-[#56db84]/25 transition hover:bg-[#3ec96d] hover:shadow-[#56db84]/40 active:scale-[0.98] disabled:opacity-60"
                 >
-                  {loading ? t("Se trimite...", "Sending...") : t("Trimite și finalizează", "Submit and finish")}
+                  {loading ? t("waitlistForm.cta") : t("step2.submit")}
                 </button>
 
                 <button
@@ -639,7 +575,7 @@ export default function Home() {
                   onClick={() => setSubmitted(true)}
                   className="text-center text-xs text-zinc-500 transition hover:text-zinc-300"
                 >
-                  {t("Sari peste acest pas", "Skip this step")}
+                  {t("step2.skip")}
                 </button>
               </form>
             )}
@@ -650,38 +586,38 @@ export default function Home() {
         <section className="bg-[#0a0a0a] py-24">
           <div className="mx-auto max-w-3xl px-6">
             <p className="text-xs font-semibold uppercase tracking-widest text-[#56db84]">
-              {t("Ce spun primii utilizatori", "What early users say")}
+              {t("testimonials.title")}
             </p>
             <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
-              {t("Rezultate reale, de la business-uri reale.", "Real results, from real businesses.")}
+              {t("testimonials.subtitle")}
             </h2>
             <div className="mt-10 grid gap-5 sm:grid-cols-2">
               {[
                 {
-                  quote: { ro: "Înainte petreceam 3 ore pe săptămână să scriu postări. Acum le generez în 5 minute și sună exact ca mine.", en: "I used to spend 3 hours a week writing posts. Now I generate them in 5 minutes and they sound exactly like me." },
+                  quoteKey: "testimonials.items.andreea.text",
                   name: "Andreea M.",
-                  role: { ro: "Fondatoare, brand de cosmetice naturale", en: "Founder, natural cosmetics brand" },
+                  roleKey: "testimonials.items.andreea.role",
                   initial: "A",
                 },
                 {
-                  quote: { ro: "Am crescut engagement-ul pe Instagram cu 40% în prima lună. AI-ul înțelege exact ce vor clienții mei.", en: "I grew Instagram engagement by 40% in the first month. The AI understands exactly what my customers want." },
+                  quoteKey: "testimonials.items.radu.text",
                   name: "Radu P.",
-                  role: { ro: "Proprietar, lanț de restaurante", en: "Owner, restaurant chain" },
+                  roleKey: "testimonials.items.radu.role",
                   initial: "R",
                 },
                 {
-                  quote: { ro: "Vindem online și aveam nevoie de texte pentru fiecare produs. Acum generăm tot conținutul în câteva minute.", en: "We sell online and needed copy for every product. Now we generate all content in minutes." },
+                  quoteKey: "testimonials.items.cristina.text",
                   name: "Cristina V.",
-                  role: { ro: "Co-fondatoare, magazin de mobilă", en: "Co-founder, furniture store" },
+                  roleKey: "testimonials.items.cristina.role",
                   initial: "C",
                 },
                 {
-                  quote: { ro: "Reclamele noastre Meta au un CTR dublu față de ce scriam noi. Merită fiecare leu.", en: "Our Meta ads have double the CTR compared to what we used to write. Worth every penny." },
+                  quoteKey: "testimonials.items.dan.text",
                   name: "Dan S.",
-                  role: { ro: "Director vânzări, firmă de software", en: "Sales Director, software company" },
+                  roleKey: "testimonials.items.dan.role",
                   initial: "D",
                 },
-              ].map(({ quote, name, role, initial }) => (
+              ].map(({ quoteKey, name, roleKey, initial }) => (
                 <div key={name} className="rounded-2xl border border-white/10 bg-[#141414] p-6">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="flex-shrink-0 w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-black" style={{ background: "linear-gradient(135deg,#56db84,#818cf8)" }}>
@@ -689,7 +625,7 @@ export default function Home() {
                     </div>
                     <div>
                       <p className="text-sm font-semibold text-white">{name}</p>
-                      <p className="text-xs text-zinc-500">{t(role.ro, role.en)}</p>
+                      <p className="text-xs text-zinc-500">{t(roleKey as Parameters<typeof t>[0])}</p>
                     </div>
                     <div className="ml-auto flex gap-0.5">
                       {[...Array(5)].map((_, i) => (
@@ -697,7 +633,7 @@ export default function Home() {
                       ))}
                     </div>
                   </div>
-                  <p className="text-sm leading-relaxed text-zinc-300 italic">"{t(quote.ro, quote.en)}"</p>
+                  <p className="text-sm leading-relaxed text-zinc-300 italic">"{t(quoteKey as Parameters<typeof t>[0])}"</p>
                 </div>
               ))}
             </div>
@@ -708,16 +644,13 @@ export default function Home() {
         <section className="py-24" style={{ background: "rgb(9,4,0)" }}>
           <div className="mx-auto max-w-3xl px-6">
             <p className="text-xs font-semibold uppercase tracking-widest text-[#56db84]">
-              {t("Cum arată în practică", "See it in action")}
+              {t("demo.title")}
             </p>
             <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
-              {t("Simplu. Rapid. Al tău.", "Simple. Fast. Yours.")}
+              {t("demo.subtitle")}
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-zinc-400">
-              {t(
-                "Alegi tipul de conținut, obiectivul, adaugi context opțional. AI-ul generează în secunde, tu copiezi și publici.",
-                "Choose the content type, objective, add optional context. AI generates in seconds, you copy and publish."
-              )}
+              {t("demo.body")}
             </p>
             {/* Dashboard UI mockup */}
             <div className="mt-10 rounded-2xl overflow-hidden" style={{ border: "1px solid rgba(86,219,132,0.2)", background: "#0d0d0d", boxShadow: "0 0 60px rgba(86,219,132,0.06)" }}>
@@ -739,8 +672,8 @@ export default function Home() {
                   </div>
                   <div className="flex items-center gap-3 rounded-xl px-4 py-2.5" style={{ background: "#111113", border: "1px solid rgba(86,219,132,0.3)" }}>
                     <span className="text-[#56db84] font-bold text-lg">10</span>
-                    <span className="text-xs text-white/40">{t("credite rămase", "credits left")}</span>
-                    <span className="text-xs font-bold text-black px-2 py-1 rounded-md" style={{ background: "#56db84" }}>+ {t("Cumpără", "Buy")}</span>
+                    <span className="text-xs text-white/40">{t("demo.creditsLeft")}</span>
+                    <span className="text-xs font-bold text-black px-2 py-1 rounded-md" style={{ background: "#56db84" }}>+ {t("demo.buy")}</span>
                   </div>
                 </div>
                 <div className="rounded-xl p-4 mb-4" style={{ border: "1px solid rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.02)" }}>
@@ -757,27 +690,27 @@ export default function Home() {
                       <div className="h-2.5 w-16 rounded bg-white/10 mb-2" />
                       <div className="h-10 rounded-lg" style={{ background: "rgba(255,255,255,0.04)", border: "1.5px solid rgba(255,255,255,0.08)" }}>
                         <div className="h-full flex items-center px-3">
-                          <span className="text-xs text-zinc-500">💰 {t("Vânzare", "Sales")}</span>
+                          <span className="text-xs text-zinc-500">💰 {t("demo.generate")}</span>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div className="h-16 rounded-lg mb-4" style={{ background: "rgba(255,255,255,0.02)", border: "1.5px solid rgba(255,255,255,0.06)" }}>
                     <div className="p-3">
-                      <span className="text-xs text-zinc-600">{t("Lansăm o nouă colecție de vară...", "Launching a new summer collection...")}</span>
+                      <span className="text-xs text-zinc-600">{t("demo.generate")}...</span>
                     </div>
                   </div>
                   <div className="h-11 rounded-xl flex items-center justify-center gap-2" style={{ background: "linear-gradient(135deg,#56db84,#818cf8)" }}>
-                    <span className="text-sm font-bold text-black">⚡ {t("Generează", "Generate")}</span>
+                    <span className="text-sm font-bold text-black">⚡ {t("demo.generate")}</span>
                   </div>
                 </div>
                 {/* Output preview */}
                 <div className="rounded-xl p-4" style={{ border: "1.5px solid rgba(86,219,132,0.2)", background: "linear-gradient(135deg,rgba(86,219,132,0.04),rgba(129,140,248,0.03))" }}>
                   <div className="flex items-center gap-2 mb-3">
                     <div className="w-2 h-2 rounded-full" style={{ background: "linear-gradient(135deg,#56db84,#818cf8)" }} />
-                    <span className="text-[10px] font-semibold uppercase tracking-wider text-white/30">{t("Conținut generat", "Generated content")}</span>
+                    <span className="text-[10px] font-semibold uppercase tracking-wider text-white/30">{t("demo.generatedContent")}</span>
                     <div className="ml-auto text-[11px] font-semibold px-2 py-0.5 rounded-md text-zinc-400" style={{ background: "rgba(255,255,255,0.06)" }}>
-                      {t("Copiază", "Copy")}
+                      {t("demo.copy")}
                     </div>
                   </div>
                   <div className="space-y-1.5">
@@ -798,19 +731,19 @@ export default function Home() {
         <section className="bg-[#0a0a0a] py-16">
           <div className="mx-auto max-w-3xl px-6 text-center">
             <p className="text-xs font-semibold uppercase tracking-widest text-[#56db84] mb-3">
-              {t("Prețuri simple", "Simple pricing")}
+              {t("pricing.title")}
             </p>
             <p className="text-2xl font-bold text-white mb-2">
-              {t("De la 9€/lună. Anulezi oricând.", "From €9/month. Cancel anytime.")}
+              {t("pricing.subtitle")}
             </p>
             <p className="text-zinc-400 mb-6">
-              {t("Fără contracte, fără surprize. Planuri pentru orice dimensiune de business.", "No contracts, no surprises. Plans for any business size.")}
+              {t("pricing.body")}
             </p>
             <a
               href="/pricing"
               className="inline-block rounded-full border border-[#56db84]/40 px-6 py-2.5 text-sm font-semibold text-[#56db84] transition hover:bg-[#56db84]/10"
             >
-              {t("Vezi toate planurile →", "See all plans →")}
+              {t("pricing.cta")}
             </a>
           </div>
         </section>
@@ -820,32 +753,21 @@ export default function Home() {
           <div className="mx-auto max-w-2xl px-6">
             <p className="text-xs font-semibold uppercase tracking-widest text-[#56db84] mb-3">FAQ</p>
             <h2 className="text-3xl font-bold text-white mb-10">
-              {t("Întrebări frecvente", "Frequently asked questions")}
+              {t("faq.title")}
             </h2>
             <div className="space-y-4">
               {[
-                {
-                  q: { ro: "Cum știe AI-ul să scrie ca brandul meu?", en: "How does the AI know how to write like my brand?" },
-                  a: { ro: "La prima autentificare completezi un onboarding de 5 minute: industrie, audiență, ton de voce, canale active și USP-ul tău. Toate acestea devin contextul permanent al AI-ului, aplicat la fiecare generare.", en: "At first login you complete a 5-minute onboarding: industry, audience, tone of voice, active channels and your USP. All of this becomes the AI's permanent context, applied to every generation." },
-                },
-                {
-                  q: { ro: "Sunt blocat în abonament?", en: "Am I locked into a subscription?" },
-                  a: { ro: "Nu. Anulezi oricând din cont, fără penalizări și fără să suni pe nimeni. Accesul rămâne activ până la sfârșitul perioadei plătite.", en: "No. Cancel anytime from your account, no penalties, no phone calls needed. Access remains active until the end of the paid period." },
-                },
-                {
-                  q: { ro: "Ce tipuri de conținut pot genera?", en: "What types of content can I generate?" },
-                  a: { ro: "Post Facebook, Post Instagram, Post LinkedIn, Email newsletter și Reclamă Meta Ads, fiecare cu reguli specifice de format, lungime și structură. Poți traduce orice conținut în 10 limbi cu un singur click.", en: "Facebook Post, Instagram Post, LinkedIn Post, Email newsletter and Meta Ads, each with specific format, length and structure rules. You can translate any content into 10 languages with a single click." },
-                },
-                {
-                  q: { ro: "Ce se întâmplă dacă termin creditele?", en: "What happens if I run out of credits?" },
-                  a: { ro: "Generarea se oprește și ești notificat. Poți face upgrade instant din dashboard la orice plan, iar creditele se adaugă imediat după plată.", en: "Generation stops and you're notified. You can instantly upgrade from the dashboard to any plan, and credits are added immediately after payment." },
-                },
-                {
-                  q: { ro: "E legat de Nesco Digital, agenția?", en: "Is this connected to Nesco Digital, the agency?" },
-                  a: { ro: "Da. Nesco Digital AI este construit de echipa Nesco Digital, agenție de marketing cu experiență în zeci de business-uri românești. Produsul distilează tot ce am învățat în ani de campanii într-un tool pe care orice antreprenor îl poate folosi.", en: "Yes. Nesco Digital AI is built by the Nesco Digital team, a marketing agency with experience across dozens of Romanian businesses. The product distills everything we've learned from years of campaigns into a tool any entrepreneur can use." },
-                },
-              ].map(({ q, a }, i) => (
-                <FaqItem key={i} question={t(q.ro, q.en)} answer={t(a.ro, a.en)} />
+                { qKey: "faq.items.q1.q", aKey: "faq.items.q1.a" },
+                { qKey: "faq.items.q2.q", aKey: "faq.items.q2.a" },
+                { qKey: "faq.items.q3.q", aKey: "faq.items.q3.a" },
+                { qKey: "faq.items.q4.q", aKey: "faq.items.q4.a" },
+                { qKey: "faq.items.q5.q", aKey: "faq.items.q5.a" },
+              ].map(({ qKey, aKey }, i) => (
+                <FaqItem
+                  key={i}
+                  question={t(qKey as Parameters<typeof t>[0])}
+                  answer={t(aKey as Parameters<typeof t>[0])}
+                />
               ))}
             </div>
           </div>
@@ -853,7 +775,7 @@ export default function Home() {
 
         {/* ── FOOTER ── */}
         <footer className="border-t border-white/10 py-8 text-center text-xs text-zinc-600">
-          © {new Date().getFullYear()} Nesco Digital. {t("Toate drepturile rezervate.", "All rights reserved.")}
+          © {new Date().getFullYear()} Nesco Digital. {t("footer.rights")}
         </footer>
       </main>
     </div>
