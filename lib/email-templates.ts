@@ -254,6 +254,102 @@ export function calendarPlanEmail({
   };
 }
 
+export function spyReportEmail({
+  analysis,
+  competitorName,
+}: {
+  analysis: {
+    competitorName?: string;
+    strategy?: string;
+    tone?: string;
+    painPoints?: string[];
+    hooks?: string[];
+    weaknesses?: string[];
+    differentiation?: string;
+    actionableMove?: string;
+    offers?: string[];
+    brandInsights?: { usp?: string; tone_words?: string[]; buying_decision?: string };
+  };
+  competitorName: string;
+}): { subject: string; html: string } {
+  const name = analysis.competitorName || competitorName;
+
+  function listItems(items: string[] | undefined, color: string): string {
+    if (!items || items.length === 0) return "";
+    return items.map(i => `
+      <div style="display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;">
+        <span style="color:${color};font-size:14px;flex-shrink:0;margin-top:1px;">→</span>
+        <span style="font-size:13px;color:rgba(255,255,255,0.75);line-height:1.6;">${i.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")}</span>
+      </div>`).join("");
+  }
+
+  const brandInsightsSection = analysis.brandInsights ? `
+    <div style="margin-top:20px;background:rgba(129,140,248,0.07);border:1px solid rgba(129,140,248,0.25);border-radius:12px;padding:16px 20px;">
+      <p style="margin:0 0 10px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#818cf8;">Recomandări pentru brandul tău</p>
+      ${analysis.brandInsights.usp ? `<p style="margin:0 0 8px;font-size:13px;color:rgba(255,255,255,0.8);line-height:1.6;"><strong>USP:</strong> ${analysis.brandInsights.usp}</p>` : ""}
+      ${analysis.brandInsights.tone_words && analysis.brandInsights.tone_words.length > 0 ? `<p style="margin:0 0 8px;font-size:13px;color:rgba(255,255,255,0.8);"><strong>Ton:</strong> ${analysis.brandInsights.tone_words.join(", ")}</p>` : ""}
+      ${analysis.brandInsights.buying_decision ? `<p style="margin:0;font-size:13px;color:rgba(255,255,255,0.8);line-height:1.6;"><strong>Decizia de cumpărare:</strong> ${analysis.brandInsights.buying_decision}</p>` : ""}
+    </div>` : "";
+
+  return {
+    subject: `Raport Spy AI — ${name}`,
+    html: wrap(`
+      <h1 style="font-size:22px;font-weight:800;letter-spacing:-0.03em;margin:0 0 4px;line-height:1.2;">
+        Raport Spy AI
+      </h1>
+      <p style="color:rgba(255,255,255,0.4);font-size:14px;margin:0 0 28px;">${name}</p>
+
+      <!-- Strategie + Ton -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px;">
+          <p style="margin:0 0 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.3);">Strategia lor</p>
+          <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.75);line-height:1.6;">${(analysis.strategy || "").replace(/&/g,"&amp;")}</p>
+        </div>
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px;">
+          <p style="margin:0 0 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.3);">Ton comunicare</p>
+          <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.75);line-height:1.6;">${(analysis.tone || "").replace(/&/g,"&amp;")}</p>
+        </div>
+      </div>
+
+      <!-- Frici + Hooks -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px;">
+          <p style="margin:0 0 10px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.3);">Frici / Dureri adresate</p>
+          ${listItems(analysis.painPoints, "#f87171")}
+        </div>
+        <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px;">
+          <p style="margin:0 0 10px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.3);">Mesaje cheie</p>
+          ${listItems(analysis.hooks, "#818cf8")}
+        </div>
+      </div>
+
+      <!-- Puncte slabe -->
+      <div style="background:rgba(234,179,8,0.06);border:1px solid rgba(234,179,8,0.2);border-radius:12px;padding:16px;margin-bottom:16px;">
+        <p style="margin:0 0 10px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#ca8a04;">Puncte slabe identificate</p>
+        ${listItems(analysis.weaknesses, "#ca8a04")}
+      </div>
+
+      <!-- Avantaj competitiv -->
+      <div style="background:rgba(86,219,132,0.06);border:1px solid rgba(86,219,132,0.2);border-radius:12px;padding:16px;margin-bottom:16px;">
+        <p style="margin:0 0 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#56db84;">Avantajul tău competitiv</p>
+        <p style="margin:0 0 14px;font-size:13px;color:rgba(255,255,255,0.8);line-height:1.6;">${(analysis.differentiation || "").replace(/&/g,"&amp;")}</p>
+        ${analysis.actionableMove ? `
+        <p style="margin:0 0 6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;color:rgba(86,219,132,0.6);">Acțiunea de făcut acum</p>
+        <p style="margin:0;font-size:13px;color:rgba(255,255,255,0.8);line-height:1.6;">${analysis.actionableMove.replace(/&/g,"&amp;")}</p>
+        ` : ""}
+      </div>
+
+      ${brandInsightsSection}
+
+      <div style="margin-top:28px;">
+        <a href="https://ai.nescodigital.com/dashboard" style="${BUTTON}">
+          Deschide Spy AI →
+        </a>
+      </div>
+    `),
+  };
+}
+
 export function day5Email(email: string): { subject: string; html: string } {
   return {
     subject: "Creditele tale gratuite expiră curând → Vezi planurile",

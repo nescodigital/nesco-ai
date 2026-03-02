@@ -220,7 +220,19 @@ Returnează DOAR JSON valid, fără markdown:
     const cleaned = raw.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
     const analysis = JSON.parse(cleaned);
 
-    // Deduct 5 credits after successful analysis (fire-and-forget, don't let it break the response)
+    // Save analysis to DB (fire-and-forget)
+    supabase.from("spy_analyses").upsert(
+      {
+        user_id: user.id,
+        brand_id: brandId,
+        page_identifier: identifier,
+        competitor_name: analysis.competitorName ?? identifier,
+        analysis,
+      },
+      { onConflict: "user_id,brand_id,page_identifier" }
+    ).then(() => {});
+
+    // Deduct 5 credits after successful analysis (fire-and-forget)
     supabase
       .from("user_credits")
       .update({ credits: creditsRow.credits - 5 })
@@ -248,6 +260,19 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const brandId = parseInt(searchParams.get("brandId") || "1", 10);
+  const identifier = searchParams.get("identifier");
+
+  // If identifier provided, return saved analysis for that competitor
+  if (identifier) {
+    const { data } = await supabase
+      .from("spy_analyses")
+      .select("analysis, competitor_name")
+      .eq("user_id", user.id)
+      .eq("brand_id", brandId)
+      .eq("page_identifier", identifier)
+      .single();
+    return Response.json({ analysis: data?.analysis ?? null, competitorName: data?.competitor_name ?? identifier });
+  }
 
   const { data } = await supabase
     .from("tracked_competitors")

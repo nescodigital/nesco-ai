@@ -55,6 +55,8 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
   const [loadingCompetitors, setLoadingCompetitors] = useState(true);
   const [applyingInsights, setApplyingInsights] = useState(false);
   const [insightsApplied, setInsightsApplied] = useState(false);
+  const [sendingEmail, setSendingEmail] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
   const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -135,6 +137,37 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
     } finally {
       stopLoadingAnimation();
       setLoading(false);
+    }
+  }
+
+  async function handleSendEmail() {
+    if (!analysis) return;
+    setSendingEmail(true);
+    try {
+      await fetch("/api/send-spy-report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ analysis, competitorName: domain }),
+      });
+      setEmailSent(true);
+      setTimeout(() => setEmailSent(false), 3000);
+    } catch {
+      // silent
+    } finally {
+      setSendingEmail(false);
+    }
+  }
+
+  async function handleLoadSaved(identifier: string) {
+    const res = await fetch(`/api/vision?brandId=${brandId}&identifier=${encodeURIComponent(identifier)}`);
+    const data = await res.json();
+    if (data.analysis) {
+      setAnalysis(data.analysis);
+      setDomain(identifier);
+      setInput(identifier);
+      setInsightsApplied(false);
+      setEmailSent(false);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   }
 
@@ -323,24 +356,42 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
           <p style={{ fontSize: "11px", fontWeight: 700, color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "10px" }}>
             Competitori analizați
           </p>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             {competitors.map((c) => (
-              <button
+              <div
                 key={c.page_identifier}
-                onClick={() => setInput(`https://${c.page_identifier}`)}
                 style={{
-                  background: "rgba(255,255,255,0.04)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  borderRadius: "8px",
-                  padding: "6px 12px",
-                  color: "rgba(255,255,255,0.7)",
-                  fontSize: "13px",
-                  cursor: "pointer",
-                  fontFamily: "var(--font-geist-sans)",
+                  display: "flex", alignItems: "center", justifyContent: "space-between",
+                  background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)",
+                  borderRadius: "8px", padding: "8px 12px", gap: "10px",
                 }}
               >
-                {c.page_name || c.page_identifier}
-              </button>
+                <span style={{ fontSize: "13px", color: "rgba(255,255,255,0.65)", fontFamily: "var(--font-geist-sans)" }}>
+                  {c.page_name || c.page_identifier}
+                </span>
+                <div style={{ display: "flex", gap: "6px", flexShrink: 0 }}>
+                  <button
+                    onClick={() => handleLoadSaved(c.page_identifier)}
+                    style={{
+                      background: "rgba(86,219,132,0.08)", border: "1px solid rgba(86,219,132,0.2)",
+                      borderRadius: "6px", padding: "4px 10px", fontSize: "12px", fontWeight: 600,
+                      color: "#56db84", cursor: "pointer", fontFamily: "var(--font-geist-sans)",
+                    }}
+                  >
+                    ↩ Reîncarcă
+                  </button>
+                  <button
+                    onClick={() => setInput(`https://${c.page_identifier}`)}
+                    style={{
+                      background: "transparent", border: "1px solid rgba(255,255,255,0.1)",
+                      borderRadius: "6px", padding: "4px 10px", fontSize: "12px",
+                      color: "rgba(255,255,255,0.4)", cursor: "pointer", fontFamily: "var(--font-geist-sans)",
+                    }}
+                  >
+                    ↺ Reanalizează
+                  </button>
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -480,12 +531,28 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
             </div>
           )}
 
-          <button
-            onClick={() => { setAnalysis(null); setDomain(""); setInput(""); setInsightsApplied(false); }}
-            style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", padding: "8px 16px", color: "rgba(255,255,255,0.4)", fontSize: "13px", cursor: "pointer", fontFamily: "var(--font-geist-sans)" }}
-          >
-            ← Analizează alt competitor
-          </button>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", flexWrap: "wrap" }}>
+            <button
+              onClick={handleSendEmail}
+              disabled={sendingEmail}
+              style={{
+                background: emailSent ? "rgba(86,219,132,0.1)" : "rgba(255,255,255,0.04)",
+                border: `1px solid ${emailSent ? "rgba(86,219,132,0.3)" : "rgba(255,255,255,0.1)"}`,
+                borderRadius: "8px", padding: "8px 16px", fontSize: "13px", fontWeight: 600,
+                color: emailSent ? "#56db84" : "rgba(255,255,255,0.5)",
+                cursor: sendingEmail ? "not-allowed" : "pointer",
+                fontFamily: "var(--font-geist-sans)", transition: "all 0.15s",
+              }}
+            >
+              {emailSent ? "✓ Trimis pe email" : sendingEmail ? "Se trimite…" : "Trimite pe email"}
+            </button>
+            <button
+              onClick={() => { setAnalysis(null); setDomain(""); setInput(""); setInsightsApplied(false); setEmailSent(false); }}
+              style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", padding: "8px 16px", color: "rgba(255,255,255,0.4)", fontSize: "13px", cursor: "pointer", fontFamily: "var(--font-geist-sans)" }}
+            >
+              ← Analizează alt competitor
+            </button>
+          </div>
         </div>
       )}
     </div>
