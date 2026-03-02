@@ -42,11 +42,20 @@ const OBJECTIVE_TEXT_COLORS: Record<string, string> = {
   "Promovare ofertă specială": "#fb7185",
 };
 
+const IMAGE_FORMATS = [
+  { id: "1:1", label: "1:1", w: 18, h: 18 },
+  { id: "4:5", label: "4:5", w: 14, h: 18 },
+  { id: "16:9", label: "16:9", w: 22, h: 13 },
+] as const;
+
 export default function CalendarSlotCard({ slot, onUpdate, onDelete, onCreditsChange }: Props) {
   const [generating, setGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
   const [editingContext, setEditingContext] = useState(false);
   const [contextValue, setContextValue] = useState(slot.context ?? "");
+  const [imageFormat, setImageFormat] = useState<"1:1" | "4:5" | "16:9">("1:1");
+  const [generatingImage, setGeneratingImage] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   const icon = CONTENT_TYPE_ICONS[slot.content_type] ?? "📝";
   const objColor = OBJECTIVE_COLORS[slot.objective] ?? "rgba(255,255,255,0.05)";
@@ -113,6 +122,26 @@ export default function CalendarSlotCard({ slot, onUpdate, onDelete, onCreditsCh
       await navigator.clipboard.writeText(slot.result);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
+    }
+  }
+
+  async function handleGenerateImage() {
+    if (!slot.result) return;
+    setGeneratingImage(true);
+    setImageUrl(null);
+    try {
+      const res = await fetch("/api/generate-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: slot.result, contentType: slot.content_type, format: imageFormat }),
+      });
+      const data = await res.json();
+      if (data.imageUrl) {
+        setImageUrl(data.imageUrl);
+        if (typeof data.creditsRemaining === "number") onCreditsChange(data.creditsRemaining);
+      }
+    } finally {
+      setGeneratingImage(false);
     }
   }
 
@@ -203,6 +232,101 @@ export default function CalendarSlotCard({ slot, onUpdate, onDelete, onCreditsCh
           <div style={{ color: "rgba(255,255,255,0.7)", fontSize: "11px", lineHeight: 1.5 }}>
             <ReactMarkdown>{slot.result.slice(0, 300) + (slot.result.length > 300 ? "…" : "")}</ReactMarkdown>
           </div>
+        </div>
+      )}
+
+      {/* Image generation — visible only after text is generated */}
+      {slot.status === "generated" && slot.result && (
+        <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "8px", marginBottom: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
+            <span style={{ fontSize: "10px", fontWeight: 700, color: "rgba(255,255,255,0.45)" }}>
+              🎨 Imagine
+            </span>
+            <span style={{ fontSize: "9px", padding: "1px 5px", borderRadius: "20px", background: "rgba(99,102,241,0.15)", color: "#818cf8", fontWeight: 700 }}>
+              2 credite
+            </span>
+          </div>
+
+          {/* Format selector */}
+          <div style={{ display: "flex", gap: "4px", marginBottom: "6px" }}>
+            {IMAGE_FORMATS.map((f) => (
+              <button
+                key={f.id}
+                onClick={() => setImageFormat(f.id)}
+                style={{
+                  display: "flex", flexDirection: "column", alignItems: "center", gap: "3px",
+                  padding: "4px 6px", borderRadius: "5px", cursor: "pointer",
+                  background: imageFormat === f.id ? "rgba(99,102,241,0.2)" : "rgba(255,255,255,0.04)",
+                  border: `1px solid ${imageFormat === f.id ? "rgba(99,102,241,0.5)" : "rgba(255,255,255,0.08)"}`,
+                }}
+              >
+                <div style={{
+                  width: `${f.w}px`, height: `${f.h}px`,
+                  border: `1.5px solid ${imageFormat === f.id ? "#818cf8" : "rgba(255,255,255,0.25)"}`,
+                  borderRadius: "2px",
+                }} />
+                <span style={{ fontSize: "9px", color: imageFormat === f.id ? "#818cf8" : "rgba(255,255,255,0.35)", fontWeight: 600 }}>
+                  {f.label}
+                </span>
+              </button>
+            ))}
+
+            <button
+              onClick={handleGenerateImage}
+              disabled={generatingImage}
+              style={{
+                flex: 1, fontSize: "10px", fontWeight: 700, padding: "4px 6px", borderRadius: "5px",
+                background: generatingImage ? "rgba(99,102,241,0.1)" : "linear-gradient(135deg,rgba(99,102,241,0.25),rgba(168,85,247,0.2))",
+                border: "1px solid rgba(99,102,241,0.35)",
+                color: generatingImage ? "rgba(129,140,248,0.4)" : "#818cf8",
+                cursor: generatingImage ? "not-allowed" : "pointer",
+              }}
+            >
+              {generatingImage ? (
+                <span style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "4px" }}>
+                  <svg className="animate-spin" width="9" height="9" viewBox="0 0 12 12" fill="none">
+                    <circle cx="6" cy="6" r="4" stroke="rgba(129,140,248,0.3)" strokeWidth="2"/>
+                    <path d="M6 2a4 4 0 0 1 4 4" stroke="#818cf8" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                  Generez...
+                </span>
+              ) : "⚡ Generează"}
+            </button>
+          </div>
+
+          {/* Image preview */}
+          {imageUrl && (
+            <div style={{ position: "relative", borderRadius: "6px", overflow: "hidden" }}>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={imageUrl} alt="Generated" style={{ width: "100%", borderRadius: "6px", display: "block" }} />
+              <div style={{ display: "flex", gap: "4px", marginTop: "4px" }}>
+                <a
+                  href={imageUrl}
+                  download="imagine-post.png"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    flex: 1, textAlign: "center", fontSize: "10px", fontWeight: 700,
+                    padding: "4px 8px", borderRadius: "5px", textDecoration: "none",
+                    background: "rgba(86,219,132,0.12)", border: "1px solid rgba(86,219,132,0.25)", color: "#56db84",
+                  }}
+                >
+                  ↓ Descarcă
+                </a>
+                <button
+                  onClick={handleGenerateImage}
+                  disabled={generatingImage}
+                  style={{
+                    fontSize: "10px", padding: "4px 8px", borderRadius: "5px",
+                    background: "transparent", border: "1px solid rgba(255,255,255,0.1)",
+                    color: "rgba(255,255,255,0.3)", cursor: "pointer",
+                  }}
+                >
+                  ↺
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
