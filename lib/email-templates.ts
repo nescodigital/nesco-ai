@@ -157,6 +157,47 @@ export function day2Email(email: string): { subject: string; html: string } {
   };
 }
 
+export function contentEmail({
+  email,
+  content,
+  contentType,
+  objective,
+}: {
+  email: string;
+  content: string;
+  contentType: string;
+  objective: string;
+}): { subject: string; html: string } {
+  // Convert markdown-like content to basic HTML
+  const htmlContent = content
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    .replace(/\n/g, "<br/>");
+
+  return {
+    subject: `Continutul tau generat: ${contentType}`,
+    html: wrap(`
+      <h1 style="font-size: 22px; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 6px; line-height: 1.2;">
+        Continutul tau este gata
+      </h1>
+      <p style="color: rgba(255,255,255,0.4); font-size: 14px; margin: 0 0 24px;">
+        ${contentType} · ${objective}
+      </p>
+
+      <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(86,219,132,0.2); border-radius: 14px; padding: 20px; margin-bottom: 28px;">
+        <p style="margin: 0; font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.7; white-space: pre-wrap;">${htmlContent}</p>
+      </div>
+
+      <a href="https://ai.nescodigital.com/dashboard" style="${BUTTON}">
+        Genereaza mai mult continut
+      </a>
+    `),
+  };
+}
+
 export function day5Email(email: string): { subject: string; html: string } {
   return {
     subject: "Creditele tale gratuite expiră curând → Vezi planurile",

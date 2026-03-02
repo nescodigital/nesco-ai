@@ -47,6 +47,8 @@ export default function DashboardPage() {
   const [isTranslating, setIsTranslating] = useState(false);
   const [, setActiveUpdates] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<"generator" | "calendar">("generator");
+  const [sendingEmail, setSendingEmail] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   useEffect(() => {
     const supabase = createClient();
@@ -68,10 +70,26 @@ export default function DashboardPage() {
     });
   }, []);
 
+  async function handleSendEmail() {
+    setSendingEmail(true);
+    try {
+      await fetch("/api/send-content", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: output, contentType, objective }),
+      });
+      setEmailSent(true);
+      setTimeout(() => setEmailSent(false), 3000);
+    } finally {
+      setSendingEmail(false);
+    }
+  }
+
   async function handleGenerate() {
     setLoading(true);
     setOutput("");
     setError("");
+    setEmailSent(false);
     try {
       const res = await fetch("/api/generate", {
         method: "POST",
@@ -369,32 +387,48 @@ export default function DashboardPage() {
                 Conținut generat
               </span>
             </div>
-            <button
-              onClick={handleCopy}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all duration-150 active:scale-95"
-              style={{
-                background: copied ? "rgba(86,219,132,0.15)" : "rgba(255,255,255,0.06)",
-                border: `1px solid ${copied ? "rgba(86,219,132,0.3)" : "rgba(255,255,255,0.1)"}`,
-                color: copied ? "#56db84" : "rgba(255,255,255,0.6)",
-              }}
-            >
-              {copied ? (
-                <>
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <path d="M1.5 6l3 3 6-6" stroke="#56db84" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  Copiat!
-                </>
-              ) : (
-                <>
-                  <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
-                    <rect x="4" y="4" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
-                    <path d="M8 4V2.5A1.5 1.5 0 0 0 6.5 1H2.5A1.5 1.5 0 0 0 1 2.5v4A1.5 1.5 0 0 0 2.5 8H4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
-                  </svg>
-                  Copiază
-                </>
-              )}
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleCopy}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all duration-150 active:scale-95"
+                style={{
+                  background: copied ? "rgba(86,219,132,0.15)" : "rgba(255,255,255,0.06)",
+                  border: `1px solid ${copied ? "rgba(86,219,132,0.3)" : "rgba(255,255,255,0.1)"}`,
+                  color: copied ? "#56db84" : "rgba(255,255,255,0.6)",
+                }}
+              >
+                {copied ? (
+                  <>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <path d="M1.5 6l3 3 6-6" stroke="#56db84" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    </svg>
+                    Copiat!
+                  </>
+                ) : (
+                  <>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none">
+                      <rect x="4" y="4" width="7" height="7" rx="1.5" stroke="currentColor" strokeWidth="1.2" />
+                      <path d="M8 4V2.5A1.5 1.5 0 0 0 6.5 1H2.5A1.5 1.5 0 0 0 1 2.5v4A1.5 1.5 0 0 0 2.5 8H4" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" />
+                    </svg>
+                    Copiază
+                  </>
+                )}
+              </button>
+              <button
+                onClick={handleSendEmail}
+                disabled={sendingEmail}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[12px] font-semibold transition-all duration-150 active:scale-95"
+                style={{
+                  background: emailSent ? "rgba(86,219,132,0.15)" : "rgba(255,255,255,0.06)",
+                  border: `1px solid ${emailSent ? "rgba(86,219,132,0.3)" : "rgba(255,255,255,0.1)"}`,
+                  color: emailSent ? "#56db84" : "rgba(255,255,255,0.6)",
+                  cursor: sendingEmail ? "not-allowed" : "pointer",
+                  opacity: sendingEmail ? 0.6 : 1,
+                }}
+              >
+                {emailSent ? "✓ Trimis!" : sendingEmail ? "..." : "📧 Trimite pe email"}
+              </button>
+            </div>
           </div>
           <div className="prose prose-invert prose-sm max-w-none">
             <ReactMarkdown>{output}</ReactMarkdown>
