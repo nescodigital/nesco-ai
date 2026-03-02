@@ -63,7 +63,7 @@ export default function DashboardPage() {
         .select("credits, plan")
         .eq("user_id", user.id)
         .single()
-        .then(({ data }) => { if (data) { setCredits(data.credits); setPlan(data.plan ?? null); } });
+        .then(({ data }) => { setCredits(data?.credits ?? 0); setPlan(data?.plan ?? null); });
       supabase
         .from("generation_history")
         .select("id, content_type, objective, context, result, created_at")
@@ -646,7 +646,7 @@ export default function DashboardPage() {
                 fontFamily: "var(--font-geist-sans)",
               }}
             >
-              {isTranslating ? "Se traduce..." : "Traduce — 1 credit"}
+              {isTranslating ? "Se traduce..." : "Traducere - 1 credit"}
             </button>
           </div>
         </div>
