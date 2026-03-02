@@ -65,12 +65,21 @@ export default function DashboardTopBar() {
         <span className="hidden sm:inline" style={{ color: "rgba(255,255,255,0.35)", fontSize: "11px" }}>cr</span>
       </div>
 
-      {/* Buy button — hidden on mobile */}
+      {/* Buy button — full text on desktop, icon on mobile */}
       <a href="/pricing" className="hidden sm:inline-block" style={{
         background: "#56db84", color: "#0a0a0a",
         padding: "5px 10px", borderRadius: "6px", fontSize: "12px",
         fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap",
       }}>+ Cumpără</a>
+      <a href="/pricing" className="sm:hidden" title="Cumpără credite" style={{
+        width: "28px", height: "28px", borderRadius: "6px",
+        background: "#56db84", display: "flex", alignItems: "center", justifyContent: "center",
+        flexShrink: 0, textDecoration: "none",
+      }}>
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+          <path d="M7 2v10M2 7h10" stroke="#0a0a0a" strokeWidth="2" strokeLinecap="round"/>
+        </svg>
+      </a>
 
       {/* User icon — always visible, tooltip with email */}
       <div title={email} style={{
