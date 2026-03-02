@@ -30,9 +30,18 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  // Dev bypass: http://localhost:3000/dev-login sets cookie and redirects to dashboard
+  if (request.nextUrl.pathname === "/dev-login" && process.env.NODE_ENV === "development") {
+    const response = NextResponse.redirect(new URL("/dashboard", request.url));
+    response.cookies.set("dev_bypass", "1", { httpOnly: true, path: "/" });
+    return response;
+  }
+
+  const devBypass = process.env.NODE_ENV === "development" && request.cookies.get("dev_bypass")?.value === "1";
+
   // Protect /dashboard/* and /onboarding — redirect to login if not authenticated
   const protectedPaths = ["/dashboard", "/onboarding"];
-  if (!user && protectedPaths.some((p) => request.nextUrl.pathname.startsWith(p))) {
+  if (!user && !devBypass && protectedPaths.some((p) => request.nextUrl.pathname.startsWith(p))) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);

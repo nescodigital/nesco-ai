@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
+import ProductTour from "@/app/dashboard/components/ProductTour";
+import BusinessMemory from "@/app/dashboard/components/BusinessMemory";
+import CalendarView from "@/app/dashboard/components/CalendarView";
 
 const CONTENT_TYPES = [
   { v: "Post Facebook", l: "👍 Post Facebook" },
@@ -42,6 +45,8 @@ export default function DashboardPage() {
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [targetLanguage, setTargetLanguage] = useState("ro");
   const [isTranslating, setIsTranslating] = useState(false);
+  const [, setActiveUpdates] = useState<string[]>([]);
+  const [activeTab, setActiveTab] = useState<"generator" | "calendar">("generator");
 
   useEffect(() => {
     const supabase = createClient();
@@ -121,6 +126,12 @@ export default function DashboardPage() {
     }
   }
 
+  function handleSuggestionClick(type: string, ctx: string) {
+    setContentType(type);
+    setContext(ctx);
+    document.querySelector('[data-tour="generate-btn"]')?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
+
   async function handleCopy() {
     await navigator.clipboard.writeText(output);
     setCopied(true);
@@ -144,14 +155,35 @@ export default function DashboardPage() {
       className="max-w-2xl mx-auto"
       style={{ fontFamily: "var(--font-geist-sans)" }}
     >
-      {/* Page title + credits card */}
-      <div className="flex items-start justify-between gap-4 mb-8 flex-wrap">
-        <div>
-          <h1 className="text-[22px] font-bold text-white mb-1">Generează conținut</h1>
-          <p className="text-[14px] text-white/40">
-            AI-ul scrie în stilul brandului tău, gata de publicat.
-          </p>
+      {/* Tabs + credits */}
+      <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
+        <div
+          style={{
+            display: "flex", alignItems: "center", gap: "4px",
+            background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)",
+            borderRadius: "12px", padding: "4px",
+          }}
+        >
+          {(["generator", "calendar"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              style={{
+                padding: "8px 16px", borderRadius: "8px", fontSize: "13px", fontWeight: 600,
+                border: "none", cursor: "pointer", transition: "all 0.15s",
+                fontFamily: "var(--font-geist-sans)",
+                background: activeTab === tab
+                  ? "linear-gradient(135deg,rgba(86,219,132,0.15),rgba(129,140,248,0.12))"
+                  : "transparent",
+                color: activeTab === tab ? "#ffffff" : "rgba(255,255,255,0.35)",
+                boxShadow: activeTab === tab ? "0 0 0 1px rgba(86,219,132,0.2) inset" : "none",
+              }}
+            >
+              {tab === "generator" ? "⚡ Generator" : "📅 Calendar"}
+            </button>
+          ))}
         </div>
+
         {credits !== null && (
           <div style={{
             display: "flex", alignItems: "center", gap: "12px",
@@ -168,6 +200,14 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
+
+      {/* Calendar tab */}
+      {activeTab === "calendar" && (
+        <CalendarView credits={credits} onCreditsChange={(n) => setCredits(n)} />
+      )}
+
+      {/* Generator tab wrapper */}
+      {activeTab === "generator" && (<>
 
       {/* No credits error */}
       {error === "no_credits" && (
@@ -190,6 +230,12 @@ export default function DashboardPage() {
         </div>
       )}
 
+      {/* Business Memory */}
+      <BusinessMemory
+        onSuggestionClick={handleSuggestionClick}
+        onUpdatesChange={setActiveUpdates}
+      />
+
       {/* Form card */}
       <div
         className="rounded-2xl p-5 mb-4"
@@ -197,7 +243,7 @@ export default function DashboardPage() {
       >
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
           {/* Content type */}
-          <div>
+          <div data-tour="content-type">
             <label className="block text-[11px] font-semibold uppercase tracking-wider text-white/35 mb-2">
               Tip conținut
             </label>
@@ -236,7 +282,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Context */}
-        <div className="mt-4">
+        <div className="mt-4" data-tour="context-field">
           <label className="block text-[11px] font-semibold uppercase tracking-wider text-white/35 mb-2">
             Context <span className="normal-case font-normal text-white/20">(opțional)</span>
           </label>
@@ -264,6 +310,7 @@ export default function DashboardPage() {
 
         {/* Generate button */}
         <button
+          data-tour="generate-btn"
           onClick={handleGenerate}
           disabled={loading}
           className="mt-4 w-full py-3.5 rounded-xl text-[15px] font-bold text-black transition-all duration-150 active:scale-[0.98] disabled:opacity-60 flex items-center justify-center gap-2"
@@ -392,6 +439,8 @@ export default function DashboardPage() {
         </div>
       )}
 
+      <ProductTour />
+
       {/* History */}
       {history.length > 0 && (
         <div className="mt-2">
@@ -447,6 +496,7 @@ export default function DashboardPage() {
           </div>
         </div>
       )}
+      </>)}
     </div>
   );
 }

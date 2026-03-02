@@ -1,7 +1,12 @@
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
+import { Resend } from "resend";
+import { welcomeEmail } from "@/lib/email-templates";
 import SignOutButton from "./components/SignOutButton";
 import Logo from "@/app/components/Logo";
+
+const resend = new Resend(process.env.RESEND_API_KEY);
+const FROM = "Nesco Digital AI <noreply@nescodigital.com>";
 
 export default async function DashboardLayout({
   children,
@@ -15,6 +20,31 @@ export default async function DashboardLayout({
 
   if (!user) {
     redirect("/login");
+  }
+
+  // Send welcome email on first dashboard load (fire-and-forget)
+  if (user.email) {
+    try {
+      const { data: existing } = await supabase
+        .from("email_sequence_log")
+        .select("id")
+        .eq("user_id", user.id)
+        .eq("email_type", "welcome")
+        .maybeSingle();
+
+      if (!existing) {
+        const { subject, html } = welcomeEmail(user.email);
+        await resend.emails.send({ from: FROM, to: user.email, subject, html });
+        await supabase.from("email_sequence_log").insert({
+          user_id: user.id,
+          email: user.email,
+          email_type: "welcome",
+          sent_at: new Date().toISOString(),
+        });
+      }
+    } catch {
+      // Non-blocking — don't break dashboard if email fails
+    }
   }
 
   return (
