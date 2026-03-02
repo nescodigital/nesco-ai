@@ -221,7 +221,7 @@ export default function CalendarView({ onCreditsChange }: Props) {
         <p style={{ fontSize: "11px", fontWeight: 700, color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 8px" }}>
           Platformă
         </p>
-        <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", width: "100%" }}>
+        <div style={{ display: "flex", gap: "6px", width: "100%" }}>
           {PLATFORMS.map((p) => {
             const active = selectedPlatform === p.id;
             return (
@@ -229,16 +229,16 @@ export default function CalendarView({ onCreditsChange }: Props) {
                 key={p.id}
                 onClick={() => setSelectedPlatform(p.id)}
                 style={{
-                  display: "flex", alignItems: "center", gap: "6px",
-                  padding: "7px 13px", borderRadius: "10px", fontSize: "13px", fontWeight: 600,
+                  display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
+                  flex: 1, minWidth: 0, padding: "7px 6px", borderRadius: "10px", fontSize: "13px", fontWeight: 600,
                   cursor: "pointer", transition: "all 0.15s",
                   background: active ? "rgba(86,219,132,0.12)" : "rgba(255,255,255,0.03)",
                   border: active ? "1px solid rgba(86,219,132,0.4)" : "1px solid rgba(255,255,255,0.07)",
                   color: active ? "#56db84" : "rgba(255,255,255,0.5)",
                 }}
               >
-                <span style={{ color: p.color, display: "flex", alignItems: "center" }}>{p.icon}</span>
-                {p.label}
+                <span style={{ color: p.color, display: "flex", alignItems: "center", flexShrink: 0 }}>{p.icon}</span>
+                <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{p.label}</span>
               </button>
             );
           })}
@@ -250,7 +250,7 @@ export default function CalendarView({ onCreditsChange }: Props) {
         <p style={{ fontSize: "11px", fontWeight: 700, color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 8px" }}>
           Posturi săptămâna aceasta
         </p>
-        <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "6px", width: "100%" }}>
           {[1, 2, 3, 4, 5, 6, 7].map((n) => {
             const active = postCount === n;
             return (
@@ -258,8 +258,8 @@ export default function CalendarView({ onCreditsChange }: Props) {
                 key={n}
                 onClick={() => setPostCount(n)}
                 style={{
-                  width: "36px", height: "36px", borderRadius: "8px", fontSize: "14px", fontWeight: 700,
-                  cursor: "pointer", transition: "all 0.15s", flexShrink: 0,
+                  flex: 1, minWidth: 0, height: "36px", borderRadius: "8px", fontSize: "14px", fontWeight: 700,
+                  cursor: "pointer", transition: "all 0.15s",
                   background: active ? "linear-gradient(135deg,rgba(86,219,132,0.2),rgba(129,140,248,0.15))" : "rgba(255,255,255,0.03)",
                   border: active ? "1px solid rgba(86,219,132,0.5)" : "1px solid rgba(255,255,255,0.07)",
                   color: active ? "#56db84" : "rgba(255,255,255,0.4)",
