@@ -9,6 +9,7 @@ import BusinessMemory from "@/app/dashboard/components/BusinessMemory";
 import CalendarView from "@/app/dashboard/components/CalendarView";
 import StrategistCard from "@/app/dashboard/components/StrategistCard";
 import BrandSwitcher from "@/app/dashboard/components/BrandSwitcher";
+import VisionView from "@/app/dashboard/components/VisionView";
 
 const CONTENT_TYPES = [
   { v: "Post Facebook", l: "Post Facebook" },
@@ -49,7 +50,7 @@ export default function DashboardPage() {
   const [targetLanguage, setTargetLanguage] = useState("ro");
   const [isTranslating, setIsTranslating] = useState(false);
   const [, setActiveUpdates] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState<"generator" | "calendar">("generator");
+  const [activeTab, setActiveTab] = useState<"generator" | "calendar" | "vision">("generator");
   const [brands, setBrands] = useState<{ brand_id: number; label: string }[]>([]);
   const [activeBrandId, setActiveBrandId] = useState(1);
   const [sendingEmail, setSendingEmail] = useState(false);
@@ -230,16 +231,16 @@ export default function DashboardPage() {
       className="max-w-2xl mx-auto"
       style={{ fontFamily: "var(--font-geist-sans)" }}
     >
-      {/* Tabs + credits */}
-      <div className="flex items-center justify-between gap-4 mb-6 flex-wrap">
+      {/* Tabs + credits — single row */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", marginBottom: "24px" }}>
         <div
           style={{
             display: "flex", alignItems: "center", gap: "4px",
             background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)",
-            borderRadius: "12px", padding: "4px",
+            borderRadius: "12px", padding: "4px", flexShrink: 0,
           }}
         >
-          {(["generator", "calendar"] as const).map((tab) => (
+          {(["generator", "calendar", "vision"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -254,16 +255,16 @@ export default function DashboardPage() {
                 boxShadow: activeTab === tab ? "0 0 0 1px rgba(86,219,132,0.2) inset" : "none",
               }}
             >
-              {tab === "generator" ? "Generator" : "Calendar"}
+              {tab === "generator" ? "Generator" : tab === "calendar" ? "Calendar" : "Vision AI"}
             </button>
           ))}
         </div>
 
         {credits !== null && (
           <div style={{
-            display: "flex", alignItems: "center", gap: "10px",
+            display: "flex", alignItems: "center", gap: "8px",
             background: "#111113", border: "1px solid rgba(86,219,132,0.3)",
-            borderRadius: "10px", padding: "10px 16px", flexShrink: 0,
+            borderRadius: "10px", padding: "8px 12px", flexShrink: 0,
           }}>
             {plan && (
               <span style={{
@@ -293,11 +294,11 @@ export default function DashboardPage() {
                 maxBrands={5}
               />
             )}
-            <span style={{ color: "#56db84", fontSize: "20px", fontWeight: 800 }}>{credits}</span>
-            <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px" }}>credite</span>
+            <span style={{ color: "#56db84", fontSize: "18px", fontWeight: 800 }}>{credits}</span>
+            <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px" }}>credite</span>
             <a href="/pricing" style={{
-              marginLeft: "4px", background: "#56db84", color: "#0a0a0a",
-              padding: "6px 12px", borderRadius: "6px", fontSize: "12px",
+              marginLeft: "2px", background: "#56db84", color: "#0a0a0a",
+              padding: "5px 10px", borderRadius: "6px", fontSize: "12px",
               fontWeight: 700, textDecoration: "none",
             }}>+ Cumpără</a>
           </div>
@@ -307,6 +308,11 @@ export default function DashboardPage() {
       {/* Calendar tab */}
       {activeTab === "calendar" && (
         <CalendarView onCreditsChange={(n) => setCredits(n)} />
+      )}
+
+      {/* Vision AI tab */}
+      {activeTab === "vision" && (
+        <VisionView brandId={activeBrandId} />
       )}
 
       {/* Generator tab wrapper */}
