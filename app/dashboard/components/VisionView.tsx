@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 
 interface Analysis {
   competitorName: string;
@@ -21,14 +21,24 @@ interface Props {
   brandId?: number;
 }
 
+const LOADING_STEPS = [
+  "Accesez site-ul competitorului…",
+  "Extrag conținutul de marketing…",
+  "Analizez strategia și mesajele cheie…",
+  "Generez recomandări de diferențiere…",
+];
+
 export default function VisionView({ brandId = 1 }: Props) {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingStep, setLoadingStep] = useState(0);
+  const [loadingProgress, setLoadingProgress] = useState(0);
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
   const [domain, setDomain] = useState("");
   const [error, setError] = useState("");
   const [competitors, setCompetitors] = useState<Competitor[]>([]);
   const [loadingCompetitors, setLoadingCompetitors] = useState(true);
+  const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     setLoadingCompetitors(true);
@@ -39,12 +49,37 @@ export default function VisionView({ brandId = 1 }: Props) {
       .finally(() => setLoadingCompetitors(false));
   }, [brandId]);
 
+  function startLoadingAnimation() {
+    setLoadingStep(0);
+    setLoadingProgress(0);
+
+    let step = 0;
+    let progress = 0;
+    // Total ~12s animation: each step ~3s, progress fills to 92% then waits
+    progressIntervalRef.current = setInterval(() => {
+      progress += 1;
+      if (progress <= 92) setLoadingProgress(progress);
+      // Advance step every ~25 ticks (~2.5s)
+      const newStep = Math.min(Math.floor(progress / 25), LOADING_STEPS.length - 1);
+      if (newStep !== step) { step = newStep; setLoadingStep(newStep); }
+    }, 100);
+  }
+
+  function stopLoadingAnimation() {
+    if (progressIntervalRef.current) {
+      clearInterval(progressIntervalRef.current);
+      progressIntervalRef.current = null;
+    }
+    setLoadingProgress(100);
+  }
+
   async function handleSearch() {
     if (!input.trim()) return;
     setLoading(true);
     setAnalysis(null);
     setDomain("");
     setError("");
+    startLoadingAnimation();
 
     try {
       const res = await fetch("/api/vision", {
@@ -66,8 +101,10 @@ export default function VisionView({ brandId = 1 }: Props) {
         });
       }
     } catch {
+      stopLoadingAnimation();
       setError("Ceva n-a mers. Încearcă din nou.");
     } finally {
+      stopLoadingAnimation();
       setLoading(false);
     }
   }
@@ -126,6 +163,47 @@ export default function VisionView({ brandId = 1 }: Props) {
           {loading ? "Analizez…" : "Analizează"}
         </button>
       </div>
+
+      {/* Loading state */}
+      {loading && (
+        <div style={{
+          background: "rgba(255,255,255,0.02)",
+          border: "1px solid rgba(255,255,255,0.07)",
+          borderRadius: "14px",
+          padding: "24px",
+          marginBottom: "20px",
+        }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
+            <div style={{
+              width: "8px", height: "8px", borderRadius: "50%",
+              background: "#56db84",
+              animation: "pulse 1.2s ease-in-out infinite",
+            }} />
+            <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.7)", margin: 0, fontWeight: 500 }}>
+              {LOADING_STEPS[loadingStep]}
+            </p>
+          </div>
+          {/* Progress bar */}
+          <div style={{
+            width: "100%", height: "4px",
+            background: "rgba(255,255,255,0.06)",
+            borderRadius: "2px",
+            overflow: "hidden",
+          }}>
+            <div style={{
+              height: "100%",
+              width: `${loadingProgress}%`,
+              background: "linear-gradient(90deg,#56db84,#818cf8)",
+              borderRadius: "2px",
+              transition: "width 0.1s linear",
+            }} />
+          </div>
+          <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.25)", margin: "10px 0 0", textAlign: "right" }}>
+            {loadingProgress < 100 ? `${loadingProgress}%` : "Finalizez…"}
+          </p>
+          <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
+        </div>
+      )}
 
       {/* Tracked competitors */}
       {!loadingCompetitors && competitors.length > 0 && !analysis && !loading && (
