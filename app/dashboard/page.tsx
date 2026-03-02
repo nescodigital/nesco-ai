@@ -231,25 +231,39 @@ export default function DashboardPage() {
       className="max-w-2xl mx-auto"
       style={{ fontFamily: "var(--font-geist-sans)" }}
     >
-      {/* Sticky top bar — full viewport width via negative margin */}
-      {credits !== null && (
+      {/* Tabs + credits — single compact row */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", marginBottom: "24px" }}>
         <div style={{
-          position: "sticky", top: 0, zIndex: 50,
-          marginLeft: "calc(-50vw + 50%)", marginRight: "calc(-50vw + 50%)",
-          borderBottom: "1px solid rgba(255,255,255,0.07)",
-          background: "rgba(10,10,10,0.92)",
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          marginBottom: "20px",
+          display: "inline-flex", alignItems: "center", gap: "4px",
+          background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)",
+          borderRadius: "10px", padding: "3px", flexShrink: 0,
         }}>
-          <div style={{
-            maxWidth: "672px", margin: "0 auto",
-            padding: "10px 24px",
-            display: "flex", alignItems: "center", justifyContent: "flex-end", gap: "8px",
-          }}>
+          {(["generator", "calendar", "vision"] as const).map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              style={{
+                padding: "6px 14px", borderRadius: "7px", fontSize: "13px", fontWeight: 600,
+                border: "none", cursor: "pointer", transition: "all 0.15s",
+                fontFamily: "var(--font-geist-sans)",
+                background: activeTab === tab
+                  ? "linear-gradient(135deg,rgba(86,219,132,0.15),rgba(129,140,248,0.12))"
+                  : "transparent",
+                color: activeTab === tab ? "#ffffff" : "rgba(255,255,255,0.35)",
+                boxShadow: activeTab === tab ? "0 0 0 1px rgba(86,219,132,0.2) inset" : "none",
+                whiteSpace: "nowrap",
+              }}
+            >
+              {tab === "generator" ? "Generator" : tab === "calendar" ? "Calendar" : "Spy AI"}
+            </button>
+          ))}
+        </div>
+
+        {credits !== null && (
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", flexShrink: 0 }}>
             {plan && (
               <span style={{
-                fontSize: "10px", fontWeight: 800, padding: "2px 8px", borderRadius: "20px",
+                fontSize: "10px", fontWeight: 800, padding: "2px 7px", borderRadius: "20px",
                 textTransform: "uppercase", letterSpacing: "0.06em",
                 background: plan === "multi-brand"
                   ? "linear-gradient(135deg,rgba(129,140,248,0.2),rgba(168,85,247,0.15))"
@@ -275,46 +289,15 @@ export default function DashboardPage() {
                 maxBrands={5}
               />
             )}
-            <span style={{ color: "#56db84", fontSize: "16px", fontWeight: 800 }}>{credits}</span>
-            <span style={{ color: "rgba(255,255,255,0.4)", fontSize: "12px" }}>credite</span>
+            <span style={{ color: "#56db84", fontSize: "15px", fontWeight: 800 }}>{credits}</span>
+            <span style={{ color: "rgba(255,255,255,0.35)", fontSize: "12px" }}>credite</span>
             <a href="/pricing" style={{
               background: "#56db84", color: "#0a0a0a",
-              padding: "5px 10px", borderRadius: "6px", fontSize: "12px",
+              padding: "4px 10px", borderRadius: "6px", fontSize: "12px",
               fontWeight: 700, textDecoration: "none",
             }}>+ Cumpără</a>
           </div>
-        </div>
-      )}
-
-      {/* Tabs */}
-      <div style={{ marginBottom: "24px" }}>
-        <div
-          style={{
-            display: "inline-flex", alignItems: "center", gap: "4px",
-            background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)",
-            borderRadius: "12px", padding: "4px",
-          }}
-        >
-          {(["generator", "calendar", "vision"] as const).map((tab) => (
-            <button
-              key={tab}
-              onClick={() => setActiveTab(tab)}
-              style={{
-                padding: "8px 16px", borderRadius: "8px", fontSize: "13px", fontWeight: 600,
-                border: "none", cursor: "pointer", transition: "all 0.15s",
-                fontFamily: "var(--font-geist-sans)",
-                background: activeTab === tab
-                  ? "linear-gradient(135deg,rgba(86,219,132,0.15),rgba(129,140,248,0.12))"
-                  : "transparent",
-                color: activeTab === tab ? "#ffffff" : "rgba(255,255,255,0.35)",
-                boxShadow: activeTab === tab ? "0 0 0 1px rgba(86,219,132,0.2) inset" : "none",
-                whiteSpace: "nowrap",
-              }}
-            >
-              {tab === "generator" ? "Generator" : tab === "calendar" ? "Calendar" : "Spy AI"}
-            </button>
-          ))}
-        </div>
+        )}
       </div>
 
       {/* Calendar tab */}
