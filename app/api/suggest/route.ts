@@ -15,7 +15,7 @@ export async function GET() {
       .select("content_type, objective, created_at")
       .eq("user_id", user.id)
       .order("created_at", { ascending: false })
-      .limit(10),
+      .limit(30),
     supabase
       .from("business_updates")
       .select("text")
@@ -28,10 +28,12 @@ export async function GET() {
   const history = historyRes.data ?? [];
   const updates = updatesRes.data ?? [];
 
+  const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
   const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
   const recentTypes = history
     .filter((h) => h.created_at > sevenDaysAgo)
     .map((h) => h.content_type);
+  const last30 = history.filter((h) => h.created_at > thirtyDaysAgo);
 
   const channels = (profile.channels as string[]) ?? [];
   const brandName = (profile.brand_name as string) ?? "brandul tău";
@@ -44,7 +46,7 @@ Canale active: ${channels.length > 0 ? channels.join(", ") : "neprecizate"}
 Frecvență postare: ${frequency}
 Noutăți business active: ${updates.length > 0 ? updates.map((u) => u.text).join("; ") : "niciuna"}
 Conținut generat în ultimele 7 zile: ${recentTypes.length > 0 ? recentTypes.join(", ") : "nimic"}
-Istoricul complet (ultimele 10): ${history.length > 0 ? history.map((h) => `${h.content_type} (${h.objective})`).join(", ") : "niciuna"}
+Conținut generat în ultimele 30 zile (tip + obiectiv): ${last30.length > 0 ? last30.map((h) => `${h.content_type} (${h.objective})`).join(", ") : "niciuna"}
 
 Analizează situația și returnează DOAR un JSON valid, fără explicații sau markdown:
 {
@@ -56,6 +58,7 @@ Analizează situația și returnează DOAR un JSON valid, fără explicații sau
 
 Reguli:
 - Dacă userul nu a postat pe o platformă în 7 zile, recomand-o
+- Uită-te la distribuția obiectivelor din 30 zile — dacă a făcut prea mult awareness, recomandă vânzare și invers
 - Dacă există business updates active, includle în context
 - Dacă nu există date, recomandă ceva generic dar util`;
 
