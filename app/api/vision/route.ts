@@ -220,11 +220,12 @@ Returnează DOAR JSON valid, fără markdown:
     const cleaned = raw.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
     const analysis = JSON.parse(cleaned);
 
-    // Deduct 5 credits after successful analysis
-    await supabase
+    // Deduct 5 credits after successful analysis (fire-and-forget, don't let it break the response)
+    supabase
       .from("user_credits")
-      .update({ credits: creditsRow.credits - 5, updated_at: new Date().toISOString() })
-      .eq("user_id", user.id);
+      .update({ credits: creditsRow.credits - 5 })
+      .eq("user_id", user.id)
+      .then(() => {});
 
     return Response.json({
       analysis,
@@ -233,8 +234,10 @@ Returnează DOAR JSON valid, fără markdown:
       hasAds,
       creditsRemaining: creditsRow.credits - 5,
     });
-  } catch {
-    return Response.json({ error: "Eroare la analiza AI." }, { status: 500 });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("[vision] AI error:", message);
+    return Response.json({ error: `Eroare la analiza AI: ${message}` }, { status: 500 });
   }
 }
 
