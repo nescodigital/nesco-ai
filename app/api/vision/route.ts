@@ -9,9 +9,71 @@ function extractPageIdentifier(input: string): string {
     if (parts[0] === "pages" && parts.length >= 3) return parts[2];
     if (parts.length > 0) return parts[parts.length - 1];
   } catch {
-    // treat as page name
+    // treat as search term
   }
   return trimmed;
+}
+
+async function fetchMetaAdLibrary(searchTerm: string): Promise<{ ads: Record<string, unknown>[]; pageName: string }> {
+  // Meta Ad Library public endpoint — no token required
+  const params = new URLSearchParams({
+    active_status: "active",
+    ad_type: "ALL",
+    country: "RO",
+    q: searchTerm,
+    search_type: "page",
+    media_type: "all",
+  });
+
+  const headers = {
+    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "ro-RO,ro;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Referer": "https://www.facebook.com/ads/library/",
+    "X-FB-Friendly-Name": "AdLibrarySearchPaginatedAdsQuery",
+  };
+
+  const res = await fetch(
+    `https://www.facebook.com/ads/library/async/search_ads/?${params.toString()}`,
+    { headers, cache: "no-store" }
+  );
+
+  if (!res.ok) throw new Error(`Meta returned ${res.status}`);
+
+  const text = await res.text();
+
+  // Meta sometimes prepends "for (;;);" to JSON responses
+  const cleaned = text.replace(/^for\s*\(;;\);/, "").trim();
+  const json = JSON.parse(cleaned);
+
+  // Extract ads from response structure
+  const payload = json?.payload ?? json?.data ?? json;
+  const rawAds: Record<string, unknown>[] = [];
+  let pageName = searchTerm;
+
+  if (Array.isArray(payload?.results)) {
+    for (const result of payload.results) {
+      const adCards = result?.adCards ?? result?.collationAdCards ?? [];
+      for (const card of adCards) {
+        rawAds.push({
+          id: card?.adArchiveID ?? card?.ad_archive_id ?? Math.random().toString(),
+          page_name: card?.pageName ?? card?.page_name ?? searchTerm,
+          ad_creative_bodies: card?.snapshot?.body?.text
+            ? [card.snapshot.body.text]
+            : card?.snapshot?.cards?.map((c: Record<string, unknown>) => c?.body ?? "").filter(Boolean) ?? [],
+          ad_creative_link_titles: card?.snapshot?.title
+            ? [card.snapshot.title]
+            : [],
+          ad_snapshot_url: card?.snapshot?.link_url ?? null,
+          publisher_platforms: card?.publisherPlatform ?? card?.publisher_platform ?? [],
+          ad_delivery_start_time: card?.startDate ?? null,
+        });
+        if (card?.pageName) pageName = card.pageName;
+      }
+    }
+  }
+
+  return { ads: rawAds.slice(0, 20), pageName };
 }
 
 export async function POST(request: Request) {
@@ -23,54 +85,17 @@ export async function POST(request: Request) {
   if (!pageUrl) return Response.json({ error: "pageUrl required" }, { status: 400 });
 
   const pageIdentifier = extractPageIdentifier(pageUrl);
-  const token = process.env.META_AD_LIBRARY_TOKEN;
-  if (!token) return Response.json({ error: "Meta token not configured" }, { status: 500 });
-
-  // Use search_page_ids if we have a numeric ID, otherwise search by page name
-  const isNumericId = /^\d+$/.test(pageIdentifier);
-
-  const params = new URLSearchParams({
-    access_token: token,
-    ad_active_status: "ACTIVE",
-    ad_reached_countries: "RO",
-    fields: [
-      "id",
-      "page_name",
-      "ad_creative_bodies",
-      "ad_creative_link_titles",
-      "ad_creative_link_descriptions",
-      "ad_snapshot_url",
-      "publisher_platforms",
-      "ad_delivery_start_time",
-    ].join(","),
-    limit: "20",
-  });
-
-  if (isNumericId) {
-    params.set("search_page_ids", pageIdentifier);
-  } else {
-    params.set("search_terms", pageIdentifier);
-  }
 
   let ads: Record<string, unknown>[] = [];
   let pageName = pageIdentifier;
 
   try {
-    const metaRes = await fetch(
-      `https://graph.facebook.com/v21.0/ads_archive?${params.toString()}`
-    );
-    const metaData = await metaRes.json();
-
-    if (metaData.error) {
-      return Response.json({ error: `Meta API: ${metaData.error.message}` }, { status: 502 });
-    }
-
-    ads = metaData.data ?? [];
-    if (ads.length > 0 && ads[0].page_name) {
-      pageName = ads[0].page_name as string;
-    }
-  } catch {
-    return Response.json({ error: "Failed to reach Meta API" }, { status: 502 });
+    const result = await fetchMetaAdLibrary(pageIdentifier);
+    ads = result.ads;
+    pageName = result.pageName;
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Unknown error";
+    return Response.json({ error: `Nu am putut accesa Meta Ad Library: ${message}` }, { status: 502 });
   }
 
   // Save competitor
