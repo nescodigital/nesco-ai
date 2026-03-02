@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 import { createClient } from "@/lib/supabase/client";
 import ProductTour from "@/app/dashboard/components/ProductTour";
 import BusinessMemory from "@/app/dashboard/components/BusinessMemory";
 import CalendarView from "@/app/dashboard/components/CalendarView";
+import StrategistCard from "@/app/dashboard/components/StrategistCard";
 
 const CONTENT_TYPES = [
   { v: "Post Facebook", l: "Post Facebook" },
@@ -53,6 +54,14 @@ export default function DashboardPage() {
   const [imageFormat, setImageFormat] = useState<"1:1" | "4:5" | "16:9">("1:1");
   const [generatingImage, setGeneratingImage] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const formRef = useRef<HTMLDivElement>(null);
+
+  function handleStrategistApply({ contentType: ct, objective: obj, context: ctx }: { contentType: string; objective: string; context: string }) {
+    setContentType(ct);
+    setObjective(obj);
+    setContext(ctx);
+    setTimeout(() => formRef.current?.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+  }
 
   useEffect(() => {
     const supabase = createClient();
@@ -297,6 +306,9 @@ export default function DashboardPage() {
       />
 
       {/* Form card */}
+      <StrategistCard onApply={handleStrategistApply} />
+
+      <div ref={formRef}>
       <div
         className="rounded-2xl p-5 mb-4"
         style={{ border: "1px solid rgba(255,255,255,0.07)", background: "rgba(255,255,255,0.02)" }}
@@ -395,6 +407,7 @@ export default function DashboardPage() {
           )}
         </button>
       </div>
+      </div>{/* end formRef */}
 
       {/* Error */}
       {error && error !== "no_credits" && (
