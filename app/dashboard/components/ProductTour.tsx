@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { createClient } from "@/lib/supabase/client";
 
 interface TourStep {
   target: string; // data-tour attribute value
@@ -30,8 +31,6 @@ const TOUR_STEPS: TourStep[] = [
   },
 ];
 
-const STORAGE_KEY = "nesco_tour_done";
-
 export default function ProductTour() {
   const [step, setStep] = useState(0);
   const [visible, setVisible] = useState(false);
@@ -40,13 +39,21 @@ export default function ProductTour() {
   const tooltipRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    const done = localStorage.getItem(STORAGE_KEY);
-    if (!done) {
-      // slight delay so the dashboard renders first
-      const t = setTimeout(() => setVisible(true), 800);
-      return () => clearTimeout(t);
-    }
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      supabase
+        .from("brand_profiles")
+        .select("data")
+        .eq("user_id", user.id)
+        .single()
+        .then(({ data }) => {
+          const profile = data?.data as Record<string, unknown> | null;
+          if (profile?.tour_done) return; // already seen
+          const t = setTimeout(() => setVisible(true), 800);
+          return () => clearTimeout(t);
+        });
+    });
   }, []);
 
   useEffect(() => {
@@ -94,9 +101,22 @@ export default function ProductTour() {
     }
   }
 
-  function dismiss() {
+  async function dismiss() {
     setVisible(false);
-    localStorage.setItem(STORAGE_KEY, "1");
+    // Save tour_done in brand_profiles.data so it persists across devices
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+    const { data: profileRow } = await supabase
+      .from("brand_profiles")
+      .select("data")
+      .eq("user_id", user.id)
+      .single();
+    const existing = (profileRow?.data as Record<string, unknown>) ?? {};
+    await supabase
+      .from("brand_profiles")
+      .update({ data: { ...existing, tour_done: true } })
+      .eq("user_id", user.id);
   }
 
   if (!visible || !rect) return null;

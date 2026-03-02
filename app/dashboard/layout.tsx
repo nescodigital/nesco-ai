@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
+import { createClient, createAdminClient } from "@/lib/supabase/server";
 import { Resend } from "resend";
 import { welcomeEmail } from "@/lib/email-templates";
 import SignOutButton from "./components/SignOutButton";
@@ -25,7 +25,9 @@ export default async function DashboardLayout({
   // Send welcome email on first dashboard load (fire-and-forget)
   if (user.email) {
     try {
-      const { data: existing } = await supabase
+      // Use admin client to bypass RLS on email_sequence_log
+      const admin = createAdminClient();
+      const { data: existing } = await admin
         .from("email_sequence_log")
         .select("id")
         .eq("user_id", user.id)
@@ -35,7 +37,7 @@ export default async function DashboardLayout({
       if (!existing) {
         const { subject, html } = welcomeEmail(user.email);
         await resend.emails.send({ from: FROM, to: user.email, subject, html });
-        await supabase.from("email_sequence_log").insert({
+        await admin.from("email_sequence_log").insert({
           user_id: user.id,
           email: user.email,
           email_type: "welcome",
