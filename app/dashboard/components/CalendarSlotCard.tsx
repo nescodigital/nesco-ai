@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
+import { FaFacebook, FaInstagram, FaLinkedin, FaMeta } from "react-icons/fa6";
+import { MdEmail } from "react-icons/md";
 
 export interface CalendarSlot {
   id: string;
@@ -20,12 +22,12 @@ interface Props {
   onCreditsChange: (n: number) => void;
 }
 
-const CONTENT_TYPE_ICONS: Record<string, string> = {
-  "Post Facebook": "👍",
-  "Post Instagram": "📸",
-  "Post LinkedIn": "💼",
-  "Email newsletter": "📧",
-  "Reclamă Meta Ads": "🎯",
+const CONTENT_TYPE_ICONS: Record<string, { icon: React.ReactNode; color: string }> = {
+  "Post Facebook": { icon: <FaFacebook size={14} />, color: "#1877F2" },
+  "Post Instagram": { icon: <FaInstagram size={14} />, color: "#E1306C" },
+  "Post LinkedIn": { icon: <FaLinkedin size={14} />, color: "#0A66C2" },
+  "Email newsletter": { icon: <MdEmail size={14} />, color: "#94a3b8" },
+  "Reclamă Meta Ads": { icon: <FaMeta size={14} />, color: "#0082FB" },
 };
 
 const OBJECTIVE_COLORS: Record<string, string> = {
@@ -57,7 +59,7 @@ export default function CalendarSlotCard({ slot, onUpdate, onDelete, onCreditsCh
   const [generatingImage, setGeneratingImage] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
-  const icon = CONTENT_TYPE_ICONS[slot.content_type] ?? "📝";
+  const iconData = CONTENT_TYPE_ICONS[slot.content_type] ?? { icon: <span style={{ fontSize: "13px" }}>📝</span>, color: "rgba(255,255,255,0.5)" };
   const objColor = OBJECTIVE_COLORS[slot.objective] ?? "rgba(255,255,255,0.05)";
   const objTextColor = OBJECTIVE_TEXT_COLORS[slot.objective] ?? "rgba(255,255,255,0.5)";
 
@@ -159,7 +161,7 @@ export default function CalendarSlotCard({ slot, onUpdate, onDelete, onCreditsCh
       {/* Header */}
       <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "4px", marginBottom: "6px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "5px", flexWrap: "wrap" }}>
-          <span style={{ fontSize: "14px" }}>{icon}</span>
+          <span style={{ color: iconData.color, display: "flex", alignItems: "center" }}>{iconData.icon}</span>
           <span style={{ fontWeight: 700, color: "rgba(255,255,255,0.85)", fontSize: "11px", lineHeight: 1.3 }}>
             {slot.content_type}
           </span>
