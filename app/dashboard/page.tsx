@@ -10,6 +10,8 @@ import CalendarView from "@/app/dashboard/components/CalendarView";
 import StrategistCard from "@/app/dashboard/components/StrategistCard";
 import BrandSwitcher from "@/app/dashboard/components/BrandSwitcher";
 import VisionView from "@/app/dashboard/components/VisionView";
+import PersuasionView from "@/app/dashboard/components/PersuasionView";
+import HooksView from "@/app/dashboard/components/HooksView";
 
 const CONTENT_TYPES = [
   { v: "Post Facebook", l: "Post Facebook" },
@@ -50,7 +52,7 @@ export default function DashboardPage() {
   const [targetLanguage, setTargetLanguage] = useState("ro");
   const [isTranslating, setIsTranslating] = useState(false);
   const [, setActiveUpdates] = useState<string[]>([]);
-  const [activeTab, setActiveTab] = useState<"generator" | "calendar" | "vision">("generator");
+  const [activeTab, setActiveTab] = useState<"generator" | "calendar" | "vision" | "score" | "hooks">("generator");
   const [brands, setBrands] = useState<{ brand_id: number; label: string }[]>([]);
   const [activeBrandId, setActiveBrandId] = useState(1);
   const [sendingEmail, setSendingEmail] = useState(false);
@@ -59,6 +61,11 @@ export default function DashboardPage() {
   const [generatingImage, setGeneratingImage] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
+
+  function handleUseHook(hookText: string) {
+    setContext(hookText);
+    setActiveTab("generator");
+  }
 
   function handleAddBrand() {
     const nextId = brands.length > 0 ? Math.max(...brands.map((b) => b.brand_id)) + 1 : 2;
@@ -231,14 +238,19 @@ export default function DashboardPage() {
       className="max-w-2xl mx-auto"
       style={{ fontFamily: "var(--font-geist-sans)" }}
     >
-      {/* Tabs + brand switcher row */}
-      <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
+      {/* Tabs row — scroll orizontal pe mobile */}
+      <div style={{
+        overflowX: "auto",
+        WebkitOverflowScrolling: "touch",
+        scrollbarWidth: "none",
+        marginBottom: plan === "multi-brand" ? "8px" : "24px",
+      }}>
         <div style={{
           display: "inline-flex", alignItems: "center", gap: "4px",
           background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)",
-          borderRadius: "10px", padding: "3px", flexShrink: 0,
+          borderRadius: "10px", padding: "3px", whiteSpace: "nowrap",
         }}>
-          {(["generator", "calendar", "vision"] as const).map((tab) => (
+          {(["generator", "calendar", "vision", "score", "hooks"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -254,12 +266,19 @@ export default function DashboardPage() {
                 whiteSpace: "nowrap",
               }}
             >
-              {tab === "generator" ? "Generator" : tab === "calendar" ? "Calendar" : "Spy AI"}
+              {tab === "generator" ? "Generator"
+                : tab === "calendar" ? "Calendar"
+                : tab === "vision" ? "Spy AI"
+                : tab === "score" ? "Persuasion Score"
+                : "Hook Generator"}
             </button>
           ))}
         </div>
+      </div>
 
-        {plan === "multi-brand" && brands.length > 0 && (
+      {/* Brand switcher row — only for multi-brand, slim */}
+      {plan === "multi-brand" && brands.length > 0 && (
+        <div style={{ marginBottom: "20px" }}>
           <BrandSwitcher
             brands={brands}
             activeBrandId={activeBrandId}
@@ -267,8 +286,8 @@ export default function DashboardPage() {
             onAddBrand={handleAddBrand}
             maxBrands={5}
           />
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Calendar tab */}
       {activeTab === "calendar" && (
@@ -278,6 +297,20 @@ export default function DashboardPage() {
       {/* Spy AI tab */}
       {activeTab === "vision" && (
         <VisionView brandId={activeBrandId} onCreditsChange={(n) => setCredits(n)} />
+      )}
+
+      {/* Persuasion Score tab */}
+      {activeTab === "score" && (
+        <PersuasionView onCreditsChange={(n) => setCredits(n)} />
+      )}
+
+      {/* Hook Generator tab */}
+      {activeTab === "hooks" && (
+        <HooksView
+          onCreditsChange={(n) => setCredits(n)}
+          brandId={activeBrandId}
+          onUseHook={handleUseHook}
+        />
       )}
 
       {/* Generator tab wrapper */}

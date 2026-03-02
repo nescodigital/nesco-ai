@@ -71,10 +71,9 @@ export default function DashboardTopBar() {
         padding: "5px 10px", borderRadius: "6px", fontSize: "12px",
         fontWeight: 700, textDecoration: "none", whiteSpace: "nowrap",
       }}>+ Cumpără</a>
-      <a href="/pricing" className="sm:hidden" title="Cumpără credite" style={{
+      <a href="/pricing" className="sm:hidden flex items-center justify-center" title="Cumpără credite" style={{
         width: "28px", height: "28px", borderRadius: "6px",
-        background: "#56db84", display: "flex", alignItems: "center", justifyContent: "center",
-        flexShrink: 0, textDecoration: "none",
+        background: "#56db84", flexShrink: 0, textDecoration: "none",
       }}>
         <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
           <path d="M7 2v10M2 7h10" stroke="#0a0a0a" strokeWidth="2" strokeLinecap="round"/>

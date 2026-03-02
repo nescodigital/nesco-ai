@@ -4,7 +4,7 @@ export default function Logo() {
       <img
         src="https://zeiysldulaawgqdhhfpx.supabase.co/storage/v1/object/public/assets/ai_nescodigital_logo.png"
         alt="Nesco Digital"
-        style={{ height: "20px" }}
+        className="h-[14px] sm:h-[20px]"
       />
     </a>
   );
