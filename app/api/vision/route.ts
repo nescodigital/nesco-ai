@@ -4,33 +4,22 @@ import { createClient } from "@/lib/supabase/server";
 async function fetchWebsiteContent(url: string): Promise<string> {
   const normalizedUrl = url.startsWith("http") ? url : `https://${url}`;
 
-  const res = await fetch(normalizedUrl, {
-    headers: {
-      "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-      "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-      "Accept-Language": "ro-RO,ro;q=0.9,en;q=0.8",
-    },
-    signal: AbortSignal.timeout(10000),
+  // Use Jina AI Reader — converts any URL to clean text, bypasses bot protection
+  const jinaUrl = `https://r.jina.ai/${normalizedUrl}`;
+
+  const res = await fetch(jinaUrl, {
+    headers: { "Accept": "text/plain" },
+    signal: AbortSignal.timeout(20000),
   });
 
   if (!res.ok) throw new Error(`Site returned ${res.status}`);
 
-  const html = await res.text();
+  const text = await res.text();
 
-  // Strip HTML tags and extract meaningful text
-  const text = html
-    .replace(/<script[\s\S]*?<\/script>/gi, "")
-    .replace(/<style[\s\S]*?<\/style>/gi, "")
-    .replace(/<[^>]+>/g, " ")
-    .replace(/&nbsp;/g, " ")
-    .replace(/&amp;/g, "&")
-    .replace(/&lt;/g, "<")
-    .replace(/&gt;/g, ">")
-    .replace(/&quot;/g, '"')
-    .replace(/\s{2,}/g, " ")
-    .trim();
+  if (text.includes("could not be resolved") || text.includes("ParamValidationError")) {
+    throw new Error("Site-ul nu a putut fi accesat");
+  }
 
-  // Return first 8000 chars — enough for AI to analyze
   return text.slice(0, 8000);
 }
 
