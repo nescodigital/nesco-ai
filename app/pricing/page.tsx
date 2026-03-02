@@ -148,7 +148,7 @@ export default function PricingPage() {
                   <span className="text-[14px] text-white/40">{plan.currency}/lună</span>
                 </div>
                 <p className="text-[13px] text-white/40 mt-1">
-                  {plan.credits} credite · {plan.credits} texte sau {Math.round(plan.credits / 2)} imagini AI
+                  {plan.credits} texte sau {Math.round(plan.credits / 2)} imagini AI / lună
                 </p>
               </div>
 
