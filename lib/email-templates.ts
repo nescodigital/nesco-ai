@@ -198,6 +198,62 @@ export function contentEmail({
   };
 }
 
+export function calendarPlanEmail({
+  slots,
+  weekLabel,
+}: {
+  slots: Array<{ date: string; contentType: string; objective: string; result: string }>;
+  weekLabel: string;
+}): { subject: string; html: string } {
+  const MONTHS_RO = [
+    "ian", "feb", "mar", "apr", "mai", "iun",
+    "iul", "aug", "sep", "oct", "nov", "dec",
+  ];
+  const DAYS_RO = ["Dum", "Lun", "Mar", "Mie", "Joi", "Vin", "Sâm"];
+
+  const slotsHtml = slots.map((s) => {
+    const [y, m, d] = s.date.split("-").map(Number);
+    const dt = new Date(y, m - 1, d);
+    const dayLabel = `${DAYS_RO[dt.getDay()]} ${d} ${MONTHS_RO[m - 1]}`;
+
+    const htmlContent = s.result
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+      .replace(/\*(.+?)\*/g, "<em>$1</em>")
+      .replace(/\n/g, "<br/>");
+
+    return `
+      <div style="margin-bottom: 20px; border: 1px solid rgba(86,219,132,0.15); border-radius: 12px; overflow: hidden;">
+        <div style="background: rgba(86,219,132,0.07); padding: 10px 16px; display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.8);">${dayLabel}</span>
+          <span style="font-size: 11px; color: rgba(255,255,255,0.35);">${s.contentType} - ${s.objective}</span>
+        </div>
+        <div style="padding: 14px 16px; font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.7;">${htmlContent}</div>
+      </div>
+    `;
+  }).join("");
+
+  return {
+    subject: `Plan editorial ${weekLabel} (${slots.length} postări)`,
+    html: wrap(`
+      <h1 style="font-size: 22px; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 6px; line-height: 1.2;">
+        Planul tău editorial
+      </h1>
+      <p style="color: rgba(255,255,255,0.4); font-size: 14px; margin: 0 0 24px;">
+        ${weekLabel} - ${slots.length} ${slots.length === 1 ? "postare generată" : "postări generate"}
+      </p>
+
+      ${slotsHtml}
+
+      <a href="https://ai.nescodigital.com/dashboard" style="${BUTTON}">
+        Generează mai mult continut
+      </a>
+    `),
+  };
+}
+
 export function day5Email(email: string): { subject: string; html: string } {
   return {
     subject: "Creditele tale gratuite expiră curând → Vezi planurile",

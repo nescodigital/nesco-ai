@@ -60,20 +60,30 @@ export async function POST(request: NextRequest) {
       .lte("scheduled_date", endDate);
   }
 
-  // Build available dates for this week
-  const start = new Date(startDate);
-  const end = new Date(endDate);
+  // Build available dates for this week (parse as local date to avoid UTC offset issues)
   const availableDates: string[] = [];
-  for (let dt = new Date(start); dt <= end; dt.setDate(dt.getDate() + 1)) {
-    availableDates.push(dt.toISOString().split("T")[0]);
+  const [sy, sm, sd] = startDate.split("-").map(Number);
+  const [ey, em, ed] = endDate.split("-").map(Number);
+  const startLocal = new Date(sy, sm - 1, sd);
+  const endLocal = new Date(ey, em - 1, ed);
+  for (const dt = new Date(startLocal); dt <= endLocal; dt.setDate(dt.getDate() + 1)) {
+    const y = dt.getFullYear();
+    const m = String(dt.getMonth() + 1).padStart(2, "0");
+    const d = String(dt.getDate()).padStart(2, "0");
+    availableDates.push(`${y}-${m}-${d}`);
   }
 
-  // Pick `count` dates spread across the week
+  // Pick `count` unique dates spread evenly across the week
   const slotCount = Math.min(count, availableDates.length);
-  const step = availableDates.length / slotCount;
   const slotDates: string[] = [];
-  for (let i = 0; i < slotCount; i++) {
-    slotDates.push(availableDates[Math.floor(i * step)]);
+  if (slotCount === availableDates.length) {
+    slotDates.push(...availableDates);
+  } else {
+    // Use evenly spaced indices, guaranteed unique
+    for (let i = 0; i < slotCount; i++) {
+      const idx = Math.round((i * (availableDates.length - 1)) / (slotCount - 1 || 1));
+      slotDates.push(availableDates[Math.min(idx, availableDates.length - 1)]);
+    }
   }
 
   const updatesText = updates.length

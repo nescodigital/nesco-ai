@@ -19,6 +19,7 @@ export async function PATCH(
   if (body.status !== undefined) allowed.status = body.status;
   if (body.context !== undefined) allowed.context = body.context;
   if (body.result !== undefined) allowed.result = body.result;
+  if (body.scheduled_date !== undefined) allowed.scheduled_date = body.scheduled_date;
 
   const { data, error } = await supabase
     .from("calendar_slots")
