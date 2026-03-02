@@ -203,7 +203,7 @@ export default function DashboardPage() {
 
       {/* Calendar tab */}
       {activeTab === "calendar" && (
-        <CalendarView credits={credits} onCreditsChange={(n) => setCredits(n)} />
+        <CalendarView onCreditsChange={(n) => setCredits(n)} />
       )}
 
       {/* Generator tab wrapper */}

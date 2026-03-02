@@ -47,15 +47,12 @@ function wrap(content: string): string {
   <div style="${CONTAINER}">
     <!-- Logo -->
     <div style="margin-bottom: 32px;">
-      <span style="font-size: 18px; font-weight: 800; letter-spacing: -0.03em; color: #ffffff;">
-        nesco<span style="color: #56db84;">.</span>ai
-      </span>
+      <img src="https://zeiysldulaawgqdhhfpx.supabase.co/storage/v1/object/public/assets/ai_nescodigital_logo.png" alt="Nesco Digital AI" style="height: 36px; width: auto; display: block;" />
     </div>
 
     ${content}
 
     <div style="${FOOTER}">
-      <p>Nesco Digital SRL · ai.nescodigital.com</p>
       <p>Ai primit acest email pentru că te-ai înregistrat la Nesco Digital AI.</p>
     </div>
   </div>
@@ -87,14 +84,14 @@ export function welcomeEmail(email: string): { subject: string; html: string } {
             <div style="width: 24px; height: 24px; border-radius: 8px; background: linear-gradient(135deg,rgba(86,219,132,0.2),rgba(129,140,248,0.15)); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #56db84;">1</div>
             <div>
               <p style="margin: 0; font-size: 14px; font-weight: 600; color: #ffffff;">Alege tipul de conținut</p>
-              <p style="margin: 4px 0 0; font-size: 13px; color: rgba(255,255,255,0.4);">Post, email, reclamă — AI-ul știe regulile fiecărei platforme.</p>
+              <p style="margin: 4px 0 0; font-size: 13px; color: rgba(255,255,255,0.4);">Post, email, reclamă - AI-ul știe regulile fiecărei platforme.</p>
             </div>
           </div>
           <div style="display: flex; align-items: flex-start; gap: 12px;">
             <div style="width: 24px; height: 24px; border-radius: 8px; background: linear-gradient(135deg,rgba(86,219,132,0.2),rgba(129,140,248,0.15)); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #56db84;">2</div>
             <div>
               <p style="margin: 0; font-size: 14px; font-weight: 600; color: #ffffff;">Spune-i despre ce să scrie</p>
-              <p style="margin: 4px 0 0; font-size: 13px; color: rgba(255,255,255,0.4);">Un context scurt — promoție, produs nou, eveniment.</p>
+              <p style="margin: 4px 0 0; font-size: 13px; color: rgba(255,255,255,0.4);">Un context scurt - promoție, produs nou, eveniment.</p>
             </div>
           </div>
           <div style="display: flex; align-items: flex-start; gap: 12px;">
@@ -112,7 +109,7 @@ export function welcomeEmail(email: string): { subject: string; html: string } {
       </a>
 
       <p style="margin-top: 24px; font-size: 13px; color: rgba(255,255,255,0.3);">
-        Ai completat profilul brandului tău la înregistrare — AI-ul va scrie deja în stilul tău. Dacă vrei să actualizezi ceva, găsești setările în dashboard.
+        Ai completat profilul brandului tău la înregistrare - AI-ul va scrie deja în stilul tău. Dacă vrei să actualizezi ceva, găsești setările în dashboard.
       </p>
     `),
   };
@@ -141,7 +138,7 @@ export function day2Email(email: string): { subject: string; html: string } {
       <div style="border-left: 3px solid #818cf8; padding: 4px 0 4px 16px; margin-bottom: 20px;">
         <p style="margin: 0 0 6px; font-size: 14px; font-weight: 700; color: #ffffff;">✦ Un singur CTA per post</p>
         <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6;">
-          "Comentează, dă share și intră pe site" = nimeni nu face nimic. Alege un singur obiectiv când generezi — AI-ul va construi postul în jurul lui.
+          "Comentează, dă share și intră pe site" = nimeni nu face nimic. Alege un singur obiectiv când generezi - AI-ul va construi postul în jurul lui.
         </p>
       </div>
 
@@ -178,7 +175,7 @@ export function day5Email(email: string): { subject: string; html: string } {
           <div style="display: flex; justify-content: space-between; align-items: flex-start;">
             <div>
               <p style="margin: 0 0 4px; font-size: 15px; font-weight: 700; color: #ffffff;">Starter</p>
-              <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.4);">50 generări/lună — perfect pentru un brand activ</p>
+              <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.4);">50 generări/lună - perfect pentru un brand activ</p>
             </div>
             <p style="margin: 0; font-size: 20px; font-weight: 800; color: #56db84; white-space: nowrap;">9€<span style="font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.3)">/lună</span></p>
           </div>

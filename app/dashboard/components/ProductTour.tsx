@@ -246,7 +246,7 @@ export default function ProductTour() {
               fontFamily: "var(--font-geist-sans)",
             }}
           >
-            {step < TOUR_STEPS.length - 1 ? "Următor →" : "Am înțeles ✓"}
+            {step < TOUR_STEPS.length - 1 ? "Următorul →" : "Am înțeles ✓"}
           </button>
         </div>
       </div>
