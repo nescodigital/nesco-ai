@@ -209,7 +209,7 @@ export default function CalendarView({ onCreditsChange }: Props) {
   const platformInfo = PLATFORMS.find((p) => p.id === selectedPlatform)!;
 
   return (
-    <div style={{ fontFamily: "var(--font-geist-sans)", maxWidth: "680px" }}>
+    <div style={{ fontFamily: "var(--font-geist-sans)", width: "100%" }}>
       {/* Header */}
       <div style={{ marginBottom: "20px" }}>
         <h1 style={{ fontSize: "22px", fontWeight: 800, color: "#fff", margin: "0 0 4px", letterSpacing: "-0.02em" }}>Calendar editorial</h1>
@@ -217,11 +217,11 @@ export default function CalendarView({ onCreditsChange }: Props) {
       </div>
 
       {/* Platform selector */}
-      <div style={{ marginBottom: "14px" }}>
+      <div style={{ marginBottom: "14px", width: "100%" }}>
         <p style={{ fontSize: "11px", fontWeight: 700, color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 8px" }}>
           Platformă
         </p>
-        <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "6px", flexWrap: "wrap", width: "100%" }}>
           {PLATFORMS.map((p) => {
             const active = selectedPlatform === p.id;
             return (
@@ -246,11 +246,11 @@ export default function CalendarView({ onCreditsChange }: Props) {
       </div>
 
       {/* Post count */}
-      <div style={{ marginBottom: "18px" }}>
+      <div style={{ marginBottom: "18px", width: "100%" }}>
         <p style={{ fontSize: "11px", fontWeight: 700, color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.08em", margin: "0 0 8px" }}>
           Posturi săptămâna aceasta
         </p>
-        <div style={{ display: "flex", gap: "6px" }}>
+        <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
           {[1, 2, 3, 4, 5, 6, 7].map((n) => {
             const active = postCount === n;
             return (
@@ -259,7 +259,7 @@ export default function CalendarView({ onCreditsChange }: Props) {
                 onClick={() => setPostCount(n)}
                 style={{
                   width: "36px", height: "36px", borderRadius: "8px", fontSize: "14px", fontWeight: 700,
-                  cursor: "pointer", transition: "all 0.15s",
+                  cursor: "pointer", transition: "all 0.15s", flexShrink: 0,
                   background: active ? "linear-gradient(135deg,rgba(86,219,132,0.2),rgba(129,140,248,0.15))" : "rgba(255,255,255,0.03)",
                   border: active ? "1px solid rgba(86,219,132,0.5)" : "1px solid rgba(255,255,255,0.07)",
                   color: active ? "#56db84" : "rgba(255,255,255,0.4)",
@@ -275,32 +275,36 @@ export default function CalendarView({ onCreditsChange }: Props) {
         </p>
       </div>
 
-      {/* Week nav + actions row */}
-      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "16px", flexWrap: "wrap" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "10px", padding: "6px 10px" }}>
+      {/* Week nav row */}
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "8px", marginBottom: "8px", width: "100%" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "10px", padding: "6px 10px", flex: 1, minWidth: 0 }}>
           <button
             onClick={() => setWeekOffset((o) => o - 1)}
-            style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", fontSize: "16px", padding: "0 4px", lineHeight: 1 }}
+            style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", fontSize: "16px", padding: "0 4px", lineHeight: 1, flexShrink: 0 }}
           >
             ←
           </button>
-          <span style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", fontWeight: 600, minWidth: "200px", textAlign: "center" }}>
+          <span style={{ color: "rgba(255,255,255,0.7)", fontSize: "13px", fontWeight: 600, textAlign: "center", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             {weekLabel}
           </span>
           <button
             onClick={() => setWeekOffset((o) => o + 1)}
-            style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", fontSize: "16px", padding: "0 4px", lineHeight: 1 }}
+            style={{ background: "none", border: "none", color: "rgba(255,255,255,0.4)", cursor: "pointer", fontSize: "16px", padding: "0 4px", lineHeight: 1, flexShrink: 0 }}
           >
             →
           </button>
         </div>
+      </div>
 
+      {/* Actions row */}
+      <div style={{ display: "flex", gap: "8px", marginBottom: "16px", width: "100%", flexWrap: "wrap" }}>
         <button
           onClick={handleGeneratePlan}
           disabled={generatingPlan || revealingSlots}
           style={{
-            display: "flex", alignItems: "center", gap: "8px",
+            display: "flex", alignItems: "center", justifyContent: "center", gap: "8px",
             padding: "9px 16px", borderRadius: "10px", fontSize: "13px", fontWeight: 700,
+            flex: 1, minWidth: 0,
             background: generatingPlan || revealingSlots ? "rgba(86,219,132,0.06)" : "linear-gradient(135deg,rgba(86,219,132,0.22),rgba(129,140,248,0.18))",
             border: "1px solid rgba(86,219,132,0.35)",
             color: generatingPlan || revealingSlots ? "rgba(86,219,132,0.4)" : "#56db84",
@@ -335,8 +339,9 @@ export default function CalendarView({ onCreditsChange }: Props) {
             onClick={handleSendPlanEmail}
             disabled={sendingEmail}
             style={{
-              display: "flex", alignItems: "center", gap: "6px",
+              display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
               padding: "9px 16px", borderRadius: "10px", fontSize: "13px", fontWeight: 700,
+              flex: 1, minWidth: 0,
               background: emailSent ? "rgba(86,219,132,0.1)" : "rgba(255,255,255,0.04)",
               border: emailSent ? "1px solid rgba(86,219,132,0.35)" : "1px solid rgba(255,255,255,0.1)",
               color: emailSent ? "#56db84" : "rgba(255,255,255,0.5)",
@@ -351,7 +356,7 @@ export default function CalendarView({ onCreditsChange }: Props) {
                 </svg>
                 Se trimite...
               </>
-            ) : emailSent ? "Trimis pe email" : `Trimite planul pe email (${generatedSlots.length})`}
+            ) : emailSent ? "Trimis pe email" : `Trimite planul (${generatedSlots.length})`}
           </button>
         )}
       </div>
