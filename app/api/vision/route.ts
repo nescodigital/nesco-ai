@@ -98,6 +98,17 @@ export async function POST(request: Request) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
+  // Check credits (5 required)
+  const { data: creditsRow } = await supabase
+    .from("user_credits")
+    .select("credits")
+    .eq("user_id", user.id)
+    .single();
+
+  if (!creditsRow || creditsRow.credits < 5) {
+    return Response.json({ error: "no_credits" }, { status: 402 });
+  }
+
   const { pageUrl, brandId = 1 } = await request.json();
   if (!pageUrl) return Response.json({ error: "pageUrl required" }, { status: 400 });
 
@@ -167,6 +178,7 @@ INSTRUCȚIUNI ANALIZĂ:
 3. Identifică ce OBIECȚII anticipează și cum le depășesc
 4. Dacă ai reclame: analizează ce hook-uri folosesc, ce CTA-uri, ce emoții vizează
 5. Diferențierea: fii SPECIFIC — nu "comunică mai personal", ci "Ei promit X în Y zile, tu poți promite Z cu garanție + dovadă socială de tip ABC"
+6. brandInsights: bazat pe analiza competitorului, sugerează îmbunătățiri CONCRETE pentru brandul "${brandName}" — ce ar trebui să schimbe/adauge în profilul lor (USP mai clar, ton diferit, canale noi, mesaje noi)
 
 Returnează DOAR JSON valid, fără markdown:
 {
@@ -178,7 +190,12 @@ Returnează DOAR JSON valid, fără markdown:
   "offers": ["oferta/serviciul principal 1", "oferta/serviciul principal 2", "oferta/serviciul principal 3"],
   "weaknesses": ["punct slab identificat 1", "punct slab identificat 2"],
   "differentiation": "2-3 fraze SPECIFICE și CONCRETE despre cum poate ${brandName} să câștige față de ei — cu referire directă la slăbiciunile lor și USP-ul tău",
-  "actionableMove": "1 acțiune concretă pe care ${brandName} o poate face ACUM pentru a ataca direct poziționarea competitorului"
+  "actionableMove": "1 acțiune concretă pe care ${brandName} o poate face ACUM pentru a ataca direct poziționarea competitorului",
+  "brandInsights": {
+    "usp": "USP îmbunătățit sau confirmat pentru ${brandName} — 1 frază clară și concisă",
+    "tone_words": ["cuvânt ton 1", "cuvânt ton 2", "cuvânt ton 3"],
+    "buying_decision": "cum ia clientul decizia de cumpărare — 1 frază bazată pe ce ai văzut la competitor și ce lipsește brandului tău"
+  }
 }`;
 
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY! });
@@ -194,7 +211,19 @@ Returnează DOAR JSON valid, fără markdown:
     const cleaned = raw.replace(/^```(?:json)?\n?/, "").replace(/\n?```$/, "");
     const analysis = JSON.parse(cleaned);
 
-    return Response.json({ analysis, domain, competitorName: analysis.competitorName ?? domain, hasAds });
+    // Deduct 5 credits after successful analysis
+    await supabase
+      .from("user_credits")
+      .update({ credits: creditsRow.credits - 5, updated_at: new Date().toISOString() })
+      .eq("user_id", user.id);
+
+    return Response.json({
+      analysis,
+      domain,
+      competitorName: analysis.competitorName ?? domain,
+      hasAds,
+      creditsRemaining: creditsRow.credits - 5,
+    });
   } catch {
     return Response.json({ error: "Eroare la analiza AI." }, { status: 500 });
   }

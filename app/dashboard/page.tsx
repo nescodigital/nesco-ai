@@ -256,7 +256,7 @@ export default function DashboardPage() {
                 whiteSpace: "nowrap",
               }}
             >
-              {tab === "generator" ? "Generator" : tab === "calendar" ? "Calendar" : "Vision AI"}
+              {tab === "generator" ? "Generator" : tab === "calendar" ? "Calendar" : "Spy AI"}
             </button>
           ))}
         </div>
@@ -311,9 +311,9 @@ export default function DashboardPage() {
         <CalendarView onCreditsChange={(n) => setCredits(n)} />
       )}
 
-      {/* Vision AI tab */}
+      {/* Spy AI tab */}
       {activeTab === "vision" && (
-        <VisionView brandId={activeBrandId} />
+        <VisionView brandId={activeBrandId} onCreditsChange={(n) => setCredits(n)} />
       )}
 
       {/* Generator tab wrapper */}

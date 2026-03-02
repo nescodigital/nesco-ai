@@ -2,6 +2,12 @@
 
 import { useState, useEffect, useRef } from "react";
 
+interface BrandInsights {
+  usp: string;
+  tone_words: string[];
+  buying_decision: string;
+}
+
 interface Analysis {
   competitorName: string;
   strategy: string;
@@ -12,6 +18,7 @@ interface Analysis {
   weaknesses: string[];
   differentiation: string;
   actionableMove: string;
+  brandInsights?: BrandInsights;
 }
 
 interface Competitor {
@@ -22,6 +29,7 @@ interface Competitor {
 
 interface Props {
   brandId?: number;
+  onCreditsChange?: (n: number) => void;
 }
 
 const LOADING_STEPS = [
@@ -31,7 +39,7 @@ const LOADING_STEPS = [
   "Generez recomandări de diferențiere…",
 ];
 
-export default function VisionView({ brandId = 1 }: Props) {
+export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
@@ -41,6 +49,8 @@ export default function VisionView({ brandId = 1 }: Props) {
   const [error, setError] = useState("");
   const [competitors, setCompetitors] = useState<Competitor[]>([]);
   const [loadingCompetitors, setLoadingCompetitors] = useState(true);
+  const [applyingInsights, setApplyingInsights] = useState(false);
+  const [insightsApplied, setInsightsApplied] = useState(false);
   const progressIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
@@ -91,9 +101,15 @@ export default function VisionView({ brandId = 1 }: Props) {
         body: JSON.stringify({ pageUrl: input.trim(), brandId }),
       });
       const data = await res.json();
-      if (!res.ok) { setError(data.error || "Eroare la analiză"); return; }
+      if (!res.ok) {
+        if (data.error === "no_credits") { setError("no_credits"); }
+        else { setError(data.error || "Eroare la analiză"); }
+        return;
+      }
       setAnalysis(data.analysis);
+      setInsightsApplied(false);
       setDomain(data.domain ?? input.trim());
+      if (typeof data.creditsRemaining === "number") onCreditsChange?.(data.creditsRemaining);
       if (data.analysis) {
         const name = data.competitorName || data.domain || input.trim();
         setCompetitors((prev) => {
@@ -109,6 +125,23 @@ export default function VisionView({ brandId = 1 }: Props) {
     } finally {
       stopLoadingAnimation();
       setLoading(false);
+    }
+  }
+
+  async function handleApplyInsights() {
+    if (!analysis?.brandInsights) return;
+    setApplyingInsights(true);
+    try {
+      const res = await fetch("/api/brand-insights-apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ brandId, insights: analysis.brandInsights }),
+      });
+      if (res.ok) setInsightsApplied(true);
+    } catch {
+      // silent
+    } finally {
+      setApplyingInsights(false);
     }
   }
 
@@ -134,11 +167,18 @@ export default function VisionView({ brandId = 1 }: Props) {
     <div style={{ fontFamily: "var(--font-geist-sans)" }}>
       {/* Header */}
       <div style={{ marginBottom: "24px" }}>
-        <h2 style={{ fontSize: "20px", fontWeight: 700, color: "#fff", margin: "0 0 6px" }}>
-          Vision AI
-        </h2>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px" }}>
+          <h2 style={{ fontSize: "20px", fontWeight: 700, color: "#fff", margin: 0 }}>
+            Spy AI
+          </h2>
+          <span style={{
+            fontSize: "10px", fontWeight: 800, padding: "2px 8px", borderRadius: "20px",
+            background: "rgba(251,191,36,0.12)", border: "1px solid rgba(251,191,36,0.25)",
+            color: "#fbbf24", textTransform: "uppercase", letterSpacing: "0.08em",
+          }}>5 credite</span>
+        </div>
         <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.4)", margin: 0 }}>
-          Introdu URL-ul site-ului unui competitor — AI analizează strategia lor de marketing și îți spune cum să te diferențiezi.
+          Introdu URL-ul site-ului unui competitor — AI analizează strategia lor și îți spune exact cum să câștigi.
         </p>
       </div>
 
@@ -243,12 +283,15 @@ export default function VisionView({ brandId = 1 }: Props) {
       )}
 
       {/* Error */}
-      {error && (
-        <div style={{
-          background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)",
-          borderRadius: "10px", padding: "14px 16px", marginBottom: "20px",
-          color: "#fca5a5", fontSize: "13px",
-        }}>
+      {error === "no_credits" && (
+        <div style={{ background: "rgba(251,146,60,0.08)", border: "1px solid rgba(251,146,60,0.25)", borderRadius: "10px", padding: "14px 16px", marginBottom: "20px" }}>
+          <p style={{ color: "#fdba74", fontSize: "14px", fontWeight: 600, margin: "0 0 4px" }}>Credite insuficiente</p>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", margin: "0 0 10px" }}>Spy AI costă 5 credite per analiză.</p>
+          <a href="/pricing" style={{ background: "#56db84", color: "#000", padding: "6px 14px", borderRadius: "6px", fontSize: "12px", fontWeight: 700, textDecoration: "none" }}>+ Cumpără credite</a>
+        </div>
+      )}
+      {error && error !== "no_credits" && (
+        <div style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: "10px", padding: "14px 16px", marginBottom: "20px", color: "#fca5a5", fontSize: "13px" }}>
           {error}
         </div>
       )}
@@ -341,8 +384,40 @@ export default function VisionView({ brandId = 1 }: Props) {
             )}
           </div>
 
+          {/* Apply to brand */}
+          {analysis.brandInsights && (
+            <div style={{ background: "rgba(129,140,248,0.05)", border: "1px solid rgba(129,140,248,0.2)", borderRadius: "12px", padding: "16px 20px", marginBottom: "16px" }}>
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "16px", flexWrap: "wrap" }}>
+                <div style={{ flex: 1 }}>
+                  <p style={{ fontSize: "13px", fontWeight: 600, color: "#818cf8", margin: "0 0 4px" }}>
+                    Actualizează profilul brandului tău
+                  </p>
+                  <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)", margin: 0 }}>
+                    {insightsApplied
+                      ? "Profilul a fost actualizat cu recomandările din această analiză."
+                      : "Aplică automat USP-ul, tonul și decizia de cumpărare sugerate de AI."}
+                  </p>
+                </div>
+                <button
+                  onClick={handleApplyInsights}
+                  disabled={applyingInsights || insightsApplied}
+                  style={{
+                    background: insightsApplied ? "rgba(86,219,132,0.15)" : "linear-gradient(135deg,#818cf8,#a78bfa)",
+                    color: insightsApplied ? "#56db84" : "#fff",
+                    border: insightsApplied ? "1px solid rgba(86,219,132,0.3)" : "none",
+                    borderRadius: "8px", padding: "8px 16px", fontSize: "13px", fontWeight: 700,
+                    cursor: applyingInsights || insightsApplied ? "default" : "pointer",
+                    whiteSpace: "nowrap", fontFamily: "var(--font-geist-sans)", flexShrink: 0,
+                  }}
+                >
+                  {insightsApplied ? "✓ Aplicat" : applyingInsights ? "Se aplică…" : "Aplică la brandul tău"}
+                </button>
+              </div>
+            </div>
+          )}
+
           <button
-            onClick={() => { setAnalysis(null); setDomain(""); setInput(""); }}
+            onClick={() => { setAnalysis(null); setDomain(""); setInput(""); setInsightsApplied(false); }}
             style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", padding: "8px 16px", color: "rgba(255,255,255,0.4)", fontSize: "13px", cursor: "pointer", fontFamily: "var(--font-geist-sans)" }}
           >
             ← Analizează alt competitor
