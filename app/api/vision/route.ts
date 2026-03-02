@@ -109,28 +109,42 @@ export async function POST(request: Request) {
     return Response.json({ error: "no_credits" }, { status: 402 });
   }
 
-  const { pageUrl, brandId = 1 } = await request.json();
-  if (!pageUrl) return Response.json({ error: "pageUrl required" }, { status: 400 });
+  // sourceType: "website" | "social" | "text"
+  const { pageUrl, manualText, sourceType = "website", brandId = 1 } = await request.json();
 
-  const domain = extractDomain(pageUrl);
+  let contentText = "";
+  let identifier = "";
 
-  // Fetch website content (multi-page) + ads in parallel
-  const [websiteText, adsResult] = await Promise.all([
-    fetchMultiPageContent(domain),
-    fetchAdsFromRapidAPI(domain),
-  ]);
-
-  if (!websiteText && !adsResult.text) {
-    return Response.json({ error: "Nu am putut accesa site-ul sau reclamele competitorului." }, { status: 502 });
+  if (sourceType === "text" && manualText) {
+    // User pasted text manually (bio, posts, description)
+    contentText = manualText.slice(0, 12000);
+    identifier = pageUrl?.trim() || "competitor";
+  } else if (sourceType === "website" && pageUrl) {
+    const domain = extractDomain(pageUrl);
+    identifier = domain;
+    const [websiteText, adsResult] = await Promise.all([
+      fetchMultiPageContent(domain),
+      fetchAdsFromRapidAPI(domain),
+    ]);
+    if (websiteText) contentText += websiteText;
+    if (adsResult.text) contentText += `\n\nRECLAME ACTIVE:\n${adsResult.text}`;
+  } else {
+    return Response.json({ error: "pageUrl sau manualText required" }, { status: 400 });
   }
+
+  if (!contentText || contentText.length < 50) {
+    return Response.json({ error: "Nu am putut accesa conținutul. Încearcă să lipești manual textul." }, { status: 502 });
+  }
+
+  const domain = identifier;
 
   // Save competitor
   await supabase.from("tracked_competitors").upsert(
     {
       user_id: user.id,
       brand_id: brandId,
-      page_identifier: domain,
-      page_name: domain,
+      page_identifier: identifier,
+      page_name: identifier,
       last_checked: new Date().toISOString(),
     },
     { onConflict: "user_id,brand_id,page_identifier" }
@@ -152,18 +166,13 @@ export async function POST(request: Request) {
   const buyingDecision = (d?.buying_decision as string) ?? "";
   const channels = ((d?.channels as string[]) ?? []).join(", ");
 
-  const websiteSection = websiteText
-    ? `\n\nCONȚINUT WEBSITE (${domain}):\n${websiteText}`
-    : "";
+  const sourceLabel = sourceType === "text" ? "CONȚINUT FURNIZAT DE UTILIZATOR" : `CONȚINUT (${domain})`;
+  const websiteSection = contentText ? `\n\n${sourceLabel}:\n${contentText}` : "";
 
-  const adsSection = adsResult.text
-    ? `\n\nRECLAME ACTIVE (${adsResult.count} găsite):\n${adsResult.text}`
-    : "";
-
-  const hasAds = adsResult.count > 0;
+  const hasAds = false;
 
   const prompt = `Ești un expert senior în strategie de marketing digital și analiză competitivă. Misiunea ta: oferă insight-uri CONCRETE și ACȚIONABILE, nu generalități.
-${websiteSection}${adsSection}
+${websiteSection}
 
 PROFILUL BRANDULUI "${brandName}":
 - USP: ${brandUsp || "nespecificat"}

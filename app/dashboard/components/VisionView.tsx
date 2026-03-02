@@ -39,8 +39,12 @@ const LOADING_STEPS = [
   "Generez recomandări de diferențiere…",
 ];
 
+type SourceType = "website" | "text";
+
 export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
+  const [sourceType, setSourceType] = useState<SourceType>("website");
   const [input, setInput] = useState("");
+  const [manualText, setManualText] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingStep, setLoadingStep] = useState(0);
   const [loadingProgress, setLoadingProgress] = useState(0);
@@ -87,7 +91,8 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
   }
 
   async function handleSearch() {
-    if (!input.trim()) return;
+    const hasInput = sourceType === "website" ? !!input.trim() : !!manualText.trim();
+    if (!hasInput) return;
     setLoading(true);
     setAnalysis(null);
     setDomain("");
@@ -98,7 +103,12 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
       const res = await fetch("/api/vision", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ pageUrl: input.trim(), brandId }),
+        body: JSON.stringify({
+          pageUrl: input.trim() || undefined,
+          manualText: manualText.trim() || undefined,
+          sourceType,
+          brandId,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -182,34 +192,88 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
         </p>
       </div>
 
+      {/* Source type selector */}
+      <div style={{ display: "flex", gap: "6px", marginBottom: "14px" }}>
+        {(["website", "text"] as SourceType[]).map((type) => (
+          <button
+            key={type}
+            onClick={() => setSourceType(type)}
+            style={{
+              padding: "6px 14px", borderRadius: "8px", fontSize: "12px", fontWeight: 600,
+              border: "none", cursor: "pointer", fontFamily: "var(--font-geist-sans)",
+              background: sourceType === type
+                ? "rgba(255,255,255,0.08)" : "transparent",
+              color: sourceType === type ? "#fff" : "rgba(255,255,255,0.3)",
+              boxShadow: sourceType === type ? "0 0 0 1px rgba(255,255,255,0.1) inset" : "none",
+            }}
+          >
+            {type === "website" ? "🌐 Website" : "📋 Text / Bio / Posturi"}
+          </button>
+        ))}
+      </div>
+
       {/* Search bar */}
-      <div style={{ display: "flex", gap: "10px", marginBottom: "24px" }}>
-        <input
-          style={inputStyle}
-          placeholder="ex: competitor.ro sau https://competitor.ro"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-        />
-        <button
-          onClick={handleSearch}
-          disabled={loading || !input.trim()}
-          style={{
-            background: loading ? "rgba(86,219,132,0.3)" : "linear-gradient(135deg,#56db84,#818cf8)",
-            color: "#000",
-            border: "none",
-            borderRadius: "10px",
-            padding: "12px 20px",
-            fontSize: "13px",
-            fontWeight: 700,
-            cursor: loading ? "not-allowed" : "pointer",
-            whiteSpace: "nowrap",
-            fontFamily: "var(--font-geist-sans)",
-            flexShrink: 0,
-          }}
-        >
-          {loading ? "Analizez…" : "Analizează"}
-        </button>
+      <div style={{ display: "flex", flexDirection: "column", gap: "10px", marginBottom: "24px" }}>
+        {sourceType === "website" ? (
+          <div style={{ display: "flex", gap: "10px" }}>
+            <input
+              style={inputStyle}
+              placeholder="ex: competitor.ro sau https://competitor.ro"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+            />
+            <button
+              onClick={handleSearch}
+              disabled={loading || !input.trim()}
+              style={{
+                background: loading ? "rgba(86,219,132,0.3)" : "linear-gradient(135deg,#56db84,#818cf8)",
+                color: "#000", border: "none", borderRadius: "10px",
+                padding: "12px 20px", fontSize: "13px", fontWeight: 700,
+                cursor: loading ? "not-allowed" : "pointer",
+                whiteSpace: "nowrap", fontFamily: "var(--font-geist-sans)", flexShrink: 0,
+              }}
+            >
+              {loading ? "Analizez…" : "Analizează"}
+            </button>
+          </div>
+        ) : (
+          <>
+            <input
+              style={{ ...inputStyle, marginBottom: "0" }}
+              placeholder="Nume competitor (ex: Vodafone Romania) — opțional"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+            />
+            <div style={{ display: "flex", gap: "10px", alignItems: "flex-start" }}>
+              <textarea
+                style={{
+                  ...inputStyle,
+                  minHeight: "120px",
+                  resize: "vertical",
+                  lineHeight: 1.5,
+                }}
+                placeholder={`Lipește bio-ul, postările sau descrierea competitorului de pe Instagram, TikTok, Facebook etc.\n\nEx: \"Ajutăm antreprenorii să crească online. 🚀 Social media | Ads | Branding. DM pentru colaborări.\"`}
+                value={manualText}
+                onChange={(e) => setManualText(e.target.value)}
+              />
+              <button
+                onClick={handleSearch}
+                disabled={loading || !manualText.trim()}
+                style={{
+                  background: loading ? "rgba(86,219,132,0.3)" : "linear-gradient(135deg,#56db84,#818cf8)",
+                  color: "#000", border: "none", borderRadius: "10px",
+                  padding: "12px 20px", fontSize: "13px", fontWeight: 700,
+                  cursor: loading ? "not-allowed" : "pointer",
+                  whiteSpace: "nowrap", fontFamily: "var(--font-geist-sans)", flexShrink: 0,
+                  marginTop: "0",
+                }}
+              >
+                {loading ? "Analizez…" : "Analizează"}
+              </button>
+            </div>
+          </>
+        )}
       </div>
 
       {/* Loading state */}
