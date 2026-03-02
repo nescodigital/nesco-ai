@@ -23,11 +23,11 @@ interface Props {
 }
 
 const CONTENT_TYPE_ICONS: Record<string, { icon: React.ReactNode; color: string }> = {
-  "Post Facebook": { icon: <FaFacebook size={14} />, color: "#1877F2" },
-  "Post Instagram": { icon: <FaInstagram size={14} />, color: "#E1306C" },
-  "Post LinkedIn": { icon: <FaLinkedin size={14} />, color: "#0A66C2" },
-  "Email newsletter": { icon: <MdEmail size={14} />, color: "#94a3b8" },
-  "Reclamă Meta Ads": { icon: <FaMeta size={14} />, color: "#0082FB" },
+  "Post Facebook": { icon: <FaFacebook size={14} />, color: "rgba(255,255,255,0.7)" },
+  "Post Instagram": { icon: <FaInstagram size={14} />, color: "rgba(255,255,255,0.7)" },
+  "Post LinkedIn": { icon: <FaLinkedin size={14} />, color: "rgba(255,255,255,0.7)" },
+  "Email newsletter": { icon: <MdEmail size={14} />, color: "rgba(255,255,255,0.7)" },
+  "Reclamă Meta Ads": { icon: <FaMeta size={14} />, color: "rgba(255,255,255,0.7)" },
 };
 
 const OBJECTIVE_COLORS: Record<string, string> = {

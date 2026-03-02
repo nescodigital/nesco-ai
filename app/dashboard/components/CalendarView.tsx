@@ -12,11 +12,11 @@ const MONTHS_RO = [
 ];
 
 const PLATFORMS = [
-  { id: "Post Facebook", label: "Facebook", icon: <FaFacebook size={14} />, color: "#1877F2" },
-  { id: "Post Instagram", label: "Instagram", icon: <FaInstagram size={14} />, color: "#E1306C" },
-  { id: "Post LinkedIn", label: "LinkedIn", icon: <FaLinkedin size={14} />, color: "#0A66C2" },
-  { id: "Email newsletter", label: "Email", icon: <MdEmail size={14} />, color: "#94a3b8" },
-  { id: "Reclamă Meta Ads", label: "Meta Ads", icon: <FaMeta size={14} />, color: "#0082FB" },
+  { id: "Post Facebook", label: "Facebook", icon: <FaFacebook size={14} />, color: "rgba(255,255,255,0.7)" },
+  { id: "Post Instagram", label: "Instagram", icon: <FaInstagram size={14} />, color: "rgba(255,255,255,0.7)" },
+  { id: "Post LinkedIn", label: "LinkedIn", icon: <FaLinkedin size={14} />, color: "rgba(255,255,255,0.7)" },
+  { id: "Email newsletter", label: "Email", icon: <MdEmail size={14} />, color: "rgba(255,255,255,0.7)" },
+  { id: "Reclamă Meta Ads", label: "Meta Ads", icon: <FaMeta size={14} />, color: "rgba(255,255,255,0.7)" },
 ] as const;
 
 function getMonday(date: Date): Date {
