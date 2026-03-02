@@ -9,18 +9,18 @@ import BusinessMemory from "@/app/dashboard/components/BusinessMemory";
 import CalendarView from "@/app/dashboard/components/CalendarView";
 
 const CONTENT_TYPES = [
-  { v: "Post Facebook", l: "👍 Post Facebook" },
-  { v: "Post Instagram", l: "📸 Post Instagram" },
-  { v: "Post LinkedIn", l: "💼 Post LinkedIn" },
-  { v: "Email newsletter", l: "📧 Email newsletter" },
-  { v: "Reclamă Meta Ads", l: "🎯 Reclamă Meta Ads" },
+  { v: "Post Facebook", l: "Post Facebook" },
+  { v: "Post Instagram", l: "Post Instagram" },
+  { v: "Post LinkedIn", l: "Post LinkedIn" },
+  { v: "Email newsletter", l: "Email newsletter" },
+  { v: "Reclamă Meta Ads", l: "Reclamă Meta Ads" },
 ];
 
 const OBJECTIVES = [
-  { v: "Vânzare", l: "💰 Vânzare" },
-  { v: "Awareness", l: "📣 Awareness" },
-  { v: "Engagement", l: "💬 Engagement" },
-  { v: "Promovare ofertă specială", l: "🎁 Promovare ofertă specială" },
+  { v: "Vânzare", l: "Vânzare" },
+  { v: "Awareness", l: "Awareness" },
+  { v: "Engagement", l: "Engagement" },
+  { v: "Promovare ofertă specială", l: "Promovare ofertă specială" },
 ];
 
 interface HistoryItem {
@@ -220,7 +220,7 @@ export default function DashboardPage() {
                 boxShadow: activeTab === tab ? "0 0 0 1px rgba(86,219,132,0.2) inset" : "none",
               }}
             >
-              {tab === "generator" ? "⚡ Generator" : "📅 Calendar"}
+              {tab === "generator" ? "Generator" : "Calendar"}
             </button>
           ))}
         </div>
@@ -256,9 +256,8 @@ export default function DashboardPage() {
           className="rounded-2xl px-5 py-4 mb-5 flex items-start gap-3"
           style={{ background: "rgba(251,146,60,0.08)", border: "1px solid rgba(251,146,60,0.25)" }}
         >
-          <span className="text-xl mt-0.5">⚠️</span>
           <div>
-            <p className="text-[14px] font-semibold text-orange-300 mb-1">Ai terminat creditele gratuite</p>
+            <p className="text-[14px] font-semibold text-orange-300 mb-1">Credite insuficiente</p>
             <p className="text-[13px] text-white/50 mb-3">Ia un plan pentru a continua să generezi conținut personalizat cu AI.</p>
             <Link
               href="/pricing"
@@ -372,10 +371,7 @@ export default function DashboardPage() {
               Se generează...
             </>
           ) : (
-            <>
-              <span>⚡</span>
-              <span>Generează</span>
-            </>
+            "Generează"
           )}
         </button>
       </div>
@@ -449,7 +445,7 @@ export default function DashboardPage() {
                   opacity: sendingEmail ? 0.6 : 1,
                 }}
               >
-                {emailSent ? "✓ Trimis!" : sendingEmail ? "..." : "📧 Trimite pe email"}
+                {emailSent ? "Trimis" : sendingEmail ? "Se trimite..." : "Trimite pe email"}
               </button>
             </div>
           </div>
@@ -465,7 +461,7 @@ export default function DashboardPage() {
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
               <span style={{ fontSize: "13px", fontWeight: 700, color: "rgba(255,255,255,0.7)" }}>
-                🎨 Generează imagine pentru post
+                Generează imagine pentru post
               </span>
               <span style={{
                 fontSize: "10px", fontWeight: 700, padding: "2px 7px", borderRadius: "20px",
@@ -540,7 +536,8 @@ export default function DashboardPage() {
                   Se generează imaginea...
                 </>
               ) : (
-                <>⚡ Generează imagine — 2 credite</>
+                <>Generează imagine — 2 credite</>
+
               )}
             </button>
 
@@ -629,7 +626,7 @@ export default function DashboardPage() {
                 fontFamily: "var(--font-geist-sans)",
               }}
             >
-              {isTranslating ? "Se traduce..." : "🌍 Traduce — 1 credit"}
+              {isTranslating ? "Se traduce..." : "Traduce — 1 credit"}
             </button>
           </div>
         </div>

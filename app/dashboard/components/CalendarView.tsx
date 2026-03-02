@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useCallback, useRef } from "react";
+import { FaFacebook, FaInstagram, FaLinkedin, FaMeta } from "react-icons/fa6";
+import { MdEmail } from "react-icons/md";
 import CalendarSlotCard, { CalendarSlot } from "./CalendarSlotCard";
 
 const DAYS_RO = ["Lun", "Mar", "Mie", "Joi", "Vin", "Sâm", "Dum"];
@@ -10,12 +12,12 @@ const MONTHS_RO = [
 ];
 
 const PLATFORMS = [
-  { id: "Post Facebook", label: "Facebook", icon: "👍" },
-  { id: "Post Instagram", label: "Instagram", icon: "📸" },
-  { id: "Post LinkedIn", label: "LinkedIn", icon: "💼" },
-  { id: "Email newsletter", label: "Email", icon: "📧" },
-  { id: "Reclamă Meta Ads", label: "Meta Ads", icon: "🎯" },
-];
+  { id: "Post Facebook", label: "Facebook", icon: <FaFacebook size={14} />, color: "#1877F2" },
+  { id: "Post Instagram", label: "Instagram", icon: <FaInstagram size={14} />, color: "#E1306C" },
+  { id: "Post LinkedIn", label: "LinkedIn", icon: <FaLinkedin size={14} />, color: "#0A66C2" },
+  { id: "Email newsletter", label: "Email", icon: <MdEmail size={14} />, color: "#94a3b8" },
+  { id: "Reclamă Meta Ads", label: "Meta Ads", icon: <FaMeta size={14} />, color: "#0082FB" },
+] as const;
 
 function getMonday(date: Date): Date {
   const d = new Date(date);
@@ -55,7 +57,7 @@ export default function CalendarView({ onCreditsChange }: Props) {
   const [dragOverDate, setDragOverDate] = useState<string | null>(null);
   const dragSlotRef = useRef<CalendarSlot | null>(null);
 
-  const [selectedPlatform, setSelectedPlatform] = useState(PLATFORMS[0].id);
+  const [selectedPlatform, setSelectedPlatform] = useState<string>(PLATFORMS[0].id);
   const [postCount, setPostCount] = useState(3);
 
   const today = new Date();
@@ -235,7 +237,7 @@ export default function CalendarView({ onCreditsChange }: Props) {
                   color: active ? "#56db84" : "rgba(255,255,255,0.5)",
                 }}
               >
-                <span style={{ fontSize: "15px" }}>{p.icon}</span>
+                <span style={{ color: p.color, display: "flex", alignItems: "center" }}>{p.icon}</span>
                 {p.label}
               </button>
             );
@@ -314,9 +316,17 @@ export default function CalendarView({ onCreditsChange }: Props) {
               AI construiește planul…
             </>
           ) : hasSlots ? (
-            <>↺ Regenerează {platformInfo.icon} {platformInfo.label}</>
+            <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              Regenerează
+              <span style={{ color: platformInfo.color, display: "flex", alignItems: "center" }}>{platformInfo.icon}</span>
+              {platformInfo.label}
+            </span>
           ) : (
-            <>⚡ Generează {postCount} {postCount === 1 ? "post" : "posturi"} {platformInfo.icon} {platformInfo.label}</>
+            <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              Generează {postCount} {postCount === 1 ? "post" : "posturi"}
+              <span style={{ color: platformInfo.color, display: "flex", alignItems: "center" }}>{platformInfo.icon}</span>
+              {platformInfo.label}
+            </span>
           )}
         </button>
 
@@ -341,7 +351,7 @@ export default function CalendarView({ onCreditsChange }: Props) {
                 </svg>
                 Se trimite...
               </>
-            ) : emailSent ? "✓ Trimis pe email" : `📧 Trimite planul pe email (${generatedSlots.length})`}
+            ) : emailSent ? "Trimis pe email" : `Trimite planul pe email (${generatedSlots.length})`}
           </button>
         )}
       </div>
@@ -359,7 +369,9 @@ export default function CalendarView({ onCreditsChange }: Props) {
           textAlign: "center", padding: "48px 24px",
           border: "1px dashed rgba(255,255,255,0.07)", borderRadius: "16px",
         }}>
-          <div style={{ fontSize: "36px", marginBottom: "12px" }}>{platformInfo.icon}</div>
+          <div style={{ fontSize: "36px", marginBottom: "12px", color: platformInfo.color, display: "flex", justifyContent: "center" }}>
+            <span style={{ display: "flex" }}>{platformInfo.icon}</span>
+          </div>
           <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "14px", fontWeight: 600, marginBottom: "6px" }}>
             Nicio propunere pentru {platformInfo.label} săptămâna asta
           </p>
