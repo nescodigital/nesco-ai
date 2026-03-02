@@ -66,7 +66,7 @@ export default function DashboardTopBar() {
         borderRadius: "7px", padding: "4px 8px",
       }}>
         <span style={{ color: "#56db84", fontSize: "13px", fontWeight: 800 }}>{credits}</span>
-        <span className="hidden sm:inline" style={{ color: "rgba(255,255,255,0.35)", fontSize: "11px" }}>cr</span>
+        <span className="hidden sm:inline" style={{ color: "rgba(255,255,255,0.35)", fontSize: "11px" }}>credite</span>
       </div>
 
       {/* Buy button — full text on desktop, icon on mobile */}

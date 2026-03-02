@@ -12,6 +12,7 @@ import BrandSwitcher from "@/app/dashboard/components/BrandSwitcher";
 import VisionView from "@/app/dashboard/components/VisionView";
 import PersuasionView from "@/app/dashboard/components/PersuasionView";
 import HooksView from "@/app/dashboard/components/HooksView";
+import VoiceSetup from "@/app/dashboard/components/VoiceSetup";
 
 const CONTENT_TYPES = [
   { v: "Post Facebook", l: "Post Facebook" },
@@ -60,6 +61,8 @@ export default function DashboardPage() {
   const [imageFormat, setImageFormat] = useState<"1:1" | "4:5" | "16:9">("1:1");
   const [generatingImage, setGeneratingImage] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [usePersonalVoice, setUsePersonalVoice] = useState(false);
+  const [hasPersonalVoice, setHasPersonalVoice] = useState(false);
   const formRef = useRef<HTMLDivElement>(null);
 
   function handleUseHook(hookText: string) {
@@ -159,7 +162,7 @@ export default function DashboardPage() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contentType, objective, context, brandId: activeBrandId }),
+        body: JSON.stringify({ contentType, objective, context, brandId: activeBrandId, usePersonalVoice }),
       });
       const data = await res.json();
       if (res.status === 402) {
@@ -342,6 +345,13 @@ export default function DashboardPage() {
         onUpdatesChange={setActiveUpdates}
       />
 
+      {/* Voice Setup — Pro+ only */}
+      <VoiceSetup
+        brandId={activeBrandId}
+        plan={plan}
+        onProfileReady={(has) => setHasPersonalVoice(has)}
+      />
+
       {/* Form card */}
       <StrategistCard onApply={handleStrategistApply} brandId={activeBrandId} />
 
@@ -416,6 +426,33 @@ export default function DashboardPage() {
             }}
           />
         </div>
+
+        {/* Voice toggle — only if profile exists */}
+        {hasPersonalVoice && (
+          <div style={{ marginTop: "12px" }}>
+            <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
+              <div
+                onClick={() => setUsePersonalVoice((v) => !v)}
+                style={{
+                  width: "36px", height: "20px", borderRadius: "10px", flexShrink: 0,
+                  background: usePersonalVoice ? "#56db84" : "rgba(255,255,255,0.12)",
+                  position: "relative", transition: "background 0.2s", cursor: "pointer",
+                }}
+              >
+                <div style={{
+                  position: "absolute", top: "2px",
+                  left: usePersonalVoice ? "18px" : "2px",
+                  width: "16px", height: "16px", borderRadius: "50%",
+                  background: "#fff", transition: "left 0.2s",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.3)",
+                }} />
+              </div>
+              <span style={{ fontSize: "13px", color: usePersonalVoice ? "#56db84" : "rgba(255,255,255,0.5)", fontWeight: 600, transition: "color 0.15s" }}>
+                Scrie ca mine
+              </span>
+            </label>
+          </div>
+        )}
 
         {/* Generate button */}
         <button

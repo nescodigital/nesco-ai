@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     return Response.json({ error: "no_credits" }, { status: 402 });
   }
 
-  const { contentType, objective, context, brandId = 1 } = await request.json();
+  const { contentType, objective, context, brandId = 1, usePersonalVoice = false } = await request.json();
 
   const [profileResult, updatesResult, historyResult] = await Promise.all([
     supabase.from("brand_profiles").select("data").eq("user_id", user.id).eq("brand_id", brandId).single(),
@@ -43,6 +43,23 @@ export async function POST(request: Request) {
   const businessUpdates = updatesResult.data ?? [];
   const recentHistory = historyResult.data ?? [];
 
+  // Load personal voice profile if requested
+  let voiceSection = "";
+  if (usePersonalVoice) {
+    const { data: voiceRow } = await supabase
+      .from("personal_voice")
+      .select("style_profile")
+      .eq("user_id", user.id)
+      .eq("brand_id", brandId)
+      .maybeSingle();
+    if (voiceRow?.style_profile) {
+      const sp = voiceRow.style_profile as Record<string, unknown>;
+      const rules = (sp.writing_rules as string[]).map((r) => `- ${r}`).join("\n");
+      const phrases = (sp.signature_phrases as string[]).join(", ");
+      voiceSection = `\n\nSTILUL PERSONAL AL AUTORULUI — respectă EXACT aceste reguli, au prioritate maximă:\n${rules}\nExpresii caracteristice de folosit natural: ${phrases}\nLungime fraze: ${sp.sentence_length}\nStil paragrafe: ${sp.paragraph_style}\nEmoji: ${sp.emoji_usage}`;
+    }
+  }
+
   const formattingInstructions = getFormattingInstructions(contentType);
 
   const updatesSection = businessUpdates.length
@@ -63,7 +80,7 @@ Canale principale: ${((d.channels as string[]) || []).join(", ")}
 Decizia de cumpărare a clienților: ${d.buying_decision || ""}
 USP: ${d.usp || ""}
 Cuvinte interzise: ${d.avoid || "niciuna"}
-Scrie DOAR în română.${updatesSection}${historySection}`;
+Scrie DOAR în română.${updatesSection}${historySection}${voiceSection}`;
 
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
