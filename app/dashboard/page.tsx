@@ -231,8 +231,8 @@ export default function DashboardPage() {
       className="max-w-2xl mx-auto"
       style={{ fontFamily: "var(--font-geist-sans)" }}
     >
-      {/* Tabs + credits — single compact row */}
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px", marginBottom: "24px" }}>
+      {/* Tabs + brand switcher row */}
+      <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "24px" }}>
         <div style={{
           display: "inline-flex", alignItems: "center", gap: "4px",
           background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)",
@@ -259,44 +259,14 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {credits !== null && (
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", flexShrink: 0 }}>
-            {plan && (
-              <span style={{
-                fontSize: "10px", fontWeight: 800, padding: "2px 7px", borderRadius: "20px",
-                textTransform: "uppercase", letterSpacing: "0.06em",
-                background: plan === "multi-brand"
-                  ? "linear-gradient(135deg,rgba(129,140,248,0.2),rgba(168,85,247,0.15))"
-                  : plan === "pro"
-                  ? "linear-gradient(135deg,rgba(86,219,132,0.15),rgba(129,140,248,0.12))"
-                  : "rgba(255,255,255,0.06)",
-                color: plan === "multi-brand" ? "#a78bfa" : plan === "pro" ? "#56db84" : "rgba(255,255,255,0.5)",
-                border: plan === "multi-brand"
-                  ? "1px solid rgba(167,139,250,0.3)"
-                  : plan === "pro"
-                  ? "1px solid rgba(86,219,132,0.25)"
-                  : "1px solid rgba(255,255,255,0.1)",
-              }}>
-                {plan === "multi-brand" ? "Multi-Brand" : plan === "pro" ? "Pro" : "Starter"}
-              </span>
-            )}
-            {plan === "multi-brand" && brands.length > 0 && (
-              <BrandSwitcher
-                brands={brands}
-                activeBrandId={activeBrandId}
-                onSwitch={(id) => setActiveBrandId(id)}
-                onAddBrand={handleAddBrand}
-                maxBrands={5}
-              />
-            )}
-            <span style={{ color: "#56db84", fontSize: "15px", fontWeight: 800 }}>{credits}</span>
-            <span style={{ color: "rgba(255,255,255,0.35)", fontSize: "12px" }}>credite</span>
-            <a href="/pricing" style={{
-              background: "#56db84", color: "#0a0a0a",
-              padding: "4px 10px", borderRadius: "6px", fontSize: "12px",
-              fontWeight: 700, textDecoration: "none",
-            }}>+ Cumpără</a>
-          </div>
+        {plan === "multi-brand" && brands.length > 0 && (
+          <BrandSwitcher
+            brands={brands}
+            activeBrandId={activeBrandId}
+            onSwitch={(id) => setActiveBrandId(id)}
+            onAddBrand={handleAddBrand}
+            maxBrands={5}
+          />
         )}
       </div>
 

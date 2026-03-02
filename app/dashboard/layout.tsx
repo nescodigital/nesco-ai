@@ -4,6 +4,7 @@ import { Resend } from "resend";
 import { welcomeEmail } from "@/lib/email-templates";
 import SignOutButton from "./components/SignOutButton";
 import Logo from "@/app/components/Logo";
+import DashboardTopBar from "./components/DashboardTopBar";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const FROM = "Nesco Digital AI <noreply@nescodigital.com>";
@@ -53,8 +54,8 @@ export default async function DashboardLayout({
     <div className="min-h-screen bg-[#0a0a0a] text-white">
       <header className="border-b border-white/10 px-6 py-3 flex items-center justify-between">
         <Logo />
-        <div className="flex items-center gap-4">
-          <span className="text-xs text-zinc-500">{user.email}</span>
+        <div className="flex items-center gap-3">
+          <DashboardTopBar />
           <SignOutButton />
         </div>
       </header>
