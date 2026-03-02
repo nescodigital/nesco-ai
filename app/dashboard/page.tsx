@@ -41,6 +41,7 @@ export default function DashboardPage() {
   const [copied, setCopied] = useState(false);
   const [error, setError] = useState("");
   const [credits, setCredits] = useState<number | null>(null);
+  const [plan, setPlan] = useState<string | null>(null);
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [targetLanguage, setTargetLanguage] = useState("ro");
@@ -59,10 +60,10 @@ export default function DashboardPage() {
       if (!user) return;
       supabase
         .from("user_credits")
-        .select("credits")
+        .select("credits, plan")
         .eq("user_id", user.id)
         .single()
-        .then(({ data }) => { if (data) setCredits(data.credits); });
+        .then(({ data }) => { if (data) { setCredits(data.credits); setPlan(data.plan ?? null); } });
       supabase
         .from("generation_history")
         .select("id, content_type, objective, context, result, created_at")
@@ -227,14 +228,33 @@ export default function DashboardPage() {
 
         {credits !== null && (
           <div style={{
-            display: "flex", alignItems: "center", gap: "12px",
+            display: "flex", alignItems: "center", gap: "10px",
             background: "#111113", border: "1px solid rgba(86,219,132,0.3)",
             borderRadius: "10px", padding: "10px 16px", flexShrink: 0,
           }}>
+            {plan && (
+              <span style={{
+                fontSize: "10px", fontWeight: 800, padding: "2px 8px", borderRadius: "20px",
+                textTransform: "uppercase", letterSpacing: "0.06em",
+                background: plan === "multi-brand"
+                  ? "linear-gradient(135deg,rgba(129,140,248,0.2),rgba(168,85,247,0.15))"
+                  : plan === "pro"
+                  ? "linear-gradient(135deg,rgba(86,219,132,0.15),rgba(129,140,248,0.12))"
+                  : "rgba(255,255,255,0.06)",
+                color: plan === "multi-brand" ? "#a78bfa" : plan === "pro" ? "#56db84" : "rgba(255,255,255,0.5)",
+                border: plan === "multi-brand"
+                  ? "1px solid rgba(167,139,250,0.3)"
+                  : plan === "pro"
+                  ? "1px solid rgba(86,219,132,0.25)"
+                  : "1px solid rgba(255,255,255,0.1)",
+              }}>
+                {plan === "multi-brand" ? "Multi-Brand" : plan === "pro" ? "Pro" : "Starter"}
+              </span>
+            )}
             <span style={{ color: "#56db84", fontSize: "20px", fontWeight: 800 }}>{credits}</span>
-            <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px" }}>credite rămase</span>
+            <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px" }}>credite</span>
             <a href="/pricing" style={{
-              marginLeft: "8px", background: "#56db84", color: "#0a0a0a",
+              marginLeft: "4px", background: "#56db84", color: "#0a0a0a",
               padding: "6px 12px", borderRadius: "6px", fontSize: "12px",
               fontWeight: 700, textDecoration: "none",
             }}>+ Cumpără</a>

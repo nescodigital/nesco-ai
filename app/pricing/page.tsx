@@ -8,12 +8,14 @@ const PLANS = [
   {
     id: "starter",
     name: "Starter",
-    price: 9,
-    credits: 50,
+    price: 45,
+    currency: "lei",
+    credits: 60,
     description: "Perfect pentru început",
     features: [
-      "50 generări / lună",
-      "Toate tipurile de conținut",
+      "60 credite / lună",
+      "Text + imagini AI",
+      "Calendar editorial",
       "Personalizare brand completă",
       "Suport email",
     ],
@@ -22,29 +24,32 @@ const PLANS = [
   {
     id: "pro",
     name: "Pro",
-    price: 29,
-    credits: 300,
+    price: 99,
+    currency: "lei",
+    credits: 200,
     description: "Pentru afaceri active",
     features: [
-      "300 generări / lună",
-      "Toate tipurile de conținut",
+      "200 credite / lună",
+      "Text + imagini AI",
+      "Calendar editorial",
       "Personalizare brand completă",
-      "Prioritate la procesare",
       "Suport prioritar",
     ],
     accent: true,
   },
   {
-    id: "unlimited",
-    name: "Unlimited",
-    price: 79,
-    credits: 99999,
-    description: "Fără limite",
+    id: "multi-brand",
+    name: "Multi-Brand",
+    price: 199,
+    currency: "lei",
+    credits: 600,
+    description: "Pentru agenții și freelanceri",
     features: [
-      "Generări nelimitate",
-      "Toate tipurile de conținut",
+      "600 credite / lună",
+      "Text + imagini AI",
+      "Calendar editorial",
+      "Multiple branduri",
       "Personalizare brand completă",
-      "Prioritate maximă",
       "Suport dedicat",
     ],
     accent: false,
@@ -139,11 +144,11 @@ export default function PricingPage() {
                 <p className="text-[11px] font-semibold uppercase tracking-wider text-white/40 mb-1">{plan.description}</p>
                 <h2 className="text-[20px] font-bold text-white mb-3">{plan.name}</h2>
                 <div className="flex items-baseline gap-1">
-                  <span className="text-[36px] font-bold text-white leading-none">{plan.price}€</span>
-                  <span className="text-[14px] text-white/40">/lună</span>
+                  <span className="text-[36px] font-bold text-white leading-none">{plan.price}</span>
+                  <span className="text-[14px] text-white/40">{plan.currency}/lună</span>
                 </div>
                 <p className="text-[13px] text-white/40 mt-1">
-                  {plan.credits >= 99999 ? "Generări nelimitate" : `${plan.credits} generări`}
+                  {plan.credits} credite · ~{plan.price >= 199 ? "600" : plan.credits} generări text
                 </p>
               </div>
 

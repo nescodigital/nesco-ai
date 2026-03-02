@@ -2,9 +2,9 @@ import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
 
 const PLANS: Record<string, { priceId: string; credits: number }> = {
-  starter: { priceId: process.env.STRIPE_PRICE_STARTER!, credits: 50 },
-  pro: { priceId: process.env.STRIPE_PRICE_PRO!, credits: 300 },
-  unlimited: { priceId: process.env.STRIPE_PRICE_UNLIMITED!, credits: 99999 },
+  starter: { priceId: process.env.STRIPE_PRICE_STARTER!, credits: 60 },
+  pro: { priceId: process.env.STRIPE_PRICE_PRO!, credits: 200 },
+  "multi-brand": { priceId: process.env.STRIPE_PRICE_MULTI_BRAND!, credits: 600 },
 };
 
 export async function POST(request: Request) {

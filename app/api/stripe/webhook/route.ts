@@ -30,16 +30,16 @@ export async function POST(request: Request) {
         .eq("user_id", userId)
         .single();
 
+      const plan = session.metadata?.plan ?? null;
       if (existing) {
-        const newCredits = credits >= 99999 ? 99999 : existing.credits + credits;
         await supabase
           .from("user_credits")
-          .update({ credits: newCredits, updated_at: new Date().toISOString() })
+          .update({ credits: existing.credits + credits, plan, updated_at: new Date().toISOString() })
           .eq("user_id", userId);
       } else {
         await supabase
           .from("user_credits")
-          .insert({ user_id: userId, credits });
+          .insert({ user_id: userId, credits, plan });
       }
 
       // Extract billing data from custom fields for invoicing (SmartBill)
@@ -51,6 +51,7 @@ export async function POST(request: Request) {
       const customerName = session.customer_details?.name ?? null;
 
       // Save billing info for SmartBill / accounting
+      // (plan already extracted above)
       await supabase.from("billing_info").upsert({
         user_id: userId,
         stripe_session_id: session.id,
@@ -62,7 +63,7 @@ export async function POST(request: Request) {
         address_city: billingAddress?.city ?? null,
         address_country: billingAddress?.country ?? null,
         address_postal_code: billingAddress?.postal_code ?? null,
-        plan: session.metadata?.plan ?? null,
+        plan,
         updated_at: new Date().toISOString(),
       }, { onConflict: "user_id" });
     }
