@@ -11,19 +11,23 @@ interface Suggestion {
 
 interface Props {
   onApply: (s: { contentType: string; objective: string; context: string }) => void;
+  brandId?: number;
 }
 
-const CACHE_KEY = "strategist_suggestion";
 const CACHE_TTL = 24 * 60 * 60 * 1000;
 
-export default function StrategistCard({ onApply }: Props) {
+export default function StrategistCard({ onApply, brandId = 1 }: Props) {
+  const cacheKey = `strategist_suggestion_${brandId}`;
   const [suggestion, setSuggestion] = useState<Suggestion | null>(null);
   const [loading, setLoading] = useState(true);
   const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
+    setSuggestion(null);
+    setLoading(true);
+    setDismissed(false);
     try {
-      const cached = localStorage.getItem(CACHE_KEY);
+      const cached = localStorage.getItem(cacheKey);
       if (cached) {
         const { data, timestamp } = JSON.parse(cached);
         if (Date.now() - timestamp < CACHE_TTL) {
@@ -34,17 +38,17 @@ export default function StrategistCard({ onApply }: Props) {
       }
     } catch {}
 
-    fetch("/api/suggest")
+    fetch(`/api/suggest?brandId=${brandId}`)
       .then((r) => r.json())
       .then((data) => {
         if (data.message) {
           setSuggestion(data);
-          localStorage.setItem(CACHE_KEY, JSON.stringify({ data, timestamp: Date.now() }));
+          localStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: Date.now() }));
         }
       })
       .catch(() => {})
       .finally(() => setLoading(false));
-  }, []);
+  }, [brandId, cacheKey]);
 
   if (loading || !suggestion || dismissed) return null;
 

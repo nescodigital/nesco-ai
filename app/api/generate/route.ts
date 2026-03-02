@@ -20,10 +20,10 @@ export async function POST(request: Request) {
     return Response.json({ error: "no_credits" }, { status: 402 });
   }
 
-  const { contentType, objective, context } = await request.json();
+  const { contentType, objective, context, brandId = 1 } = await request.json();
 
   const [profileResult, updatesResult, historyResult] = await Promise.all([
-    supabase.from("brand_profiles").select("data").eq("user_id", user.id).single(),
+    supabase.from("brand_profiles").select("data").eq("user_id", user.id).eq("brand_id", brandId).single(),
     supabase
       .from("business_updates")
       .select("text")

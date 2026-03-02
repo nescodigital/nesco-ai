@@ -1,15 +1,18 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { createClient } from "@/lib/supabase/server";
 
-export async function GET() {
+export async function GET(request: Request) {
   const supabase = await createClient();
   const {
     data: { user },
   } = await supabase.auth.getUser();
   if (!user) return Response.json({ error: "Unauthorized" }, { status: 401 });
 
+  const { searchParams } = new URL(request.url);
+  const brandId = parseInt(searchParams.get("brandId") || "1", 10);
+
   const [profileRes, historyRes, updatesRes] = await Promise.all([
-    supabase.from("brand_profiles").select("data").eq("user_id", user.id).single(),
+    supabase.from("brand_profiles").select("data").eq("user_id", user.id).eq("brand_id", brandId).single(),
     supabase
       .from("generation_history")
       .select("content_type, objective, created_at")

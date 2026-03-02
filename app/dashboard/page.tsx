@@ -8,6 +8,7 @@ import ProductTour from "@/app/dashboard/components/ProductTour";
 import BusinessMemory from "@/app/dashboard/components/BusinessMemory";
 import CalendarView from "@/app/dashboard/components/CalendarView";
 import StrategistCard from "@/app/dashboard/components/StrategistCard";
+import BrandSwitcher from "@/app/dashboard/components/BrandSwitcher";
 
 const CONTENT_TYPES = [
   { v: "Post Facebook", l: "Post Facebook" },
@@ -49,12 +50,20 @@ export default function DashboardPage() {
   const [isTranslating, setIsTranslating] = useState(false);
   const [, setActiveUpdates] = useState<string[]>([]);
   const [activeTab, setActiveTab] = useState<"generator" | "calendar">("generator");
+  const [brands, setBrands] = useState<{ brand_id: number; label: string }[]>([]);
+  const [activeBrandId, setActiveBrandId] = useState(1);
   const [sendingEmail, setSendingEmail] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
   const [imageFormat, setImageFormat] = useState<"1:1" | "4:5" | "16:9">("1:1");
   const [generatingImage, setGeneratingImage] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
+
+  function handleAddBrand() {
+    const nextId = brands.length > 0 ? Math.max(...brands.map((b) => b.brand_id)) + 1 : 2;
+    if (nextId > 5) return;
+    window.location.href = `/onboarding?brandId=${nextId}`;
+  }
 
   function handleStrategistApply({ contentType: ct, objective: obj, context: ctx }: { contentType: string; objective: string; context: string }) {
     setContentType(ct);
@@ -80,6 +89,21 @@ export default function DashboardPage() {
         .order("created_at", { ascending: false })
         .limit(5)
         .then(({ data }) => { if (data) setHistory(data); });
+      supabase
+        .from("brand_profiles")
+        .select("brand_id, data")
+        .eq("user_id", user.id)
+        .order("brand_id", { ascending: true })
+        .then(({ data }) => {
+          if (data && data.length > 0) {
+            setBrands(data.map((b) => ({
+              brand_id: b.brand_id ?? 1,
+              label: (b.data as Record<string, unknown>)?.brand_name as string || `Brand ${b.brand_id ?? 1}`,
+            })));
+          } else {
+            setBrands([{ brand_id: 1, label: "Brand 1" }]);
+          }
+        });
     });
   }, []);
 
@@ -127,7 +151,7 @@ export default function DashboardPage() {
       const res = await fetch("/api/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contentType, objective, context }),
+        body: JSON.stringify({ contentType, objective, context, brandId: activeBrandId }),
       });
       const data = await res.json();
       if (res.status === 402) {
@@ -260,6 +284,15 @@ export default function DashboardPage() {
                 {plan === "multi-brand" ? "Multi-Brand" : plan === "pro" ? "Pro" : "Starter"}
               </span>
             )}
+            {plan === "multi-brand" && brands.length > 0 && (
+              <BrandSwitcher
+                brands={brands}
+                activeBrandId={activeBrandId}
+                onSwitch={(id) => setActiveBrandId(id)}
+                onAddBrand={handleAddBrand}
+                maxBrands={5}
+              />
+            )}
             <span style={{ color: "#56db84", fontSize: "20px", fontWeight: 800 }}>{credits}</span>
             <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px" }}>credite</span>
             <a href="/pricing" style={{
@@ -306,7 +339,7 @@ export default function DashboardPage() {
       />
 
       {/* Form card */}
-      <StrategistCard onApply={handleStrategistApply} />
+      <StrategistCard onApply={handleStrategistApply} brandId={activeBrandId} />
 
       <div ref={formRef}>
       <div

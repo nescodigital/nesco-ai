@@ -426,7 +426,10 @@ export default function OnboardingPage() {
       const supabase = createClient();
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
-        await supabase.from("brand_profiles").insert({ user_id: user.id, data: answers });
+        const params = new URLSearchParams(window.location.search);
+        const brandId = parseInt(params.get("brandId") || "1", 10);
+        await supabase.from("brand_profiles")
+          .upsert({ user_id: user.id, brand_id: brandId, data: answers }, { onConflict: "user_id,brand_id" });
       }
     } finally {
       setSaving(false);
