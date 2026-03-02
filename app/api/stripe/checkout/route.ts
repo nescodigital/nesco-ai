@@ -25,10 +25,26 @@ export async function POST(request: Request) {
     mode: "subscription",
     payment_method_types: ["card"],
     customer_email: user.email,
+    billing_address_collection: "required",
+    custom_fields: [
+      {
+        key: "company_name",
+        label: { type: "custom", custom: "Nume firmă (opțional)" },
+        type: "text",
+        optional: true,
+      },
+      {
+        key: "cui",
+        label: { type: "custom", custom: "CUI / cod fiscal (opțional)" },
+        type: "text",
+        optional: true,
+      },
+    ],
     line_items: [{ price: planData.priceId, quantity: 1 }],
     success_url: `${origin}/dashboard?upgrade=success`,
     cancel_url: `${origin}/pricing`,
     metadata: { user_id: user.id, plan, credits: planData.credits.toString() },
+    tax_id_collection: { enabled: true },
   });
 
   return Response.json({ url: session.url });

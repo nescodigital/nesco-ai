@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
@@ -19,7 +20,10 @@ export async function POST(request: Request) {
     const credits = parseInt(session.metadata?.credits || "0");
 
     if (userId && credits > 0) {
-      const supabase = await createClient();
+      // Use admin client — webhook runs outside user session
+      const supabase = createAdminClient();
+
+      // Add credits
       const { data: existing } = await supabase
         .from("user_credits")
         .select("credits")
@@ -27,7 +31,6 @@ export async function POST(request: Request) {
         .single();
 
       if (existing) {
-        // Add credits on top (or set to unlimited)
         const newCredits = credits >= 99999 ? 99999 : existing.credits + credits;
         await supabase
           .from("user_credits")
@@ -38,6 +41,30 @@ export async function POST(request: Request) {
           .from("user_credits")
           .insert({ user_id: userId, credits });
       }
+
+      // Extract billing data from custom fields for invoicing (SmartBill)
+      const customFields = session.custom_fields ?? [];
+      const companyName = customFields.find((f) => f.key === "company_name")?.text?.value ?? null;
+      const cui = customFields.find((f) => f.key === "cui")?.text?.value ?? null;
+      const billingAddress = session.customer_details?.address ?? null;
+      const customerEmail = session.customer_details?.email ?? null;
+      const customerName = session.customer_details?.name ?? null;
+
+      // Save billing info for SmartBill / accounting
+      await supabase.from("billing_info").upsert({
+        user_id: userId,
+        stripe_session_id: session.id,
+        customer_name: customerName,
+        customer_email: customerEmail,
+        company_name: companyName,
+        cui,
+        address_line: billingAddress?.line1 ?? null,
+        address_city: billingAddress?.city ?? null,
+        address_country: billingAddress?.country ?? null,
+        address_postal_code: billingAddress?.postal_code ?? null,
+        plan: session.metadata?.plan ?? null,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: "user_id" });
     }
   }
 
