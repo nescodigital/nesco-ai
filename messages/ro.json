@@ -22,8 +22,8 @@
   },
   "landing": {
     "hero": {
-      "tagline": "Un singur workspace. Totul despre marketingul tău.",
-      "subtitle": "Un AI care îți cunoaște brandul, audiența și ofertele. Nu mai explici nimic. Creezi direct.",
+      "tagline": "Un singur workspace. Tot marketingul tău.",
+      "subtitle": "AI care îți cunoaște brandul și generează conținut, calendare editoriale, analize de competitori și hook-uri. Fără să explici nimic de fiecare dată.",
       "cta": "Înscrie-te pe listă",
       "ctaNote": "Acces anticipat gratuit · Fără card.",
       "countdown": {
@@ -89,52 +89,64 @@
         "explain1": "Explici brandul tău. Din nou.",
         "explain2": "Explici audiența. Din nou.",
         "explain3": "Explici oferta, tonul, contextul. Din nou.",
-        "result": "45 de minute mai târziu... ai un text mediocru care nu sună ca tine."
+        "result": "45 de minute mai târziu... ai un text mediocru care nu sună ca tine. Și mâine o iei de la capăt."
       },
-      "conclusion": "Nu AI-ul e problema. Problema e că îl resetezi de fiecare dată. Îl tratezi ca pe un freelancer nou, și el te tratează la fel."
+      "conclusion": "Nu AI-ul e problema. Problema e că îl resetezi de fiecare dată și el nu știe nimic despre business-ul tău. Am construit altceva."
     },
     "difference": {
       "title": "De ce e diferit",
       "subtitle": "Un AI care te cunoaște. Și nu uită.",
-      "body": "Nu e un prompt mai lung. E un sistem care gândește marketingul tău de la zero, cu contextul tău deja înăuntru.",
+      "body": "Completezi un onboarding de 5 minute o singură dată. De atunci, fiecare generare pornește cu contextul tău complet — brand, audiență, ton de voce, oferte.",
       "features": {
         "memory": {
-          "title": "Memorie permanentă de business",
-          "desc": "Brandul tău, audiența, ofertele, tonul de voce. Stocate o dată, folosite de fiecare dată."
+          "title": "Memorie permanentă de brand",
+          "desc": "Brand, audiență, oferte, ton de voce. Stocate o dată, aplicate automat la fiecare generare. Nu mai explici nimic."
         },
         "focused": {
-          "title": "Construit doar pentru marketing",
-          "desc": "Nu e un tool general. Fiecare funcție e gândită pentru campanii, email-uri, reclame și pagini care convertesc."
+          "title": "Generator de conținut complet",
+          "desc": "Post Facebook, Instagram, LinkedIn, Email newsletter, Reclamă Meta Ads — fiecare cu reguli specifice. Traducere în 10 limbi cu un click."
         },
         "psychology": {
-          "title": "Psihologia cumpărătorului integrată",
-          "desc": "Modelul înțelege de ce cumpără oamenii și îți ajustează mesajele în consecință, nu doar le formatează."
+          "title": "Calendar editorial automat",
+          "desc": "Generează un plan săptămânal de posturi pentru orice platformă. Trage și lasă pentru a reordona. Trimite planul pe email dintr-un click."
         },
         "conscious": {
           "title": "Decizii conștiente",
           "desc": "Ce am refuzat să construim"
+        },
+        "spy": {
+          "title": "Spy AI — analizează competitorii",
+          "desc": "Paste URL-ul oricărei pagini de Facebook sau website. AI-ul îți spune ce strategii folosesc, ce mesaje funcționează și cum îi poți depăși."
+        },
+        "hooks": {
+          "title": "Hook Generator",
+          "desc": "Generează 10 hook-uri pentru orice subiect — curiozitate, șoc, statistici, povești personale. Prima propoziție care oprește scrollul."
+        },
+        "voice": {
+          "title": "Scrie ca mine (Voice Cloning)",
+          "desc": "Paste-uiești 3–10 texte proprii. AI-ul extrage stilul tău unic și scrie de atunci exact ca tine — ritm, expresii, ton."
         }
       }
     },
     "refused": {
       "title": "Ce am refuzat să construim",
-      "subtitle": "Majoritatea tool-urilor AI adaugă complexitate. Noi am ales altfel.",
+      "subtitle": "Am ales să facem un singur lucru excepțional de bine, nu zece lucruri mediocru.",
       "items": {
         "prompts": {
           "title": "O bibliotecă de prompturi",
-          "desc": "Prompturile sunt un plasture pe un proces stricat."
+          "desc": "Prompturile sunt un plasture pe un proces stricat. Noi am rezolvat procesul."
         },
         "tools": {
           "title": "14 tool-uri lipite laolaltă",
-          "desc": "Am construit un singur produs care face un lucru excepțional de bine."
+          "desc": "Tool-urile separate înseamnă context pierdut între ele. Totul e într-un singur loc."
         },
         "templates": {
           "title": "Template-uri generice",
-          "desc": "Template-urile există când AI-ul nu îți cunoaște business-ul. Al nostru îl cunoaște."
+          "desc": "Template-urile există când AI-ul nu îți cunoaște business-ul. Al nostru îl cunoaște în detaliu."
         },
         "chatbot": {
           "title": "Un chatbot general",
-          "desc": "Nu îți răspunde la orice. Îți construiește marketingul."
+          "desc": "Nu îți răspunde la orice. Îți construiește marketingul cu tot contextul tău."
         }
       }
     },
@@ -172,7 +184,7 @@
     "demo": {
       "title": "Cum arată în practică",
       "subtitle": "Simplu. Rapid. Al tău.",
-      "body": "Alegi tipul de conținut, obiectivul, adaugi context opțional. AI-ul generează în secunde, tu copiezi și publici.",
+      "body": "Alegi tipul de conținut și obiectivul. AI-ul știe deja brandul, audiența și tonul tău. Generezi în secunde, copiezi și publici.",
       "creditsLeft": "credite rămase",
       "buy": "Cumpără",
       "generate": "Generează",
@@ -190,19 +202,19 @@
       "items": {
         "q1": {
           "q": "Cum știe AI-ul să scrie ca brandul meu?",
-          "a": "La prima autentificare completezi un onboarding de 5 minute: industrie, audiență, ton de voce, canale active și USP-ul tău. Toate acestea devin contextul permanent al AI-ului, aplicat la fiecare generare."
+          "a": "La prima autentificare completezi un onboarding de 5 minute: industrie, audiență, ton de voce, canale active și USP-ul tău. Toate acestea devin contextul permanent al AI-ului — brandul tău e memorat și aplicat la fiecare generare."
         },
         "q2": {
           "q": "Sunt blocat în abonament?",
           "a": "Nu. Anulezi oricând din cont, fără penalizări și fără să suni pe nimeni. Accesul rămâne activ până la sfârșitul perioadei plătite."
         },
         "q3": {
-          "q": "Ce tipuri de conținut pot genera?",
-          "a": "Post Facebook, Post Instagram, Post LinkedIn, Email newsletter și Reclamă Meta Ads, fiecare cu reguli specifice de format, lungime și structură. Poți traduce orice conținut în 10 limbi cu un singur click."
+          "q": "Ce tool-uri sunt incluse?",
+          "a": "Generator de conținut (Facebook, Instagram, LinkedIn, Email, Meta Ads), Calendar editorial automat, Spy AI (analiză competitori), Hook Generator (hook-uri psihologice), Persuasion Score (scor persuasiune text), Voice Cloning (scrie ca tine). Traducere în 10 limbi."
         },
         "q4": {
           "q": "Ce se întâmplă dacă termin creditele?",
-          "a": "Generarea se oprește și ești notificat. Poți face upgrade instant din dashboard la orice plan, iar creditele se adaugă imediat după plată."
+          "a": "Generarea se oprește și ești notificat. Poți cumpăra credite extra sau face upgrade din dashboard. Creditele se adaugă imediat după plată."
         },
         "q5": {
           "q": "E legat de Nesco Digital, agenția?",
@@ -301,15 +313,34 @@
     "plans": {
       "starter": {
         "description": "Perfect pentru început",
-        "features": ["60 credite / lună", "Text + imagini AI", "Calendar editorial", "Personalizare brand completă", "Suport email"]
+        "features": [
+          "60 credite / lună",
+          "Text + imagini AI",
+          "Calendar editorial",
+          "Personalizare brand completă",
+          "Suport email"
+        ]
       },
       "pro": {
         "description": "Pentru afaceri active",
-        "features": ["200 credite / lună", "Text + imagini AI", "Calendar editorial", "Personalizare brand completă", "Suport prioritar"]
+        "features": [
+          "200 credite / lună",
+          "Text + imagini AI",
+          "Calendar editorial",
+          "Personalizare brand completă",
+          "Suport prioritar"
+        ]
       },
       "multi-brand": {
         "description": "Pentru agenții și freelanceri",
-        "features": ["600 credite / lună", "Text + imagini AI", "Calendar editorial", "Multiple branduri", "Personalizare brand completă", "Suport dedicat"]
+        "features": [
+          "600 credite / lună",
+          "Text + imagini AI",
+          "Calendar editorial",
+          "Multiple branduri",
+          "Personalizare brand completă",
+          "Suport dedicat"
+        ]
       }
     }
   },
@@ -651,12 +682,23 @@
       "audience_type": {
         "label": "Vinzi către...",
         "options": {
-          "b2c": { "title": "Consumatori (B2C)", "sub": "Persoane fizice care cumpără pentru ei" },
-          "b2b": { "title": "Companii (B2B)", "sub": "Decizii de business, facturi, contracte" },
-          "both": { "title": "Ambele", "sub": "Atât persoane fizice cât și companii" }
+          "b2c": {
+            "title": "Consumatori (B2C)",
+            "sub": "Persoane fizice care cumpără pentru ei"
+          },
+          "b2b": {
+            "title": "Companii (B2B)",
+            "sub": "Decizii de business, facturi, contracte"
+          },
+          "both": {
+            "title": "Ambele",
+            "sub": "Atât persoane fizice cât și companii"
+          }
         }
       },
-      "audience_age": { "label": "Vârsta principală a clienților tăi" },
+      "audience_age": {
+        "label": "Vârsta principală a clienților tăi"
+      },
       "buying_decision": {
         "label": "Cum iau decizia de cumpărare clienții tăi?",
         "options": {
@@ -668,10 +710,22 @@
       },
       "tone_sliders": {
         "label": "Tonul de comunicare",
-        "formal": { "left": "Formal", "right": "Relaxat" },
-        "serious": { "left": "Serios", "right": "Jucăuș" },
-        "simple": { "left": "Tehnic", "right": "Simplu" },
-        "bold": { "left": "Discret", "right": "Îndrăzneț" }
+        "formal": {
+          "left": "Formal",
+          "right": "Relaxat"
+        },
+        "serious": {
+          "left": "Serios",
+          "right": "Jucăuș"
+        },
+        "simple": {
+          "left": "Tehnic",
+          "right": "Simplu"
+        },
+        "bold": {
+          "left": "Discret",
+          "right": "Îndrăzneț"
+        }
       },
       "tone_words": {
         "label": "Alege 3 cuvinte care descriu cel mai bine brandul tău",
@@ -772,6 +826,44 @@
       "b2c": "B2C",
       "b2b": "B2B",
       "both": "B2C + B2B"
+    },
+    "welcome": {
+      "title": "Bun venit în workspace-ul tău.",
+      "subtitle": "Înainte să generezi primul conținut, hai să cunoaștem brandul tău. Durează 3–5 minute.",
+      "intro": "Ce face sistemul după setup:",
+      "features": [
+        {
+          "icon": "✍️",
+          "title": "Generează conținut",
+          "desc": "Post Facebook, Instagram, LinkedIn, Email, Reclamă Meta — în stilul tău, cu contextul tău."
+        },
+        {
+          "icon": "📅",
+          "title": "Calendar editorial",
+          "desc": "Plan săptămânal de posturi generat automat, cu drag & drop pentru reordonare."
+        },
+        {
+          "icon": "🔍",
+          "title": "Spy AI",
+          "desc": "Analizează competitorii tăi și îți arată ce strategii folosesc și cum îi poți depăși."
+        },
+        {
+          "icon": "🎣",
+          "title": "Hook Generator",
+          "desc": "Generează 10 hook-uri psihologice pentru orice subiect — prima propoziție care oprește scrollul."
+        },
+        {
+          "icon": "📊",
+          "title": "Persuasion Score",
+          "desc": "Analizează orice text și îți dă un scor 0–100 cu sugestii concrete de îmbunătățire."
+        },
+        {
+          "icon": "🎙️",
+          "title": "Voice Cloning",
+          "desc": "Paste-uiești 3+ texte proprii și AI-ul încearcă să scrie exact ca tine de atunci înainte."
+        }
+      ],
+      "cta": "Începe configurarea →"
     }
   },
   "voice": {

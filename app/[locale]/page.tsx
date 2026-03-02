@@ -275,44 +275,26 @@ export default function Home() {
             </p>
 
             <div className="mt-12 grid gap-6 sm:grid-cols-3">
-              {/* Card 1 */}
-              <div className="rounded-2xl border border-white/10 bg-[#141414] p-6">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-[#56db84]/10 text-xl">
-                  🧠
+              {[
+                { emoji: "🧠", fkey: "memory" as const },
+                { emoji: "✍️", fkey: "focused" as const },
+                { emoji: "📅", fkey: "psychology" as const },
+                { emoji: "🔍", fkey: "spy" as const },
+                { emoji: "🎣", fkey: "hooks" as const },
+                { emoji: "🎙️", fkey: "voice" as const },
+              ].map(({ emoji, fkey }) => (
+                <div key={fkey} className="rounded-2xl border border-white/10 bg-[#141414] p-6">
+                  <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-[#56db84]/10 text-xl">
+                    {emoji}
+                  </div>
+                  <h3 className="font-bold text-white">
+                    {t(`difference.features.${fkey}.title` as Parameters<typeof t>[0])}
+                  </h3>
+                  <p className="mt-2 text-sm leading-relaxed text-zinc-400">
+                    {t(`difference.features.${fkey}.desc` as Parameters<typeof t>[0])}
+                  </p>
                 </div>
-                <h3 className="font-bold text-white">
-                  {t("difference.features.memory.title")}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-400">
-                  {t("difference.features.memory.desc")}
-                </p>
-              </div>
-
-              {/* Card 2 */}
-              <div className="rounded-2xl border border-white/10 bg-[#141414] p-6">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-[#56db84]/10 text-xl">
-                  🎯
-                </div>
-                <h3 className="font-bold text-white">
-                  {t("difference.features.focused.title")}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-400">
-                  {t("difference.features.focused.desc")}
-                </p>
-              </div>
-
-              {/* Card 3 */}
-              <div className="rounded-2xl border border-white/10 bg-[#141414] p-6">
-                <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-xl bg-[#56db84]/10 text-xl">
-                  💡
-                </div>
-                <h3 className="font-bold text-white">
-                  {t("difference.features.psychology.title")}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-zinc-400">
-                  {t("difference.features.psychology.desc")}
-                </p>
-              </div>
+              ))}
             </div>
 
             <div className="mt-10 text-center">
@@ -330,7 +312,7 @@ export default function Home() {
         <section className="bg-[#111111] py-24">
           <div className="mx-auto max-w-3xl px-6">
             <p className="text-xs font-semibold uppercase tracking-widest text-[#56db84]">
-              {t("difference.features.conscious.title")}
+              {t("refused.title")}
             </p>
             <h2 className="mt-3 text-3xl font-bold text-white sm:text-4xl">
               {t("refused.title")}

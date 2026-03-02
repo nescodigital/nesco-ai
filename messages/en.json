@@ -22,8 +22,8 @@
   },
   "landing": {
     "hero": {
-      "tagline": "One workspace. Everything about your marketing.",
-      "subtitle": "An AI that knows your brand, audience, and offers. No more explaining. Just create.",
+      "tagline": "One workspace. All your marketing.",
+      "subtitle": "AI that knows your brand and generates content, editorial calendars, competitor analysis and hooks. Without explaining anything every time.",
       "cta": "Join the waitlist",
       "ctaNote": "Free early access · No credit card.",
       "countdown": {
@@ -89,52 +89,64 @@
         "explain1": "You explain your brand. Again.",
         "explain2": "You explain your audience. Again.",
         "explain3": "You explain your offer, tone, context. Again.",
-        "result": "45 minutes later... you have mediocre copy that doesn't sound like you."
+        "result": "45 minutes later... you have mediocre copy that doesn't sound like you. And tomorrow you start over."
       },
-      "conclusion": "AI isn't the problem. The problem is you reset it every time. You treat it like a new freelancer, and it treats you the same."
+      "conclusion": "AI isn't the problem. The problem is you reset it every time and it knows nothing about your business. We built something different."
     },
     "difference": {
       "title": "Why it's different",
       "subtitle": "An AI that knows you. And doesn't forget.",
-      "body": "It's not a longer prompt. It's a system that thinks your marketing from scratch, with your context already inside.",
+      "body": "You complete a 5-minute onboarding once. From then on, every generation starts with your full context — brand, audience, tone of voice, offers.",
       "features": {
         "memory": {
-          "title": "Permanent business memory",
-          "desc": "Your brand, audience, offers, tone of voice. Stored once, used every time."
+          "title": "Permanent brand memory",
+          "desc": "Brand, audience, offers, tone of voice. Stored once, applied automatically to every generation. No more explaining."
         },
         "focused": {
-          "title": "Built only for marketing",
-          "desc": "Not a general tool. Every feature is designed for campaigns, emails, ads and pages that convert."
+          "title": "Full content generator",
+          "desc": "Facebook Post, Instagram, LinkedIn, Email newsletter, Meta Ad — each with specific rules. Translate into 10 languages with one click."
         },
         "psychology": {
-          "title": "Buyer psychology built in",
-          "desc": "The model understands why people buy and adjusts your messages accordingly, not just formats them."
+          "title": "Automatic editorial calendar",
+          "desc": "Generate a weekly post plan for any platform. Drag and drop to reorder. Send the plan by email in one click."
         },
         "conscious": {
           "title": "Conscious decisions",
           "desc": "What we refused to build"
+        },
+        "spy": {
+          "title": "Spy AI — analyze competitors",
+          "desc": "Paste any Facebook page or website URL. The AI tells you what strategies they use, what messages work, and how you can beat them."
+        },
+        "hooks": {
+          "title": "Hook Generator",
+          "desc": "Generate 10 hooks for any topic — curiosity, shock, statistics, personal stories. The first sentence that stops the scroll."
+        },
+        "voice": {
+          "title": "Write like me (Voice Cloning)",
+          "desc": "Paste 3–10 of your own texts. The AI extracts your unique style and writes exactly like you — rhythm, expressions, tone."
         }
       }
     },
     "refused": {
       "title": "What we refused to build",
-      "subtitle": "Most AI tools add complexity. We chose differently.",
+      "subtitle": "We chose to do one thing exceptionally well, not ten things poorly.",
       "items": {
         "prompts": {
           "title": "A prompt library",
-          "desc": "Prompts are a bandaid on a broken process."
+          "desc": "Prompts are a bandaid on a broken process. We fixed the process."
         },
         "tools": {
           "title": "14 tools duct-taped together",
-          "desc": "We built one product that does one thing exceptionally well."
+          "desc": "Separate tools mean context lost between them. Everything is in one place."
         },
         "templates": {
           "title": "Generic templates",
-          "desc": "Templates exist when AI doesn't know your business. Ours does."
+          "desc": "Templates exist when AI doesn't know your business. Ours knows it in detail."
         },
         "chatbot": {
           "title": "A general chatbot",
-          "desc": "It doesn't answer everything. It builds your marketing."
+          "desc": "It doesn't answer everything. It builds your marketing with all your context."
         }
       }
     },
@@ -172,7 +184,7 @@
     "demo": {
       "title": "How it looks in practice",
       "subtitle": "Simple. Fast. Yours.",
-      "body": "Choose the content type, objective, add optional context. AI generates in seconds, you copy and publish.",
+      "body": "Choose the content type and objective. The AI already knows your brand, audience and tone. Generate in seconds, copy and publish.",
       "creditsLeft": "credits left",
       "buy": "Buy",
       "generate": "Generate",
@@ -190,19 +202,19 @@
       "items": {
         "q1": {
           "q": "How does the AI know how to write like my brand?",
-          "a": "At first login you complete a 5-minute onboarding: industry, audience, tone of voice, active channels and your USP. These become the AI's permanent context, applied to every generation."
+          "a": "At first login you complete a 5-minute onboarding: industry, audience, tone of voice, active channels and your USP. These become the AI's permanent context — your brand is memorized and applied to every generation."
         },
         "q2": {
           "q": "Am I locked into a subscription?",
           "a": "No. Cancel anytime from your account, no penalties, no phone calls needed. Access stays active until the end of the paid period."
         },
         "q3": {
-          "q": "What types of content can I generate?",
-          "a": "Facebook Post, Instagram Post, LinkedIn Post, Email newsletter and Meta Ads, each with specific format, length and structure rules. You can translate any content into 10 languages with one click."
+          "q": "What tools are included?",
+          "a": "Content generator (Facebook, Instagram, LinkedIn, Email, Meta Ads), Automatic editorial calendar, Spy AI (competitor analysis), Hook Generator (psychological hooks), Persuasion Score (text persuasion scoring), Voice Cloning (write like you). Translation into 10 languages."
         },
         "q4": {
           "q": "What happens when I run out of credits?",
-          "a": "Generation stops and you're notified. You can upgrade instantly from the dashboard to any plan, and credits are added immediately after payment."
+          "a": "Generation stops and you're notified. You can buy extra credits or upgrade from the dashboard. Credits are added immediately after payment."
         },
         "q5": {
           "q": "Is this related to Nesco Digital agency?",
@@ -301,15 +313,34 @@
     "plans": {
       "starter": {
         "description": "Perfect for getting started",
-        "features": ["60 credits / month", "Text + AI images", "Editorial calendar", "Complete brand customization", "Email support"]
+        "features": [
+          "60 credits / month",
+          "Text + AI images",
+          "Editorial calendar",
+          "Complete brand customization",
+          "Email support"
+        ]
       },
       "pro": {
         "description": "For active businesses",
-        "features": ["200 credits / month", "Text + AI images", "Editorial calendar", "Complete brand customization", "Priority support"]
+        "features": [
+          "200 credits / month",
+          "Text + AI images",
+          "Editorial calendar",
+          "Complete brand customization",
+          "Priority support"
+        ]
       },
       "multi-brand": {
         "description": "For agencies & freelancers",
-        "features": ["600 credits / month", "Text + AI images", "Editorial calendar", "Multiple brands", "Complete brand customization", "Dedicated support"]
+        "features": [
+          "600 credits / month",
+          "Text + AI images",
+          "Editorial calendar",
+          "Multiple brands",
+          "Complete brand customization",
+          "Dedicated support"
+        ]
       }
     }
   },
@@ -651,12 +682,23 @@
       "audience_type": {
         "label": "You sell to...",
         "options": {
-          "b2c": { "title": "Consumers (B2C)", "sub": "Individuals buying for themselves" },
-          "b2b": { "title": "Companies (B2B)", "sub": "Business decisions, invoices, contracts" },
-          "both": { "title": "Both", "sub": "Both individuals and companies" }
+          "b2c": {
+            "title": "Consumers (B2C)",
+            "sub": "Individuals buying for themselves"
+          },
+          "b2b": {
+            "title": "Companies (B2B)",
+            "sub": "Business decisions, invoices, contracts"
+          },
+          "both": {
+            "title": "Both",
+            "sub": "Both individuals and companies"
+          }
         }
       },
-      "audience_age": { "label": "Primary age of your customers" },
+      "audience_age": {
+        "label": "Primary age of your customers"
+      },
       "buying_decision": {
         "label": "How do your customers make purchase decisions?",
         "options": {
@@ -668,10 +710,22 @@
       },
       "tone_sliders": {
         "label": "Communication tone",
-        "formal": { "left": "Formal", "right": "Casual" },
-        "serious": { "left": "Serious", "right": "Playful" },
-        "simple": { "left": "Technical", "right": "Simple" },
-        "bold": { "left": "Subtle", "right": "Bold" }
+        "formal": {
+          "left": "Formal",
+          "right": "Casual"
+        },
+        "serious": {
+          "left": "Serious",
+          "right": "Playful"
+        },
+        "simple": {
+          "left": "Technical",
+          "right": "Simple"
+        },
+        "bold": {
+          "left": "Subtle",
+          "right": "Bold"
+        }
       },
       "tone_words": {
         "label": "Choose 3 words that best describe your brand",
@@ -772,6 +826,44 @@
       "b2c": "B2C",
       "b2b": "B2B",
       "both": "B2C + B2B"
+    },
+    "welcome": {
+      "title": "Welcome to your workspace.",
+      "subtitle": "Before you generate your first content, let's get to know your brand. Takes 3–5 minutes.",
+      "intro": "What the system does after setup:",
+      "features": [
+        {
+          "icon": "✍️",
+          "title": "Generate content",
+          "desc": "Facebook Post, Instagram, LinkedIn, Email, Meta Ad — in your style, with your context."
+        },
+        {
+          "icon": "📅",
+          "title": "Editorial calendar",
+          "desc": "Auto-generated weekly post plan, with drag & drop to reorder."
+        },
+        {
+          "icon": "🔍",
+          "title": "Spy AI",
+          "desc": "Analyze your competitors and see what strategies they use and how to beat them."
+        },
+        {
+          "icon": "🎣",
+          "title": "Hook Generator",
+          "desc": "Generate 10 psychological hooks for any topic — the first sentence that stops the scroll."
+        },
+        {
+          "icon": "📊",
+          "title": "Persuasion Score",
+          "desc": "Analyze any text and get a 0–100 score with concrete improvement suggestions."
+        },
+        {
+          "icon": "🎙️",
+          "title": "Voice Cloning",
+          "desc": "Paste 3+ of your own texts and the AI tries to write exactly like you from then on."
+        }
+      ],
+      "cta": "Start setup →"
     }
   },
   "voice": {

@@ -347,6 +347,7 @@ export default function OnboardingPage() {
     },
   ];
 
+  const [showWelcome, setShowWelcome] = useState(true);
   const [currentStep, setCurrentStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({});
   const [saving, setSaving] = useState(false);
@@ -563,6 +564,66 @@ export default function OnboardingPage() {
 
   const industryMap = t.raw("industryMap") as Record<string, string>;
   const audMap = t.raw("audMap") as Record<string, string>;
+
+  const welcomeFeatures = t.raw("welcome.features") as Array<{ icon: string; title: string; desc: string }>;
+
+  if (showWelcome) {
+    return (
+      <div
+        className="min-h-screen flex flex-col items-center justify-center px-5 py-12"
+        style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(86,219,132,0.05) 0%, transparent 60%), #0a0a0a", fontFamily: "var(--font-geist-sans)" }}
+      >
+        <div className="w-full max-w-xl">
+          {/* Logo */}
+          <div className="mb-8">
+            <Logo />
+          </div>
+
+          {/* Title */}
+          <h1 className="text-[28px] sm:text-[34px] font-bold text-white leading-tight mb-3">
+            {t("welcome.title")}
+          </h1>
+          <p className="text-[15px] text-white/50 mb-8 leading-relaxed">
+            {t("welcome.subtitle")}
+          </p>
+
+          {/* Features grid */}
+          <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#56db84] mb-4">
+            {t("welcome.intro")}
+          </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">
+            {welcomeFeatures.map((f, i) => (
+              <div
+                key={i}
+                className="rounded-2xl p-4 flex items-start gap-3"
+                style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
+              >
+                <span className="text-xl leading-none mt-0.5 flex-shrink-0">{f.icon}</span>
+                <div>
+                  <p className="text-[13px] font-semibold text-white mb-0.5">{f.title}</p>
+                  <p className="text-[12px] text-white/40 leading-relaxed">{f.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* CTA */}
+          <button
+            onClick={() => setShowWelcome(false)}
+            className="w-full py-4 rounded-2xl text-[15px] font-bold text-black transition-all duration-150 active:scale-[0.98]"
+            style={{
+              background: "linear-gradient(135deg,#56db84 0%,#3ecf8e 50%,#818cf8 100%)",
+              boxShadow: "0 4px 24px rgba(86,219,132,0.3), 0 1px 0 rgba(255,255,255,0.15) inset",
+              letterSpacing: "-0.01em",
+              fontFamily: "var(--font-geist-sans)",
+            }}
+          >
+            {t("welcome.cta")}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div
