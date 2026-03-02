@@ -49,6 +49,9 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<"generator" | "calendar">("generator");
   const [sendingEmail, setSendingEmail] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [imageFormat, setImageFormat] = useState<"1:1" | "4:5" | "16:9">("1:1");
+  const [generatingImage, setGeneratingImage] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
@@ -85,11 +88,31 @@ export default function DashboardPage() {
     }
   }
 
+  async function handleGenerateImage() {
+    setGeneratingImage(true);
+    setImageUrl(null);
+    try {
+      const res = await fetch("/api/generate-image", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: output, contentType, format: imageFormat }),
+      });
+      const data = await res.json();
+      if (data.imageUrl) {
+        setImageUrl(data.imageUrl);
+        if (typeof data.creditsRemaining === "number") setCredits(data.creditsRemaining);
+      }
+    } finally {
+      setGeneratingImage(false);
+    }
+  }
+
   async function handleGenerate() {
     setLoading(true);
     setOutput("");
     setError("");
     setEmailSent(false);
+    setImageUrl(null);
     try {
       const res = await fetch("/api/generate", {
         method: "POST",
@@ -432,6 +455,145 @@ export default function DashboardPage() {
           </div>
           <div className="prose prose-invert prose-sm max-w-none">
             <ReactMarkdown>{output}</ReactMarkdown>
+          </div>
+
+          {/* Image generation section */}
+          <div style={{
+            marginTop: "20px",
+            paddingTop: "16px",
+            borderTop: "1px solid rgba(255,255,255,0.07)",
+          }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "12px" }}>
+              <span style={{ fontSize: "13px", fontWeight: 700, color: "rgba(255,255,255,0.7)" }}>
+                🎨 Generează imagine pentru post
+              </span>
+              <span style={{
+                fontSize: "10px", fontWeight: 700, padding: "2px 7px", borderRadius: "20px",
+                background: "rgba(129,140,248,0.12)", color: "#818cf8",
+              }}>
+                2 credite
+              </span>
+            </div>
+
+            {/* Format selector */}
+            <div style={{ display: "flex", gap: "6px", marginBottom: "12px" }}>
+              {([
+                { id: "1:1", label: "Pătrat", sub: "1:1", hint: "Feed" },
+                { id: "4:5", label: "Portrait", sub: "4:5", hint: "Story" },
+                { id: "16:9", label: "Landscape", sub: "16:9", hint: "Cover" },
+              ] as { id: "1:1" | "4:5" | "16:9"; label: string; sub: string; hint: string }[]).map((f) => {
+                const active = imageFormat === f.id;
+                return (
+                  <button
+                    key={f.id}
+                    onClick={() => setImageFormat(f.id)}
+                    style={{
+                      display: "flex", flexDirection: "column", alignItems: "center",
+                      padding: "8px 14px", borderRadius: "10px", cursor: "pointer",
+                      background: active ? "rgba(129,140,248,0.12)" : "rgba(255,255,255,0.03)",
+                      border: active ? "1px solid rgba(129,140,248,0.4)" : "1px solid rgba(255,255,255,0.07)",
+                      transition: "all 0.15s",
+                    }}
+                  >
+                    {/* Aspect ratio visual */}
+                    <div style={{
+                      background: active ? "rgba(129,140,248,0.3)" : "rgba(255,255,255,0.1)",
+                      borderRadius: "3px",
+                      marginBottom: "5px",
+                      width: f.id === "1:1" ? 22 : f.id === "4:5" ? 18 : 28,
+                      height: f.id === "1:1" ? 22 : f.id === "4:5" ? 22 : 16,
+                      transition: "all 0.15s",
+                    }} />
+                    <span style={{ fontSize: "11px", fontWeight: 700, color: active ? "#818cf8" : "rgba(255,255,255,0.5)" }}>
+                      {f.sub}
+                    </span>
+                    <span style={{ fontSize: "10px", color: "rgba(255,255,255,0.25)" }}>
+                      {f.hint}
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Generate image button */}
+            <button
+              onClick={handleGenerateImage}
+              disabled={generatingImage}
+              style={{
+                display: "flex", alignItems: "center", gap: "8px",
+                padding: "10px 18px", borderRadius: "10px", fontSize: "13px", fontWeight: 700,
+                background: generatingImage
+                  ? "rgba(129,140,248,0.06)"
+                  : "linear-gradient(135deg,rgba(129,140,248,0.2),rgba(86,219,132,0.12))",
+                border: "1px solid rgba(129,140,248,0.35)",
+                color: generatingImage ? "rgba(129,140,248,0.4)" : "#818cf8",
+                cursor: generatingImage ? "not-allowed" : "pointer",
+                transition: "all 0.15s",
+              }}
+            >
+              {generatingImage ? (
+                <>
+                  <svg className="animate-spin" width="13" height="13" viewBox="0 0 12 12" fill="none">
+                    <circle cx="6" cy="6" r="4" stroke="rgba(129,140,248,0.2)" strokeWidth="2"/>
+                    <path d="M6 2a4 4 0 0 1 4 4" stroke="#818cf8" strokeWidth="2" strokeLinecap="round"/>
+                  </svg>
+                  Se generează imaginea...
+                </>
+              ) : (
+                <>⚡ Generează imagine — 2 credite</>
+              )}
+            </button>
+
+            {/* Image preview */}
+            {imageUrl && (
+              <div style={{
+                marginTop: "14px",
+                borderRadius: "12px",
+                overflow: "hidden",
+                border: "1px solid rgba(129,140,248,0.2)",
+                background: "rgba(0,0,0,0.3)",
+                maxWidth: imageFormat === "16:9" ? "100%" : imageFormat === "4:5" ? "240px" : "280px",
+              }}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={imageUrl}
+                  alt="Imagine generată"
+                  style={{ width: "100%", display: "block" }}
+                />
+                <div style={{
+                  padding: "10px 12px",
+                  display: "flex", gap: "8px",
+                  borderTop: "1px solid rgba(255,255,255,0.06)",
+                }}>
+                  <a
+                    href={imageUrl}
+                    download="imagine-post.png"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      display: "flex", alignItems: "center", gap: "5px",
+                      padding: "6px 12px", borderRadius: "7px", fontSize: "12px", fontWeight: 700,
+                      background: "rgba(129,140,248,0.12)", border: "1px solid rgba(129,140,248,0.25)",
+                      color: "#818cf8", textDecoration: "none",
+                    }}
+                  >
+                    ↓ Descarcă
+                  </a>
+                  <button
+                    onClick={handleGenerateImage}
+                    disabled={generatingImage}
+                    style={{
+                      display: "flex", alignItems: "center", gap: "5px",
+                      padding: "6px 12px", borderRadius: "7px", fontSize: "12px",
+                      background: "transparent", border: "1px solid rgba(255,255,255,0.1)",
+                      color: "rgba(255,255,255,0.35)", cursor: "pointer",
+                    }}
+                  >
+                    ↺ Regenerează
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Translate row */}
