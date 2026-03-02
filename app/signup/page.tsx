@@ -5,7 +5,7 @@ import { createClient } from "@/lib/supabase/client";
 import Logo from "@/app/components/Logo";
 import Link from "next/link";
 
-// ── WebGL noise background ─────────────────────────────────────────────────
+// ── WebGL noise background (same as login) ──────────────────────────────────
 const VERT = `
 attribute vec2 aPosition;
 void main() { gl_Position = vec4(aPosition, 0.0, 1.0); }
@@ -150,99 +150,27 @@ function NoiseCanvas() {
   );
 }
 
-// ── Testimonials ────────────────────────────────────────────────────────────
-const TESTIMONIALS = [
+// ── Benefits list ────────────────────────────────────────────────────────────
+const BENEFITS = [
   {
-    initial: "A",
-    quote: "Înainte petreceam 3 ore pe săptămână să scriu postări. Acum le generez în 5 minute și sună exact ca mine.",
-    name: "Andreea M.",
-    role: "Fondatoare, brand de cosmetice naturale",
+    icon: "⚡",
+    title: "10 credite gratuite",
+    sub: "Generezi primele postări fără card, fără angajament.",
   },
   {
-    initial: "R",
-    quote: "Am crescut engagement-ul pe Instagram cu 40% în prima lună. AI-ul înțelege exact ce vor clienții mei.",
-    name: "Radu P.",
-    role: "Proprietar, lanț de restaurante",
+    icon: "🎯",
+    title: "Conținut în vocea ta",
+    sub: "AI-ul învață stilul brandului din profilul pe care îl creezi la înregistrare.",
   },
   {
-    initial: "C",
-    quote: "Vindem online și aveam nevoie de texte pentru fiecare produs. Acum generăm tot conținutul în câteva minute.",
-    name: "Cristina V.",
-    role: "Co-fondatoare, magazin de mobilă",
-  },
-  {
-    initial: "D",
-    quote: "Reclamele noastre Meta au un CTR dublu față de ce scriam noi. Merită fiecare credit.",
-    name: "Dan S.",
-    role: "Director vânzări, firma de software",
+    icon: "🚀",
+    title: "Gata în 30 de secunde",
+    sub: "Post Facebook, email, reclamă Meta — oricare platformă, instant.",
   },
 ];
 
-function TestimonialSlider() {
-  const [active, setActive] = useState(0);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  function start() {
-    intervalRef.current = setInterval(() => {
-      setActive((prev) => (prev + 1) % TESTIMONIALS.length);
-    }, 4000);
-  }
-
-  useEffect(() => {
-    start();
-    return () => { if (intervalRef.current) clearInterval(intervalRef.current); };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  function goTo(i: number) {
-    setActive(i);
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    start();
-  }
-
-  const t = TESTIMONIALS[active];
-
-  return (
-    <div className="mt-8">
-      <div
-        className="rounded-2xl px-5 py-4 flex items-start gap-3 transition-all duration-300"
-        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)", minHeight: 96 }}
-      >
-        <div
-          className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-black"
-          style={{ background: "linear-gradient(135deg,#56db84,#818cf8)" }}
-        >
-          {t.initial}
-        </div>
-        <div>
-          <p className="text-[13px] text-white/70 leading-relaxed italic">"{t.quote}"</p>
-          <p className="text-[11px] text-white/30 mt-1.5">{t.name} · {t.role}</p>
-        </div>
-      </div>
-      {/* Dot indicators */}
-      <div className="flex items-center gap-2 mt-3">
-        {TESTIMONIALS.map((_, i) => (
-          <button
-            key={i}
-            onClick={() => goTo(i)}
-            className="rounded-full transition-all duration-300"
-            style={{
-              width: i === active ? 20 : 6,
-              height: 6,
-              background: i === active ? "linear-gradient(90deg,#56db84,#818cf8)" : "rgba(255,255,255,0.15)",
-              border: "none",
-              padding: 0,
-              cursor: "pointer",
-            }}
-          />
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// ── Login page ─────────────────────────────────────────────────────────────
-export default function LoginPage() {
+// ── Signup page ──────────────────────────────────────────────────────────────
+export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -256,7 +184,10 @@ export default function LoginPage() {
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithOtp({
       email,
-      options: { emailRedirectTo: `${window.location.origin}/auth/callback` },
+      options: {
+        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        shouldCreateUser: true,
+      },
     });
     setLoading(false);
     if (error) setError(error.message);
@@ -267,7 +198,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex" style={{ background: "#060810", fontFamily: "var(--font-geist-sans)" }}>
       <NoiseCanvas />
 
-      {/* ── Left panel: graphic (desktop only) ── */}
+      {/* ── Left panel: value prop (desktop only) ── */}
       <div
         className="hidden lg:flex lg:flex-1 lg:flex-col lg:items-start lg:justify-between relative overflow-hidden px-12 py-12"
         style={{ zIndex: 1 }}
@@ -277,77 +208,75 @@ export default function LoginPage() {
 
         {/* Center content */}
         <div className="flex-1 flex flex-col justify-center max-w-md">
-          {/* Floating orbs */}
-          <div className="relative w-full h-64 mb-10">
-            {/* Large orb */}
-            <div
-              className="absolute rounded-full"
-              style={{
-                width: 220, height: 220,
-                left: "50%", top: "50%",
-                transform: "translate(-50%,-50%)",
-                background: "radial-gradient(circle at 40% 40%, rgba(86,219,132,0.25), rgba(129,140,248,0.1) 60%, transparent 80%)",
-                border: "1px solid rgba(86,219,132,0.15)",
-                boxShadow: "0 0 60px rgba(86,219,132,0.1)",
-              }}
-            />
-            {/* Inner orb */}
-            <div
-              className="absolute rounded-full"
-              style={{
-                width: 120, height: 120,
-                left: "50%", top: "50%",
-                transform: "translate(-50%,-50%)",
-                background: "radial-gradient(circle at 35% 35%, rgba(86,219,132,0.35), rgba(129,140,248,0.2) 70%, transparent)",
-                border: "1px solid rgba(86,219,132,0.25)",
-              }}
-            />
-            {/* Center dot */}
-            <div
-              className="absolute rounded-full"
-              style={{
-                width: 40, height: 40,
-                left: "50%", top: "50%",
-                transform: "translate(-50%,-50%)",
-                background: "linear-gradient(135deg,#56db84,#818cf8)",
-                boxShadow: "0 0 24px rgba(86,219,132,0.5)",
-              }}
-            />
-            {/* Floating mini cards */}
-            {[
-              { top: "8%", left: "5%", label: "Post Instagram", icon: "📸", delay: "0s" },
-              { top: "12%", right: "0%", label: "Email campaign", icon: "📧", delay: "0.4s" },
-              { bottom: "5%", left: "8%", label: "Reclamă Ads", icon: "🎯", delay: "0.8s" },
-              { bottom: "10%", right: "2%", label: "Post LinkedIn", icon: "💼", delay: "0.2s" },
-            ].map((c, i) => (
-              <div
-                key={i}
-                className="absolute flex items-center gap-2 rounded-xl px-3 py-2 text-[12px] font-medium text-white/70"
-                style={{
-                  top: c.top, left: c.left, right: (c as {right?: string}).right, bottom: c.bottom,
-                  background: "rgba(255,255,255,0.05)",
-                  border: "1px solid rgba(255,255,255,0.1)",
-                  backdropFilter: "blur(8px)",
-                  animation: `float 4s ease-in-out infinite`,
-                  animationDelay: c.delay,
-                }}
-              >
-                <span>{c.icon}</span>
-                <span>{c.label}</span>
-                <div className="w-1.5 h-1.5 rounded-full" style={{ background: "#56db84", boxShadow: "0 0 6px #56db84" }} />
+          <div
+            className="inline-flex items-center gap-2 rounded-full px-3 py-1.5 mb-6 text-[12px] font-semibold"
+            style={{
+              background: "rgba(86,219,132,0.1)",
+              border: "1px solid rgba(86,219,132,0.2)",
+              color: "#56db84",
+            }}
+          >
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#56db84", display: "inline-block", boxShadow: "0 0 6px #56db84" }} />
+            10 credite gratuite la înregistrare
+          </div>
+
+          <h2 className="text-[32px] font-bold text-white leading-tight mb-4" style={{ letterSpacing: "-0.02em" }}>
+            AI care scrie<br />în vocea brandului tău.
+          </h2>
+          <p className="text-[15px] text-white/40 leading-relaxed mb-10">
+            Configurezi profilul brandului o singură dată.<br />
+            De acolo, fiecare postare sună exact ca tine.
+          </p>
+
+          {/* Benefits */}
+          <div className="flex flex-col gap-4">
+            {BENEFITS.map((b, i) => (
+              <div key={i} className="flex items-start gap-3">
+                <div
+                  className="flex-shrink-0 w-9 h-9 rounded-xl flex items-center justify-center text-[16px]"
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                  }}
+                >
+                  {b.icon}
+                </div>
+                <div>
+                  <p className="text-[14px] font-semibold text-white mb-0.5">{b.title}</p>
+                  <p className="text-[13px] text-white/40 leading-relaxed">{b.sub}</p>
+                </div>
               </div>
             ))}
           </div>
 
-          <h2 className="text-[28px] font-bold text-white leading-tight mb-3">
-            AI care scrie<br />în vocea brandului tău.
-          </h2>
-          <p className="text-[15px] text-white/40 leading-relaxed">
-            Conținut personalizat pentru fiecare canal,<br />generat în secunde.
-          </p>
-
-          {/* Testimonial slider */}
-          <TestimonialSlider />
+          {/* Social proof */}
+          <div
+            className="mt-10 rounded-2xl px-4 py-3 flex items-center gap-3"
+            style={{
+              background: "rgba(255,255,255,0.03)",
+              border: "1px solid rgba(255,255,255,0.07)",
+            }}
+          >
+            {/* Avatar stack */}
+            <div className="flex -space-x-2">
+              {["A", "R", "C", "D"].map((initial, i) => (
+                <div
+                  key={i}
+                  className="w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold text-black ring-2"
+                  style={{
+                    background: i % 2 === 0
+                      ? "linear-gradient(135deg,#56db84,#3ecf8e)"
+                      : "linear-gradient(135deg,#818cf8,#a78bfa)",
+                  }}
+                >
+                  {initial}
+                </div>
+              ))}
+            </div>
+            <p className="text-[13px] text-white/50">
+              <span className="text-white font-semibold">+200 branduri</span> folosesc deja AI-ul
+            </p>
+          </div>
         </div>
 
         {/* Bottom footnote */}
@@ -380,16 +309,32 @@ export default function LoginPage() {
               </div>
               <h2 className="text-[22px] font-bold text-white mb-2">Verifică emailul</h2>
               <p className="text-[14px] text-white/50 leading-relaxed">
-                Am trimis un link magic la{" "}
+                Am trimis un link de confirmare la{" "}
                 <span className="text-white font-medium">{email}</span>.
-                <br />Click pe el pentru a te autentifica.
+                <br />Click pe el și îți configurăm profilul brandului.
               </p>
             </div>
           ) : (
             <>
-              <h1 className="text-[24px] font-bold text-white mb-1.5">Intră în cont</h1>
+              {/* Badge */}
+              <div
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1 mb-6 text-[12px] font-semibold lg:hidden"
+                style={{
+                  background: "rgba(86,219,132,0.1)",
+                  border: "1px solid rgba(86,219,132,0.2)",
+                  color: "#56db84",
+                }}
+              >
+                <span style={{ width: 5, height: 5, borderRadius: "50%", background: "#56db84", display: "inline-block" }} />
+                10 credite gratuite
+              </div>
+
+              <h1 className="text-[24px] font-bold text-white mb-1.5" style={{ letterSpacing: "-0.02em" }}>
+                Creează cont gratuit
+              </h1>
               <p className="text-[14px] text-white/40 mb-8 leading-relaxed">
-                Introdu emailul și îți trimitem un link de autentificare.
+                Introdu emailul — îți trimitem un link de activare.<br />
+                Fără parolă, fără card.
               </p>
 
               <form onSubmit={handleSubmit} className="flex flex-col gap-3">
@@ -443,21 +388,30 @@ export default function LoginPage() {
                       Se trimite...
                     </>
                   ) : (
-                    "Trimite link magic →"
+                    "Creează cont gratuit →"
                   )}
                 </button>
               </form>
+
+              {/* Terms */}
+              <p className="text-[12px] text-white/25 mt-4 leading-relaxed text-center">
+                Prin înregistrare ești de acord cu{" "}
+                <span className="text-white/40 underline underline-offset-2 cursor-pointer">Termenii de utilizare</span>
+                {" "}și{" "}
+                <span className="text-white/40 underline underline-offset-2 cursor-pointer">Politica de confidențialitate</span>.
+              </p>
+
+              {/* Login link */}
+              <div className="mt-6 pt-5 text-center" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
+                <p className="text-[13px] text-white/40">
+                  Ai deja cont?{" "}
+                  <Link href="/login" className="font-semibold" style={{ color: "#56db84" }}>
+                    Intră în cont
+                  </Link>
+                </p>
+              </div>
             </>
           )}
-
-          <div className="mt-6 pt-5 text-center" style={{ borderTop: "1px solid rgba(255,255,255,0.07)" }}>
-            <p className="text-[13px] text-white/40">
-              Nu ai cont?{" "}
-              <Link href="/signup" className="font-semibold" style={{ color: "#56db84" }}>
-                Creează cont gratuit
-              </Link>
-            </p>
-          </div>
 
           <p className="text-center text-[12px] text-white/20 mt-8">
             Nesco Digital AI · Toate drepturile rezervate

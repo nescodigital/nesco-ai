@@ -47,7 +47,7 @@ function wrap(content: string): string {
   <div style="${CONTAINER}">
     <!-- Logo -->
     <div style="margin-bottom: 32px;">
-      <img src="https://zeiysldulaawgqdhhfpx.supabase.co/storage/v1/object/public/assets/ai_nescodigital_logo.png" alt="Nesco Digital AI" style="height: 36px; width: auto; display: block;" />
+      <img src="https://zeiysldulaawgqdhhfpx.supabase.co/storage/v1/object/public/assets/ai_nescodigital_logo.png" alt="Nesco Digital AI" style="height: 25px; width: auto; display: block;" />
     </div>
 
     ${content}
