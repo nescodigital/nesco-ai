@@ -26,6 +26,7 @@ const BUTTON = `
   letter-spacing: -0.01em;
 `;
 
+
 const FOOTER = `
   margin-top: 40px;
   padding-top: 24px;
@@ -54,51 +55,57 @@ function wrap(content: string): string {
 
     <div style="${FOOTER}">
       <p>Ai primit acest email pentru că te-ai înregistrat la Nesco Digital AI.</p>
+      <p><a href="https://ai.nescodigital.com" style="color: rgba(255,255,255,0.3);">ai.nescodigital.com</a></p>
     </div>
   </div>
 </body>
 </html>`;
 }
 
+function getName(email: string): string {
+  const part = email.split("@")[0].split(".")[0];
+  return part.charAt(0).toUpperCase() + part.slice(1);
+}
+
+// ── EMAIL 1: Welcome (ziua 0) ─────────────────────────────────────────────────
 export function welcomeEmail(email: string): { subject: string; html: string } {
-  const firstName = email.split("@")[0].split(".")[0];
-  const displayName = firstName.charAt(0).toUpperCase() + firstName.slice(1);
+  const name = getName(email);
 
   return {
-    subject: "Ai 10 credite gratuite. Hai să le folosești. ⚡",
+    subject: `${name}, workspace-ul tău e gata. Ai 10 credite gratuite. ⚡`,
     html: wrap(`
       <h1 style="font-size: 26px; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 8px; line-height: 1.2;">
-        Bun venit, ${displayName}! 👋
+        Bun venit, ${name}. 👋
       </h1>
-      <p style="color: rgba(255,255,255,0.5); font-size: 15px; margin: 0 0 32px; line-height: 1.6;">
-        Contul tău Nesco Digital AI e activ. Ai <strong style="color: #56db84;">10 credite gratuite</strong> care te așteaptă.
+      <p style="color: rgba(255,255,255,0.5); font-size: 15px; margin: 0 0 28px; line-height: 1.6;">
+        AI-ul tău de marketing e configurat și gata. Ai <strong style="color: #56db84;">10 credite gratuite</strong> — destul să generezi primele postări, o reclamă Meta și să vezi cum funcționează sistemul.
       </p>
 
-      <!-- Steps -->
-      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 24px; margin-bottom: 28px;">
+      <!-- Ce poți face acum -->
+      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 24px; margin-bottom: 24px;">
         <p style="font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.3); text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 16px;">
-          Cum funcționează
+          Ce poți face cu cele 10 credite
         </p>
-        <div style="display: flex; flex-direction: column; gap: 14px;">
-          <div style="display: flex; align-items: flex-start; gap: 12px;">
-            <div style="width: 24px; height: 24px; border-radius: 8px; background: linear-gradient(135deg,rgba(86,219,132,0.2),rgba(129,140,248,0.15)); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #56db84;">1</div>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 18px; width: 24px; text-align: center;">✍️</span>
             <div>
-              <p style="margin: 0; font-size: 14px; font-weight: 600; color: #ffffff;">Alege tipul de conținut</p>
-              <p style="margin: 4px 0 0; font-size: 13px; color: rgba(255,255,255,0.4);">Post, email, reclamă - AI-ul știe regulile fiecărei platforme.</p>
+              <p style="margin: 0; font-size: 14px; font-weight: 600; color: #fff;">10 postări sau emailuri</p>
+              <p style="margin: 2px 0 0; font-size: 12px; color: rgba(255,255,255,0.35);">Facebook, Instagram, LinkedIn, Email, Meta Ads — 1 credit fiecare</p>
             </div>
           </div>
-          <div style="display: flex; align-items: flex-start; gap: 12px;">
-            <div style="width: 24px; height: 24px; border-radius: 8px; background: linear-gradient(135deg,rgba(86,219,132,0.2),rgba(129,140,248,0.15)); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #56db84;">2</div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 18px; width: 24px; text-align: center;">🔍</span>
             <div>
-              <p style="margin: 0; font-size: 14px; font-weight: 600; color: #ffffff;">Spune-i despre ce să scrie</p>
-              <p style="margin: 4px 0 0; font-size: 13px; color: rgba(255,255,255,0.4);">Un context scurt - promoție, produs nou, eveniment.</p>
+              <p style="margin: 0; font-size: 14px; font-weight: 600; color: #fff;">2 analize Spy AI</p>
+              <p style="margin: 2px 0 0; font-size: 12px; color: rgba(255,255,255,0.35);">Analizează orice competitor — 5 credite fiecare</p>
             </div>
           </div>
-          <div style="display: flex; align-items: flex-start; gap: 12px;">
-            <div style="width: 24px; height: 24px; border-radius: 8px; background: linear-gradient(135deg,rgba(86,219,132,0.2),rgba(129,140,248,0.15)); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #56db84;">3</div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 18px; width: 24px; text-align: center;">📅</span>
             <div>
-              <p style="margin: 0; font-size: 14px; font-weight: 600; color: #ffffff;">Generează și publică</p>
-              <p style="margin: 4px 0 0; font-size: 13px; color: rgba(255,255,255,0.4);">Conținut în stilul brandului tău, gata de publicat.</p>
+              <p style="margin: 0; font-size: 14px; font-weight: 600; color: #fff;">Calendar editorial săptămânal</p>
+              <p style="margin: 2px 0 0; font-size: 12px; color: rgba(255,255,255,0.35);">Planul e gratuit — generarea per slot costă 1 credit</p>
             </div>
           </div>
         </div>
@@ -108,46 +115,52 @@ export function welcomeEmail(email: string): { subject: string; html: string } {
         ⚡ Deschide workspace-ul →
       </a>
 
-      <p style="margin-top: 24px; font-size: 13px; color: rgba(255,255,255,0.3);">
-        Ai completat profilul brandului tău la înregistrare - AI-ul va scrie deja în stilul tău. Dacă vrei să actualizezi ceva, găsești setările în dashboard.
+      <p style="margin-top: 20px; font-size: 13px; color: rgba(255,255,255,0.3); line-height: 1.6;">
+        Profilul brandului tău e deja salvat din onboarding. AI-ul va scrie în stilul tău de la prima generare — nu trebuie să explici nimic.
       </p>
     `),
   };
 }
 
+// ── EMAIL 2: Day 2 — Educațional: conținut care vinde ─────────────────────────
 export function day2Email(email: string): { subject: string; html: string } {
+  const name = getName(email);
+
   return {
-    subject: "Cum să creezi conținut care vinde (nu doar postări frumoase)",
+    subject: "De ce 90% din postările românești nu vând (și cum să nu fii tu în aia 90%)",
     html: wrap(`
-      <h1 style="font-size: 26px; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 8px; line-height: 1.2;">
+      <h1 style="font-size: 24px; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 8px; line-height: 1.3;">
         Conținut bun vs. conținut care vinde 🎯
       </h1>
       <p style="color: rgba(255,255,255,0.5); font-size: 15px; margin: 0 0 28px; line-height: 1.6;">
-        Există o diferență mare între un post care primește like-uri și unul care aduce clienți. Ți-o explicăm în 3 minute.
+        ${name}, există o diferență mare între un post care primește like-uri și unul care aduce clienți. Cei mai mulți antreprenori confundă engagement cu vânzări. Iată cum să nu faci asta.
       </p>
 
-      <!-- Tip 1 -->
-      <div style="border-left: 3px solid #56db84; padding: 4px 0 4px 16px; margin-bottom: 20px;">
-        <p style="margin: 0 0 6px; font-size: 14px; font-weight: 700; color: #ffffff;">✦ Specifică problema, nu soluția</p>
-        <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6;">
-          "Economisești timp" e slab. "Nu mai petreci 3 ore pe săptămână scriind postări" e puternic. AI-ul nostru folosește context-ul tău pentru a fi specific.
-        </p>
-      </div>
-
-      <!-- Tip 2 -->
-      <div style="border-left: 3px solid #818cf8; padding: 4px 0 4px 16px; margin-bottom: 20px;">
-        <p style="margin: 0 0 6px; font-size: 14px; font-weight: 700; color: #ffffff;">✦ Un singur CTA per post</p>
-        <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6;">
-          "Comentează, dă share și intră pe site" = nimeni nu face nimic. Alege un singur obiectiv când generezi - AI-ul va construi postul în jurul lui.
-        </p>
-      </div>
-
-      <!-- Tip 3 -->
-      <div style="border-left: 3px solid #56db84; padding: 4px 0 4px 16px; margin-bottom: 32px;">
-        <p style="margin: 0 0 6px; font-size: 14px; font-weight: 700; color: #ffffff;">✦ Contextul face diferența</p>
-        <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6;">
-          "Post despre reduceri" vs "Post despre reducere 30% la colecția de primăvară, pentru femei 25-40 ani, weekend-ul ăsta". Al doilea câștigă mereu.
-        </p>
+      <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 28px;">
+        <div style="border-left: 3px solid #56db84; padding: 4px 0 4px 16px;">
+          <p style="margin: 0 0 4px; font-size: 14px; font-weight: 700; color: #fff;">✦ Specifică problema, nu soluția</p>
+          <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6;">
+            "Economisești timp" e slab. "Nu mai petreci 3 ore pe săptămână scriind postări de la zero" e puternic. Fii specific cu durerea, nu cu promisiunea.
+          </p>
+        </div>
+        <div style="border-left: 3px solid #818cf8; padding: 4px 0 4px 16px;">
+          <p style="margin: 0 0 4px; font-size: 14px; font-weight: 700; color: #fff;">✦ Un singur CTA per post</p>
+          <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6;">
+            "Comentează, dă share și intră pe site" = nimeni nu face nimic. Când generezi conținut, alege un singur obiectiv — vânzare, engagement sau awareness.
+          </p>
+        </div>
+        <div style="border-left: 3px solid #56db84; padding: 4px 0 4px 16px;">
+          <p style="margin: 0 0 4px; font-size: 14px; font-weight: 700; color: #fff;">✦ Hook-ul face diferența</p>
+          <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6;">
+            Prima propoziție decide dacă oamenii citesc sau scroll-uiesc. Încearcă Hook Generator-ul din dashboard — generează 10 variante psihologice pentru orice subiect.
+          </p>
+        </div>
+        <div style="border-left: 3px solid #818cf8; padding: 4px 0 4px 16px;">
+          <p style="margin: 0 0 4px; font-size: 14px; font-weight: 700; color: #fff;">✦ Contextul multiplică calitatea</p>
+          <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6;">
+            "Post despre reduceri" vs "Post despre reducere 30% la colecția de primăvară, femei 25–40 ani, weekend-ul ăsta". Al doilea câștigă mereu — adaugă context în câmpul dedicat din generator.
+          </p>
+        </div>
       </div>
 
       <a href="https://ai.nescodigital.com/dashboard" style="${BUTTON}">
@@ -156,6 +169,198 @@ export function day2Email(email: string): { subject: string; html: string } {
     `),
   };
 }
+
+// ── EMAIL 3: Day 4 — Spy AI + Hook Generator demo ─────────────────────────────
+export function day4Email(email: string): { subject: string; html: string } {
+  const name = getName(email);
+
+  return {
+    subject: "Știi exact ce fac competitorii tăi pe social media?",
+    html: wrap(`
+      <h1 style="font-size: 24px; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 8px; line-height: 1.3;">
+        Competitorii tăi au o strategie. Tu o știi? 🔍
+      </h1>
+      <p style="color: rgba(255,255,255,0.5); font-size: 15px; margin: 0 0 28px; line-height: 1.6;">
+        ${name}, în timp ce tu postezi "din instinct", competitorii tăi testează mesaje, hook-uri și oferte. Cu Spy AI, poți vedea exact ce funcționează pentru ei — și cum îi poți depăși.
+      </p>
+
+      <!-- Spy AI -->
+      <div style="background: rgba(86,219,132,0.05); border: 1px solid rgba(86,219,132,0.2); border-radius: 14px; padding: 20px; margin-bottom: 16px;">
+        <p style="margin: 0 0 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #56db84;">🔍 Spy AI</p>
+        <p style="margin: 0 0 10px; font-size: 15px; font-weight: 700; color: #fff;">Analizezi orice competitor în 30 de secunde</p>
+        <p style="margin: 0 0 14px; font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6;">
+          Paste URL-ul oricărei pagini de Facebook sau website. AI-ul extrage strategia lor, mesajele cheie, punctele slabe și îți spune exact cum îi poți depăși.
+        </p>
+        <p style="margin: 0; font-size: 12px; color: rgba(255,255,255,0.3);">Costă 5 credite per analiză.</p>
+      </div>
+
+      <!-- Hook Generator -->
+      <div style="background: rgba(129,140,248,0.05); border: 1px solid rgba(129,140,248,0.2); border-radius: 14px; padding: 20px; margin-bottom: 28px;">
+        <p style="margin: 0 0 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #818cf8;">🎣 Hook Generator</p>
+        <p style="margin: 0 0 10px; font-size: 15px; font-weight: 700; color: #fff;">10 hook-uri pentru orice subiect — gratuit</p>
+        <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6;">
+          Scrii subiectul și primești 10 variante de prima propoziție — curiozitate, șoc, statistici, poveste personală, controversă. Fiecare cu explicația psihologică.
+        </p>
+      </div>
+
+      <a href="https://ai.nescodigital.com/dashboard" style="${BUTTON}">
+        Încearcă Spy AI →
+      </a>
+    `),
+  };
+}
+
+// ── EMAIL 4: Day 7 — Founding Members urgency ─────────────────────────────────
+export function day7Email(email: string): { subject: string; html: string } {
+  const name = getName(email);
+
+  return {
+    subject: "Mai sunt locuri la prețul de fondator? (verifică acum)",
+    html: wrap(`
+      <h1 style="font-size: 24px; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 8px; line-height: 1.3;">
+        Primii 200 de clienți prind prețul blocat pe viață. 🔒
+      </h1>
+      <p style="color: rgba(255,255,255,0.5); font-size: 15px; margin: 0 0 28px; line-height: 1.6;">
+        ${name}, suntem în faza de lansare și am decis să oferim un avantaj real primilor 200 de clienți plătitori: prețul actual blocat pe viață. Când prețurile cresc (și vor crește), tu rămâi la prețul de acum.
+      </p>
+
+      <!-- Plans founding -->
+      <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 28px;">
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <p style="margin: 0 0 2px; font-size: 14px; font-weight: 700; color: #fff;">Starter</p>
+            <p style="margin: 0; font-size: 12px; color: rgba(255,255,255,0.4);">60 credite/lună · Toate tool-urile</p>
+          </div>
+          <div style="text-align: right;">
+            <p style="margin: 0; font-size: 20px; font-weight: 800; color: #56db84;">45 RON<span style="font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.3)">/lună</span></p>
+            <p style="margin: 0; font-size: 11px; color: rgba(255,255,255,0.25); text-decoration: line-through;">viitor: 89 RON</p>
+          </div>
+        </div>
+        <div style="background: linear-gradient(135deg,rgba(86,219,132,0.07),rgba(129,140,248,0.05)); border: 1.5px solid rgba(86,219,132,0.3); border-radius: 12px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <p style="margin: 0 0 2px; font-size: 14px; font-weight: 700; color: #fff;">Pro <span style="font-size: 11px; background: rgba(86,219,132,0.15); color: #56db84; padding: 2px 7px; border-radius: 20px;">Popular</span></p>
+            <p style="margin: 0; font-size: 12px; color: rgba(255,255,255,0.4);">200 credite/lună · Voice Cloning inclus</p>
+          </div>
+          <div style="text-align: right;">
+            <p style="margin: 0; font-size: 20px; font-weight: 800; color: #56db84;">99 RON<span style="font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.3)">/lună</span></p>
+            <p style="margin: 0; font-size: 11px; color: rgba(255,255,255,0.25); text-decoration: line-through;">viitor: 169 RON</p>
+          </div>
+        </div>
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <p style="margin: 0 0 2px; font-size: 14px; font-weight: 700; color: #fff;">Multi-Brand</p>
+            <p style="margin: 0; font-size: 12px; color: rgba(255,255,255,0.4);">600 credite/lună · 5 branduri</p>
+          </div>
+          <div style="text-align: right;">
+            <p style="margin: 0; font-size: 20px; font-weight: 800; color: #56db84;">199 RON<span style="font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.3)">/lună</span></p>
+            <p style="margin: 0; font-size: 11px; color: rgba(255,255,255,0.25); text-decoration: line-through;">viitor: 349 RON</p>
+          </div>
+        </div>
+      </div>
+
+      <a href="https://ai.nescodigital.com/pricing" style="${BUTTON}">
+        Prinde prețul de fondator →
+      </a>
+
+      <p style="margin-top: 16px; font-size: 13px; color: rgba(255,255,255,0.3); line-height: 1.6;">
+        Anulezi oricând. Dacă nu ești mulțumit în primele 7 zile, îți returnăm banii.
+      </p>
+    `),
+  };
+}
+
+// ── EMAIL 5: Day 10 — Voice Cloning + Persuasion Score ───────────────────────
+export function day10Email(email: string): { subject: string; html: string } {
+  const name = getName(email);
+
+  return {
+    subject: "Scrie AI exact ca tine. Nu ca un robot.",
+    html: wrap(`
+      <h1 style="font-size: 24px; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 8px; line-height: 1.3;">
+        Conținut care sună ca tine. Serios. 🎙️
+      </h1>
+      <p style="color: rgba(255,255,255,0.5); font-size: 15px; margin: 0 0 28px; line-height: 1.6;">
+        ${name}, cel mai mare complaint față de AI e că "sună robotic". Am rezolvat asta cu Voice Cloning — dar mai sunt două tool-uri pe care probabil nu le-ai descoperit încă.
+      </p>
+
+      <!-- Voice Cloning -->
+      <div style="background: rgba(129,140,248,0.05); border: 1px solid rgba(129,140,248,0.2); border-radius: 14px; padding: 20px; margin-bottom: 14px;">
+        <p style="margin: 0 0 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #818cf8;">🎙️ Voice Cloning (plan Pro)</p>
+        <p style="margin: 0 0 10px; font-size: 15px; font-weight: 700; color: #fff;">"Scrie ca mine" — AI-ul tău, stilul tău</p>
+        <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6;">
+          Paste-uiești 3–10 texte scrise de tine. AI-ul extrage ritmul, expresiile preferate, lungimea frazelor, tonul unic. De atunci scrie exact ca tine — nu ca un copywriter generic.
+        </p>
+      </div>
+
+      <!-- Persuasion Score -->
+      <div style="background: rgba(86,219,132,0.05); border: 1px solid rgba(86,219,132,0.2); border-radius: 14px; padding: 20px; margin-bottom: 28px;">
+        <p style="margin: 0 0 6px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #56db84;">📊 Persuasion Score</p>
+        <p style="margin: 0 0 10px; font-size: 15px; font-weight: 700; color: #fff;">Scor 0–100 pentru orice text</p>
+        <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.5); line-height: 1.6;">
+          Paste-uiești orice text — post, email, reclamă, descriere produs. Primești un scor de persuasiune, punctul exact unde cititorul se pierde și 3 sugestii concrete de îmbunătățire.
+        </p>
+      </div>
+
+      <a href="https://ai.nescodigital.com/dashboard" style="${BUTTON}">
+        Testează Persuasion Score →
+      </a>
+
+      <p style="margin-top: 20px; font-size: 13px; color: rgba(255,255,255,0.3); line-height: 1.6;">
+        Voice Cloning e disponibil din planul Pro. Persuasion Score e disponibil pe orice plan.
+      </p>
+    `),
+  };
+}
+
+// ── EMAIL 6: Day 14 — Final urgency + social proof ────────────────────────────
+export function day14Email(email: string): { subject: string; html: string } {
+  const name = getName(email);
+
+  return {
+    subject: `${name}, mai ai credite? Iată ce urmează.`,
+    html: wrap(`
+      <h1 style="font-size: 24px; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 8px; line-height: 1.3;">
+        14 zile. Ai testat. Acum fă-o serios. 🚀
+      </h1>
+      <p style="color: rgba(255,255,255,0.5); font-size: 15px; margin: 0 0 28px; line-height: 1.6;">
+        ${name}, au trecut două săptămâni de când ai acces. Dacă AI-ul ți-a economisit timp sau ți-a generat conținut mai bun, acum e momentul să faci pasul următor.
+      </p>
+
+      <!-- Social proof -->
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px;">
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 16px 20px;">
+          <p style="margin: 0 0 8px; font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.6; font-style: italic;">
+            "Înainte petreceam 3 ore pe săptămână să scriu postări. Acum le generez în 5 minute și sună exact ca mine."
+          </p>
+          <p style="margin: 0; font-size: 12px; color: rgba(255,255,255,0.35);">Andreea M. — fondatoare, brand de cosmetice</p>
+        </div>
+        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 16px 20px;">
+          <p style="margin: 0 0 8px; font-size: 13px; color: rgba(255,255,255,0.75); line-height: 1.6; font-style: italic;">
+            "Reclamele noastre Meta au un CTR dublu față de ce scriam noi. Merită fiecare leu."
+          </p>
+          <p style="margin: 0; font-size: 12px; color: rgba(255,255,255,0.35);">Dan S. — director vânzări, firmă de software</p>
+        </div>
+      </div>
+
+      <!-- Founding urgency -->
+      <div style="background: linear-gradient(135deg,rgba(86,219,132,0.08),rgba(129,140,248,0.06)); border: 1.5px solid rgba(86,219,132,0.25); border-radius: 14px; padding: 20px; margin-bottom: 28px; text-align: center;">
+        <p style="margin: 0 0 4px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #56db84;">Founding Members</p>
+        <p style="margin: 0 0 8px; font-size: 16px; font-weight: 700; color: #fff;">Prețul de fondator expiră la 200 de clienți.</p>
+        <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.4);">Locurile se termină. Când dispar, prețurile cresc.</p>
+      </div>
+
+      <a href="https://ai.nescodigital.com/pricing" style="${BUTTON}">
+        Vezi locurile rămase →
+      </a>
+
+      <p style="margin-top: 16px; font-size: 13px; color: rgba(255,255,255,0.3);">
+        Anulezi oricând. Garanție 7 zile.
+      </p>
+    `),
+  };
+}
+
+// ── Existing functional emails (unchanged) ────────────────────────────────────
 
 export function contentEmail({
   email,
@@ -168,7 +373,6 @@ export function contentEmail({
   contentType: string;
   objective: string;
 }): { subject: string; html: string } {
-  // Convert markdown-like content to basic HTML
   const htmlContent = content
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
@@ -205,10 +409,7 @@ export function calendarPlanEmail({
   slots: Array<{ date: string; contentType: string; objective: string; result: string }>;
   weekLabel: string;
 }): { subject: string; html: string } {
-  const MONTHS_RO = [
-    "ian", "feb", "mar", "apr", "mai", "iun",
-    "iul", "aug", "sep", "oct", "nov", "dec",
-  ];
+  const MONTHS_RO = ["ian", "feb", "mar", "apr", "mai", "iun", "iul", "aug", "sep", "oct", "nov", "dec"];
   const DAYS_RO = ["Dum", "Lun", "Mar", "Mie", "Joi", "Vin", "Sâm"];
 
   const slotsHtml = slots.map((s) => {
@@ -244,9 +445,7 @@ export function calendarPlanEmail({
       <p style="color: rgba(255,255,255,0.4); font-size: 14px; margin: 0 0 24px;">
         ${weekLabel} - ${slots.length} ${slots.length === 1 ? "postare generată" : "postări generate"}
       </p>
-
       ${slotsHtml}
-
       <a href="https://ai.nescodigital.com/dashboard" style="${BUTTON}">
         Generează mai mult continut
       </a>
@@ -294,12 +493,9 @@ export function spyReportEmail({
   return {
     subject: `Raport Spy AI — ${name}`,
     html: wrap(`
-      <h1 style="font-size:22px;font-weight:800;letter-spacing:-0.03em;margin:0 0 4px;line-height:1.2;">
-        Raport Spy AI
-      </h1>
+      <h1 style="font-size:22px;font-weight:800;letter-spacing:-0.03em;margin:0 0 4px;line-height:1.2;">Raport Spy AI</h1>
       <p style="color:rgba(255,255,255,0.4);font-size:14px;margin:0 0 28px;">${name}</p>
 
-      <!-- Strategie + Ton -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
         <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px;">
           <p style="margin:0 0 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.3);">Strategia lor</p>
@@ -311,7 +507,6 @@ export function spyReportEmail({
         </div>
       </div>
 
-      <!-- Frici + Hooks -->
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
         <div style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:16px;">
           <p style="margin:0 0 10px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.3);">Frici / Dureri adresate</p>
@@ -323,13 +518,11 @@ export function spyReportEmail({
         </div>
       </div>
 
-      <!-- Puncte slabe -->
       <div style="background:rgba(234,179,8,0.06);border:1px solid rgba(234,179,8,0.2);border-radius:12px;padding:16px;margin-bottom:16px;">
         <p style="margin:0 0 10px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#ca8a04;">Puncte slabe identificate</p>
         ${listItems(analysis.weaknesses, "#ca8a04")}
       </div>
 
-      <!-- Avantaj competitiv -->
       <div style="background:rgba(86,219,132,0.06);border:1px solid rgba(86,219,132,0.2);border-radius:12px;padding:16px;margin-bottom:16px;">
         <p style="margin:0 0 8px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.08em;color:#56db84;">Avantajul tău competitiv</p>
         <p style="margin:0 0 14px;font-size:13px;color:rgba(255,255,255,0.8);line-height:1.6;">${(analysis.differentiation || "").replace(/&/g,"&amp;")}</p>
@@ -342,56 +535,13 @@ export function spyReportEmail({
       ${brandInsightsSection}
 
       <div style="margin-top:28px;">
-        <a href="https://ai.nescodigital.com/dashboard" style="${BUTTON}">
-          Deschide Spy AI →
-        </a>
+        <a href="https://ai.nescodigital.com/dashboard" style="${BUTTON}">Deschide Spy AI →</a>
       </div>
     `),
   };
 }
 
+// Keep day5Email as alias for backwards compatibility with existing cron
 export function day5Email(email: string): { subject: string; html: string } {
-  return {
-    subject: "Creditele tale gratuite expiră curând → Vezi planurile",
-    html: wrap(`
-      <h1 style="font-size: 26px; font-weight: 800; letter-spacing: -0.03em; margin: 0 0 8px; line-height: 1.2;">
-        Ai testat. Acum fă-o serios. 🚀
-      </h1>
-      <p style="color: rgba(255,255,255,0.5); font-size: 15px; margin: 0 0 28px; line-height: 1.6;">
-        Creditele gratuite sunt aproape de final. Dacă AI-ul ți-a economisit timp și ți-a plăcut conținutul generat, acum e momentul să treci la un plan.
-      </p>
-
-      <!-- Plans -->
-      <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px;">
-        <!-- Starter -->
-        <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 20px;">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div>
-              <p style="margin: 0 0 4px; font-size: 15px; font-weight: 700; color: #ffffff;">Starter</p>
-              <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.4);">50 generări/lună - perfect pentru un brand activ</p>
-            </div>
-            <p style="margin: 0; font-size: 20px; font-weight: 800; color: #56db84; white-space: nowrap;">9€<span style="font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.3)">/lună</span></p>
-          </div>
-        </div>
-        <!-- Pro -->
-        <div style="background: linear-gradient(135deg,rgba(86,219,132,0.07),rgba(129,140,248,0.05)); border: 1px solid rgba(86,219,132,0.25); border-radius: 14px; padding: 20px;">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-            <div>
-              <p style="margin: 0 0 4px; font-size: 15px; font-weight: 700; color: #ffffff;">Pro <span style="font-size: 11px; background: rgba(86,219,132,0.15); color: #56db84; padding: 2px 8px; border-radius: 20px; font-weight: 600;">Popular</span></p>
-              <p style="margin: 0; font-size: 13px; color: rgba(255,255,255,0.4);">200 generări/lună + traduceri incluse</p>
-            </div>
-            <p style="margin: 0; font-size: 20px; font-weight: 800; color: #56db84; white-space: nowrap;">29€<span style="font-size: 12px; font-weight: 400; color: rgba(255,255,255,0.3)">/lună</span></p>
-          </div>
-        </div>
-      </div>
-
-      <a href="https://ai.nescodigital.com/pricing" style="${BUTTON}">
-        Vezi toate planurile →
-      </a>
-
-      <p style="margin-top: 20px; font-size: 13px; color: rgba(255,255,255,0.3);">
-        Poți anula oricând. Fără costuri ascunse.
-      </p>
-    `),
-  };
+  return day14Email(email);
 }

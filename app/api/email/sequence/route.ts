@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createClient as createServerClient } from "@supabase/supabase-js";
-import { day2Email, day5Email } from "@/lib/email-templates";
+import { day2Email, day4Email, day5Email, day7Email, day10Email, day14Email } from "@/lib/email-templates";
 
 // This endpoint is called by a cron job (e.g. Vercel Cron or external scheduler).
 // Set up cron to call GET /api/email/sequence every hour with header:
@@ -12,7 +12,7 @@ import { day2Email, day5Email } from "@/lib/email-templates";
 //   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
 //   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
 //   email TEXT NOT NULL,
-//   email_type TEXT NOT NULL, -- 'welcome' | 'day2' | 'day5'
+//   email_type TEXT NOT NULL, -- 'welcome' | 'day2' | 'day4' | 'day7' | 'day10' | 'day14'
 //   sent_at TIMESTAMPTZ DEFAULT now()
 // );
 // ALTER TABLE email_sequence_log ENABLE ROW LEVEL SECURITY;
@@ -81,7 +81,75 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    // Day 5 email: send between 116h and 124h after signup
+    // Day 4 email: send between 92h and 100h after signup
+    if (hoursSinceSignup >= 92 && hoursSinceSignup < 100 && !sentTypes.has("day4")) {
+      try {
+        const { subject, html } = day4Email(user.email);
+        await resend.emails.send({ from: FROM, to: user.email, subject, html });
+        await supabase.from("email_sequence_log").insert({
+          user_id: user.id,
+          email: user.email,
+          email_type: "day4",
+          sent_at: now.toISOString(),
+        });
+        sent++;
+      } catch {
+        errors++;
+      }
+    }
+
+    // Day 7 email: send between 164h and 172h after signup
+    if (hoursSinceSignup >= 164 && hoursSinceSignup < 172 && !sentTypes.has("day7")) {
+      try {
+        const { subject, html } = day7Email(user.email);
+        await resend.emails.send({ from: FROM, to: user.email, subject, html });
+        await supabase.from("email_sequence_log").insert({
+          user_id: user.id,
+          email: user.email,
+          email_type: "day7",
+          sent_at: now.toISOString(),
+        });
+        sent++;
+      } catch {
+        errors++;
+      }
+    }
+
+    // Day 10 email: send between 236h and 244h after signup
+    if (hoursSinceSignup >= 236 && hoursSinceSignup < 244 && !sentTypes.has("day10")) {
+      try {
+        const { subject, html } = day10Email(user.email);
+        await resend.emails.send({ from: FROM, to: user.email, subject, html });
+        await supabase.from("email_sequence_log").insert({
+          user_id: user.id,
+          email: user.email,
+          email_type: "day10",
+          sent_at: now.toISOString(),
+        });
+        sent++;
+      } catch {
+        errors++;
+      }
+    }
+
+    // Day 14 email: send between 332h and 340h after signup
+    if (hoursSinceSignup >= 332 && hoursSinceSignup < 340 && !sentTypes.has("day14")) {
+      try {
+        const { subject, html } = day14Email(user.email);
+        await resend.emails.send({ from: FROM, to: user.email, subject, html });
+        await supabase.from("email_sequence_log").insert({
+          user_id: user.id,
+          email: user.email,
+          email_type: "day14",
+          sent_at: now.toISOString(),
+        });
+        sent++;
+      } catch {
+        errors++;
+      }
+    }
+
+    // Day 5 legacy alias (kept for backwards compat — maps to day5Email)
     if (hoursSinceSignup >= 116 && hoursSinceSignup < 124 && !sentTypes.has("day5")) {
       try {
         const { subject, html } = day5Email(user.email);
