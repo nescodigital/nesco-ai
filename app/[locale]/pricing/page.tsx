@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Logo from "@/app/components/Logo";
@@ -17,12 +17,26 @@ const PLAN_ACCENT: Record<PlanId, boolean> = {
   pro: true,
   "multi-brand": false,
 };
+const FUTURE_PRICES: Record<PlanId, number> = {
+  starter: 89,
+  pro: 169,
+  "multi-brand": 349,
+};
+const FOUNDING_TOTAL = 200;
 
 export default function PricingPage() {
   const router = useRouter();
   const locale = useLocale() as Locale;
   const t = useTranslations("pricing");
   const [loading, setLoading] = useState<string | null>(null);
+  const [remaining, setRemaining] = useState<number | null>(null);
+
+  useEffect(() => {
+    fetch("/api/founding-count")
+      .then((r) => r.json())
+      .then((d) => setRemaining(d.remaining))
+      .catch(() => setRemaining(164));
+  }, []);
 
   async function handleUpgrade(planId: PlanId) {
     setLoading(planId);
@@ -45,6 +59,10 @@ export default function PricingPage() {
       setLoading(null);
     }
   }
+
+  const taken = remaining !== null ? FOUNDING_TOTAL - remaining : null;
+  const pct = taken !== null ? Math.min(100, Math.round((taken / FOUNDING_TOTAL) * 100)) : null;
+  const isUrgent = remaining !== null && remaining < 20;
 
   return (
     <div
@@ -69,15 +87,59 @@ export default function PricingPage() {
       </header>
 
       <main className="flex-1 px-5 py-12 max-w-4xl mx-auto w-full">
-        {/* Title */}
-        <div className="text-center mb-12">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#56db84] mb-3">
+
+        {/* Founding Members banner */}
+        <div
+          className="rounded-2xl p-5 mb-10 text-center"
+          style={{
+            background: "linear-gradient(135deg,rgba(86,219,132,0.08),rgba(129,140,248,0.06))",
+            border: "1.5px solid rgba(86,219,132,0.25)",
+          }}
+        >
+          <div className="inline-flex items-center gap-2 mb-3 px-3 py-1 rounded-full text-[11px] font-bold text-black"
+            style={{ background: "linear-gradient(135deg,#56db84,#818cf8)" }}
+          >
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+              <path d="M5 1l1.2 2.5 2.8.4-2 2 .5 2.7L5 7.4 2.5 8.6 3 5.9 1 3.9l2.8-.4z" fill="#000"/>
+            </svg>
+            {t("foundingBadge")}
+          </div>
+
+          <p className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[#56db84] mb-2">
             {t("eyebrow")}
           </p>
-          <h1 className="text-[28px] font-bold text-white mb-3 leading-tight">
+          <h1 className="text-[24px] sm:text-[28px] font-bold text-white mb-2 leading-tight">
             {t("title")}
           </h1>
-          <p className="text-[15px] text-white/40">{t("subtitle")}</p>
+          <p className="text-[14px] text-white/50 mb-5 max-w-lg mx-auto leading-relaxed">
+            {t("subtitle")}
+          </p>
+
+          {/* Progress bar */}
+          {remaining !== null && (
+            <div className="max-w-xs mx-auto">
+              <div className="flex items-center justify-between mb-2">
+                <span
+                  className="text-[13px] font-bold"
+                  style={{ color: isUrgent ? "#f87171" : "#56db84" }}
+                >
+                  {isUrgent ? t("spotsUrgent") : `${remaining} ${t("spotsRemaining")}`}
+                </span>
+                <span className="text-[12px] text-white/30">{pct}% ocupat</span>
+              </div>
+              <div className="h-2 rounded-full" style={{ background: "rgba(255,255,255,0.06)" }}>
+                <div
+                  className="h-full rounded-full transition-all duration-1000"
+                  style={{
+                    width: `${pct}%`,
+                    background: isUrgent
+                      ? "linear-gradient(90deg,#f87171,#ef4444)"
+                      : "linear-gradient(90deg,#56db84,#818cf8)",
+                  }}
+                />
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Plans grid */}
@@ -86,6 +148,7 @@ export default function PricingPage() {
             const config = PLAN_CONFIG[locale][planId];
             const credits = PLAN_CREDITS[planId];
             const accent = PLAN_ACCENT[planId];
+            const futurePrice = FUTURE_PRICES[planId];
             const description = t(`plans.${planId}.description`);
             const features = t.raw(`plans.${planId}.features`) as string[];
 
@@ -112,6 +175,22 @@ export default function PricingPage() {
                   </div>
                 )}
 
+                {/* Founding locked badge */}
+                <div
+                  className="inline-flex items-center gap-1.5 self-start mb-4 px-2.5 py-1 rounded-lg text-[10px] font-bold"
+                  style={{
+                    background: "rgba(86,219,132,0.1)",
+                    border: "1px solid rgba(86,219,132,0.2)",
+                    color: "#56db84",
+                  }}
+                >
+                  <svg width="8" height="8" viewBox="0 0 12 12" fill="none">
+                    <rect x="2" y="5" width="8" height="6" rx="1.5" stroke="#56db84" strokeWidth="1.3"/>
+                    <path d="M4 5V3.5a2 2 0 0 1 4 0V5" stroke="#56db84" strokeWidth="1.3" strokeLinecap="round"/>
+                  </svg>
+                  {t("foundingLocked")}
+                </div>
+
                 <div className="mb-5">
                   <p className="text-[11px] font-semibold uppercase tracking-wider text-white/40 mb-1">
                     {description}
@@ -119,11 +198,23 @@ export default function PricingPage() {
                   <h2 className="text-[20px] font-bold text-white mb-3">
                     {planId === "starter" ? "Starter" : planId === "pro" ? "Pro" : "Multi-Brand"}
                   </h2>
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-[36px] font-bold text-white leading-none">{config.price}</span>
-                    <span className="text-[14px] text-white/40">{config.label}{t("perMonth")}</span>
+
+                  {/* Price — current + future */}
+                  <div className="flex items-end gap-3">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-[36px] font-bold text-white leading-none">{config.price}</span>
+                      <span className="text-[14px] text-white/40">{config.label}{t("perMonth")}</span>
+                    </div>
+                    <div className="mb-1 flex items-center gap-1">
+                      <span className="text-[12px] text-white/25 line-through">{futurePrice} RON</span>
+                    </div>
                   </div>
-                  <p className="text-[13px] text-white/40 mt-1">
+
+                  <p className="text-[12px] mt-1" style={{ color: "#56db84" }}>
+                    {t("futurePrice")}: {futurePrice} RON → economisești {futurePrice - config.price} RON/lună
+                  </p>
+
+                  <p className="text-[12px] text-white/30 mt-1">
                     {t("creditsInfo", { credits, images: Math.round(credits / 2) })}
                   </p>
                 </div>
@@ -164,8 +255,20 @@ export default function PricingPage() {
           })}
         </div>
 
+        {/* Guarantee */}
+        <div
+          className="mt-8 rounded-xl px-5 py-4 flex items-center gap-3 text-center justify-center"
+          style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.06)" }}
+        >
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="flex-shrink-0">
+            <path d="M8 1.5L2 4v4c0 3.3 2.5 6.4 6 7 3.5-.6 6-3.7 6-7V4L8 1.5z" stroke="#56db84" strokeWidth="1.3" strokeLinejoin="round"/>
+            <path d="M5.5 8l2 2 3-3" stroke="#56db84" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+          <p className="text-[13px] text-white/40">{t("guarantee")}</p>
+        </div>
+
         {/* Footer note */}
-        <p className="text-center text-[12px] text-white/20 mt-8">{t("footer")}</p>
+        <p className="text-center text-[12px] text-white/20 mt-4">{t("footer")}</p>
       </main>
     </div>
   );

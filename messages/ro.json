@@ -300,9 +300,9 @@
     }
   },
   "pricing": {
-    "eyebrow": "Planuri și prețuri",
-    "title": "Alege planul potrivit afacerii tale",
-    "subtitle": "Anulezi oricând. Fără contracte.",
+    "eyebrow": "Founding Members — primii 200",
+    "title": "Prinde prețul de fondator. Pentru totdeauna.",
+    "subtitle": "Primii 200 de clienți plătitori primesc prețul actual blocat pe viață. Când prețurile cresc, tu rămâi la prețul de acum.",
     "perMonth": "/lună",
     "creditsInfo": "{credits} texte sau {images} imagini AI / lună",
     "mostPopular": "Cel mai popular",
@@ -312,37 +312,49 @@
     "backToDashboard": "← Înapoi la dashboard",
     "plans": {
       "starter": {
-        "description": "Perfect pentru început",
+        "description": "Perfect pentru antreprenori solo",
         "features": [
           "60 credite / lună",
-          "Text + imagini AI",
-          "Calendar editorial",
-          "Personalizare brand completă",
-          "Suport email"
-        ]
+          "Generator conținut (Facebook, Instagram, LinkedIn, Email, Meta Ads)",
+          "Calendar editorial automat",
+          "Spy AI — analiză competitori",
+          "Hook Generator + Persuasion Score",
+          "Imagini AI (DALL-E 3)",
+          "Traducere în 10 limbi",
+          "Personalizare brand completă"
+        ],
+        "futurePrice": 89
       },
       "pro": {
-        "description": "Pentru afaceri active",
+        "description": "Cel mai ales de antreprenori activi",
         "features": [
           "200 credite / lună",
-          "Text + imagini AI",
-          "Calendar editorial",
-          "Personalizare brand completă",
+          "Tot ce include Starter",
+          "Voice Cloning — scrie exact ca tine",
+          "Generări prioritare",
           "Suport prioritar"
-        ]
+        ],
+        "futurePrice": 169
       },
       "multi-brand": {
-        "description": "Pentru agenții și freelanceri",
+        "description": "Pentru freelanceri și agenții",
         "features": [
           "600 credite / lună",
-          "Text + imagini AI",
-          "Calendar editorial",
-          "Multiple branduri",
-          "Personalizare brand completă",
+          "Tot ce include Pro",
+          "Până la 5 branduri separate",
+          "Brand Switcher în dashboard",
+          "Calendar și analize per brand",
           "Suport dedicat"
-        ]
+        ],
+        "futurePrice": 349
       }
-    }
+    },
+    "foundingBadge": "Founding Member",
+    "foundingLocked": "Preț blocat pe viață",
+    "futurePrice": "Preț viitor",
+    "spotsRemaining": "locuri rămase din 200",
+    "spotsUrgent": "Mai puțin de 20 locuri rămase!",
+    "guarantee": "Anulezi oricând. Dacă nu ești mulțumit în primele 7 zile, îți returnăm banii."
   },
   "dashboard": {
     "tabs": {
