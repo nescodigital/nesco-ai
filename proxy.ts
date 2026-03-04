@@ -14,7 +14,14 @@ export async function proxy(request: NextRequest) {
 
   if (!isApi && !isStatic && !isNext) {
     const intlResponse = intlMiddleware(request);
-    if (intlResponse && intlResponse.status !== 200) {
+    // For redirects (3xx), return immediately — intl is changing the URL
+    if (intlResponse && intlResponse.status >= 300 && intlResponse.status < 400) {
+      return intlResponse;
+    }
+    // For rewrites (200 with x-middleware-rewrite header), we need to run
+    // updateSession too so auth cookies are refreshed, but start from intlResponse
+    if (intlResponse && intlResponse.headers.get("x-middleware-rewrite")) {
+      await updateSession(request);
       return intlResponse;
     }
   }
