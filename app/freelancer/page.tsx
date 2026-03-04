@@ -6,91 +6,99 @@ import Logo from "@/app/components/Logo";
 
 const FOR_WHO = [
   {
-    icon: "🏪",
-    title: "Antreprenori cu mai multe business-uri",
-    desc: "Ai un magazin online, un serviciu de consultanta si un cont personal de creator. Fiecare cu alt ton, alt public, alta strategie. Un singur workspace pentru toate.",
-  },
-  {
     icon: "📱",
-    title: "Manageri de social media (freelanceri)",
-    desc: "Gestionezi 3-5 clienti. Acum ai profiluri separate pentru fiecare, cu memoria lor de brand, tonul lor si calendarul lor. Nu mai confunzi clientii.",
+    title: "Freelancer de social media",
+    desc: "Gestionezi 3-5 clienti. Fiecare cu alt ton, alt public, alta strategie. Profiluri separate, calendare separate, stiluri separate. Un singur cont.",
   },
   {
-    icon: "🏢",
-    title: "Agentii mici de marketing",
-    desc: "Echipa de 2-4 oameni, 5-10 clienti activi. Multi-Brand e punctul de intrare. Poti scala la planul Enterprise cand cresti.",
+    icon: "✍️",
+    title: "Copywriter independent",
+    desc: "Clientii tai sunt branduri diferite cu voci diferite. Voice Cloning per client inseamna ca fiecare text suna exact cum vrea clientul, nu generic.",
+  },
+  {
+    icon: "🏪",
+    title: "Antreprenor cu mai multe business-uri",
+    desc: "Ai un magazin online, un serviciu de consultanta si un cont personal de creator. Alt ton, alt public, alta strategie pentru fiecare. Un singur workspace.",
   },
   {
     icon: "👨‍💼",
-    title: "Antreprenori seriali",
-    desc: "Lansezi produse noi frecvent. Fiecare brand are identitate separata. Sistemul pastreaza profilul, mesajele si strategia fiecarui brand fara sa amestece nimic.",
+    title: "Consultant de marketing",
+    desc: "Livrezi continut lunar pentru mai multi clienti. Cu calendare separate si memorie de brand per client, nu mai pierzi timp explicand contextul de la zero.",
   },
 ];
 
 const FEATURES = [
   {
     icon: "🏷️",
-    title: "5 branduri separate cu profiluri independente",
-    desc: "Fiecare brand are memoria lui, tonul lui, publicul lui si calendarul lui. Schimbi brandul cu un click si totul se adapteaza automat.",
-  },
-  {
-    icon: "📅",
-    title: "Calendare editoriale separate",
-    desc: "Brand A posteaza de 5 ori pe saptamana. Brand B face un newsletter lunar. Calendarul fiecaruia e independent, fara sa se incurce.",
+    title: "5 profiluri de client separate",
+    desc: "Fiecare client are memoria lui, tonul lui, publicul lui si calendarul lui. Schimbi clientul cu un click si totul se adapteaza automat.",
   },
   {
     icon: "🎙️",
-    title: "Voice Cloning per brand",
-    desc: "Brand-ul de tech scrie formal si concis. Brand-ul de fashion scrie entuziastist si relaxat. Clonezi stilul pentru fiecare brand in parte.",
+    title: "Voice Cloning per client",
+    desc: "Clientul de tech scrie formal si concis. Clientul de fashion scrie entuziastist si relaxat. Clonezi stilul pentru fiecare in parte, o singura data.",
+  },
+  {
+    icon: "📅",
+    title: "Calendar editorial per client",
+    desc: "Clientul A posteaza de 5 ori pe saptamana. Clientul B trimite un newsletter lunar. Calendarul fiecaruia e independent, fara sa se incurce.",
   },
   {
     icon: "🔍",
-    title: "Spy AI pentru fiecare competitor",
-    desc: "Analizeaza competitorii fiecarui brand separat. Strategia de continut a competitorului lui Brand A nu se amesteca cu cea a lui Brand B.",
-  },
-  {
-    icon: "600",
-    title: "600 credite/luna pentru toate brandurile",
-    desc: "Suficient pentru 300 postari, 100 emailuri sau orice combinatie. Creditele se impart intre branduri dupa cum ai nevoie.",
+    title: "Spy AI — analiza competitia clientului",
+    desc: "Paste URL-ul competitorului clientului tau. Sistemul extrage strategia lor si iti spune cum sa-l bati. Per client, fara sa amesteci datele.",
   },
   {
     icon: "⚡",
-    title: "Switch rapid intre branduri",
-    desc: "Brand Switcher vizibil in dashboard. Un click si esti in contextul altui brand: alta memorie, alt profil, alt calendar.",
+    title: "Switch rapid intre clienti",
+    desc: "Brand Switcher in dashboard. Un click si esti in contextul altui client: alta memorie, alt profil, alt calendar. Zero timp pierdut.",
+  },
+  {
+    icon: "🎣",
+    title: "Hook Generator + Persuasion Score",
+    desc: "Pentru fiecare client: hook-uri care opresc scrollul si scor de persuasiune inainte sa trimiti textul. Livrezi calitate mai buna in mai putin timp.",
   },
 ];
 
-const COMPARISON = [
-  { feature: "Branduri simultane", free: "1", pro: "1", multi: "5" },
-  { feature: "Credite/luna", free: "10 (trial)", pro: "200", multi: "600" },
-  { feature: "Voice Cloning", free: "—", pro: "✓", multi: "✓ (per brand)" },
-  { feature: "Spy AI", free: "✓", pro: "✓", multi: "✓" },
-  { feature: "Calendar editorial", free: "✓", pro: "✓", multi: "✓ (per brand)" },
-  { feature: "Memorie de brand", free: "✓", pro: "✓", multi: "✓ (per brand)" },
-  { feature: "Pret fondator", free: "—", pro: "99 RON/luna", multi: "199 RON/luna" },
+const BEFORE_AFTER = [
+  { before: "Explici contextul brandului de fiecare data", after: "Memoria de brand il stie deja — zero brief repetat" },
+  { before: "Textele suna generic la toti clientii", after: "Voice Cloning per client — fiecare text in stilul lor" },
+  { before: "Confunzi tonul intre clienti", after: "Profiluri separate, imposibil de amestecat" },
+  { before: "Copywriter extern: 500-2000 RON/client/luna", after: "Nesco AI: 199 RON/luna pentru 5 clienti" },
+  { before: "Calendarul editorial dureaza zile", after: "O luna planificata in 10 minute per client" },
 ];
 
 const FAQS = [
   {
-    q: "Pot adauga branduri treptat, nu toate odata?",
-    a: "Da. Creezi un brand, il configurezi complet, il folosesti. Adaugi al doilea cand ai nevoie. Nu trebuie sa ai 5 branduri active de la inceput.",
+    q: "Clientii mei pot accesa propriul profil?",
+    a: "In planul Multi-Brand, profilurile sunt gestionate din contul tau. Clientii nu au acces separat. Tu generezi si livrezi tu continutul catre ei.",
   },
   {
-    q: "Clientii mei pot accesa propriul brand?",
-    a: "In planul Multi-Brand, brandurile sunt accesate din contul tau. Clientii nu au acces separat. Daca ai nevoie de sub-conturi separate pentru clienti, planul Enterprise (in curand) e potrivit.",
+    q: "Cum functioneaza Voice Cloning per client?",
+    a: "In profilul fiecarui brand (client), mergi la sectiunea de Voice. Paste-uiesti 5-10 texte scrise de ei sau in stilul dorit. AI-ul extrage stilul si il foloseste la toate generarile pentru acel brand.",
   },
   {
-    q: "Creditele se impart sau fiecare brand are ale lui?",
-    a: "Creditele sunt in comun si se impart intre branduri dupa cum aloci. 600 credite pot merge toate la Brand A sau distribuit 200 + 200 + 200 la 3 branduri.",
+    q: "Creditele se impart sau fiecare client are ale lui?",
+    a: "Creditele sunt in comun: 600/luna pentru toate brandurile. Le distribuiti dupa volumul de continut al fiecarui client. Nu exista limita per brand.",
   },
   {
-    q: "Pot trece de la Pro la Multi-Brand fara sa pierd datele?",
-    a: "Da. Upgrade-ul pastreaza toate datele: memoria de brand, istoricul de generari, calendarul. Adaugi pur si simplu branduri noi.",
+    q: "Pot adauga clienti treptat?",
+    a: "Da. Creezi primul profil de client, il configurezi complet, il folosesti. Adaugi al doilea cand castigi un nou client. Nu trebuie sa ai 5 active de la inceput.",
   },
   {
-    q: "Ce se intampla daca am nevoie de mai mult de 5 branduri?",
-    a: "Lucram la un plan Enterprise cu numar nelimitat de branduri si sub-conturi pentru clienti. Scrie-ne la contact@nescodigital.com daca esti interesat.",
+    q: "Ce se intampla daca am mai mult de 5 clienti?",
+    a: "Lucram la un plan extins cu mai multe profiluri. Scrie-ne la contact@nescodigital.com daca ai nevoie acum.",
   },
+];
+
+const COMPARISON = [
+  { feature: "Profiluri de client", free: "1", pro: "1", multi: "5" },
+  { feature: "Credite/luna", free: "10 (trial)", pro: "200", multi: "600" },
+  { feature: "Voice Cloning", free: "—", pro: "✓ (1 brand)", multi: "✓ (per client)" },
+  { feature: "Spy AI", free: "✓", pro: "✓", multi: "✓" },
+  { feature: "Calendar editorial", free: "✓", pro: "✓", multi: "✓ (per client)" },
+  { feature: "Memorie de brand", free: "✓", pro: "✓", multi: "✓ (per client)" },
+  { feature: "Pret fondator", free: "—", pro: "99 RON/luna", multi: "199 RON/luna" },
 ];
 
 function FaqItem({ q, a }: { q: string; a: string }) {
@@ -120,7 +128,7 @@ function FaqItem({ q, a }: { q: string; a: string }) {
   );
 }
 
-export default function AgentiePage() {
+export default function FreelancerPage() {
   const router = useRouter();
 
   return (
@@ -155,18 +163,18 @@ export default function AgentiePage() {
             style={{ background: "rgba(86,219,132,0.1)", border: "1px solid rgba(86,219,132,0.25)", color: "#56db84" }}
           >
             <span className="w-1.5 h-1.5 rounded-full bg-[#56db84] animate-pulse" />
-            Multi-Brand
+            Pentru freelanceri
           </div>
 
           <h1 className="text-[36px] sm:text-[52px] font-extrabold leading-[1.1] tracking-[-0.03em] text-white mb-6">
-            5 branduri.{" "}
+            5 clienti.{" "}
             <span style={{ background: "linear-gradient(135deg,#56db84,#818cf8)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-              Un singur workspace.
+              Un singur tool.
             </span>
           </h1>
 
           <p className="text-[17px] text-white/50 leading-relaxed max-w-xl mx-auto mb-8">
-            Gestionezi mai multe business-uri sau clienti? Fiecare brand are profilul lui, tonul lui, calendarul lui. Tu doar schimbi brandul si generezi.
+            Gestionezi mai multi clienti si fiecare vrea alt stil, alt ton, alta strategie? Profiluri separate, Voice Cloning per client, calendare independente. Tu doar generezi si livrezi.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
@@ -187,10 +195,33 @@ export default function AgentiePage() {
           </div>
         </section>
 
+        {/* Before / After */}
+        <section className="max-w-2xl mx-auto mb-16">
+          <h2 className="text-center text-[13px] font-semibold uppercase tracking-[0.1em] text-white/30 mb-6">Inainte si dupa</h2>
+          <div className="flex flex-col gap-3">
+            {BEFORE_AFTER.map(({ before, after }) => (
+              <div key={before} className="grid grid-cols-2 gap-3">
+                <div
+                  className="rounded-xl p-4 text-[13px] text-white/40 leading-snug"
+                  style={{ background: "rgba(239,68,68,0.05)", border: "1px solid rgba(239,68,68,0.12)" }}
+                >
+                  <span className="text-red-400 mr-1.5">✕</span>{before}
+                </div>
+                <div
+                  className="rounded-xl p-4 text-[13px] text-white/70 leading-snug font-medium"
+                  style={{ background: "rgba(86,219,132,0.05)", border: "1px solid rgba(86,219,132,0.15)" }}
+                >
+                  <span className="text-[#56db84] mr-1.5">✓</span>{after}
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* For who */}
         <section className="max-w-3xl mx-auto mb-16">
           <h2 className="text-center text-[22px] sm:text-[28px] font-bold text-white mb-2">Cine foloseste Multi-Brand</h2>
-          <p className="text-center text-[14px] text-white/40 mb-10">Potrivit daca gestionezi mai mult de un brand sau mai multi clienti.</p>
+          <p className="text-center text-[14px] text-white/40 mb-10">Oricine livreaza continut pentru mai mult de un brand sau client.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {FOR_WHO.map((item) => (
               <div
@@ -208,8 +239,8 @@ export default function AgentiePage() {
 
         {/* Features */}
         <section className="max-w-3xl mx-auto mb-16">
-          <h2 className="text-center text-[22px] sm:text-[28px] font-bold text-white mb-2">Ce primesti in Multi-Brand</h2>
-          <p className="text-center text-[14px] text-white/40 mb-10">Tot ce are planul Pro, multiplicat pentru 5 branduri.</p>
+          <h2 className="text-center text-[22px] sm:text-[28px] font-bold text-white mb-2">Ce primesti</h2>
+          <p className="text-center text-[14px] text-white/40 mb-10">Tot ce are planul Pro, multiplicat pentru 5 clienti.</p>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {FEATURES.map((f) => (
               <div
@@ -279,7 +310,7 @@ export default function AgentiePage() {
               <span className="text-[16px] text-white/40 ml-1">RON/luna</span>
             </div>
             <p className="text-[12px] text-white/25 line-through mb-2">viitor: 349 RON/luna</p>
-            <p className="text-[13px] text-white/50 mb-1">Economisesti 150 RON/luna fata de pretul viitor.</p>
+            <p className="text-[13px] text-white/50 mb-1">199 RON/luna pentru 5 clienti = 40 RON/client/luna.</p>
             <p className="text-[13px] font-semibold mb-6" style={{ color: "#56db84" }}>Pret blocat pe viata pentru primii 200 de clienti.</p>
             <button
               onClick={() => router.push("/pricing")}
@@ -304,8 +335,8 @@ export default function AgentiePage() {
 
         {/* Final CTA */}
         <section className="max-w-xl mx-auto text-center pb-20">
-          <h2 className="text-[24px] sm:text-[30px] font-bold text-white mb-3">Gata sa gestionezi mai multe branduri?</h2>
-          <p className="text-[14px] text-white/40 mb-6">Incearca gratuit cu 10 credite. Upgrade cand esti convins.</p>
+          <h2 className="text-[24px] sm:text-[30px] font-bold text-white mb-3">Gata sa livrezi mai repede si mai bine?</h2>
+          <p className="text-[14px] text-white/40 mb-6">10 credite gratuite. Upgrade cand esti convins.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
               onClick={() => router.push("/signup")}
