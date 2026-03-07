@@ -1,12 +1,21 @@
 import { NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
+import { createClient } from "@supabase/supabase-js";
+
+function getAdminClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false } }
+  );
+}
 
 export async function GET() {
   try {
-    const dataPath = path.join(process.cwd(), "data", "waitlist.json");
-    const existing = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
-    return NextResponse.json({ count: Array.isArray(existing) ? existing.length : 0 });
+    const supabase = getAdminClient();
+    const { count } = await supabase
+      .from("waitlist_entries")
+      .select("*", { count: "exact", head: true });
+    return NextResponse.json({ count: count ?? 0 });
   } catch {
     return NextResponse.json({ count: 0 });
   }

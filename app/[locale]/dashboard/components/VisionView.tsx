@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 
 interface BrandInsights {
   usp: string;
@@ -32,16 +33,16 @@ interface Props {
   onCreditsChange?: (n: number) => void;
 }
 
-const LOADING_STEPS = [
-  "Accesez site-ul competitorului…",
-  "Extrag conținutul de marketing…",
-  "Analizez strategia și mesajele cheie…",
-  "Generez recomandări de diferențiere…",
-];
-
 type SourceType = "website" | "text";
 
 export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
+  const t = useTranslations("vision");
+  const LOADING_STEPS = [
+    t("loadingSteps.step1"),
+    t("loadingSteps.step2"),
+    t("loadingSteps.step3"),
+    t("loadingSteps.step4"),
+  ];
   const [sourceType, setSourceType] = useState<SourceType>("website");
   const [input, setInput] = useState("");
   const [manualText, setManualText] = useState("");
@@ -115,7 +116,7 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
       const data = await res.json();
       if (!res.ok) {
         if (data.error === "no_credits") { setError("no_credits"); }
-        else { setError(data.error || "Eroare la analiză"); }
+        else { setError(data.error || t("error")); }
         return;
       }
       setAnalysis(data.analysis);
@@ -133,7 +134,7 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
       }
     } catch {
       stopLoadingAnimation();
-      setError("Ceva n-a mers. Încearcă din nou.");
+      setError(t("error"));
     } finally {
       stopLoadingAnimation();
       setLoading(false);
@@ -212,16 +213,16 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
       <div style={{ marginBottom: "24px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "6px" }}>
           <h2 style={{ fontSize: "20px", fontWeight: 700, color: "#fff", margin: 0 }}>
-            Spy AI
+            {t("title")}
           </h2>
           <span style={{
             fontSize: "10px", fontWeight: 800, padding: "2px 8px", borderRadius: "20px",
             background: "rgba(251,191,36,0.12)", border: "1px solid rgba(251,191,36,0.25)",
             color: "#fbbf24", textTransform: "uppercase", letterSpacing: "0.08em",
-          }}>5 credite</span>
+          }}>{t("credits")}</span>
         </div>
         <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.4)", margin: 0 }}>
-          Introdu URL-ul site-ului unui competitor — AI analizează strategia lor și îți spune exact cum să câștigi.
+          {t("subtitle")}
         </p>
       </div>
 
@@ -240,7 +241,7 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
               boxShadow: sourceType === type ? "0 0 0 1px rgba(255,255,255,0.1) inset" : "none",
             }}
           >
-            {type === "website" ? "🌐 Website" : "📋 Text / Bio / Posturi"}
+            {type === "website" ? t("tabUrl") : t("tabText")}
           </button>
         ))}
       </div>
@@ -251,7 +252,7 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
           <div style={{ display: "flex", gap: "10px" }}>
             <input
               style={inputStyle}
-              placeholder="ex: competitor.ro sau https://competitor.ro"
+              placeholder={t("urlPlaceholder")}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleSearch()}
@@ -267,14 +268,14 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
                 whiteSpace: "nowrap", fontFamily: "var(--font-geist-sans)", flexShrink: 0,
               }}
             >
-              {loading ? "Analizez…" : "Analizează"}
+              {loading ? t("analyzing") : t("analyze")}
             </button>
           </div>
         ) : (
           <>
             <input
               style={{ ...inputStyle, marginBottom: "0" }}
-              placeholder="Nume competitor (ex: Vodafone Romania) — opțional"
+              placeholder={t("competitorName")}
               value={input}
               onChange={(e) => setInput(e.target.value)}
             />
@@ -286,7 +287,7 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
                   resize: "vertical",
                   lineHeight: 1.5,
                 }}
-                placeholder={`Lipește bio-ul, postările sau descrierea competitorului de pe Instagram, TikTok, Facebook etc.\n\nEx: \"Ajutăm antreprenorii să crească online. 🚀 Social media | Ads | Branding. DM pentru colaborări.\"`}
+                placeholder={t("textPlaceholder")}
                 value={manualText}
                 onChange={(e) => setManualText(e.target.value)}
               />
@@ -302,7 +303,7 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
                   marginTop: "0",
                 }}
               >
-                {loading ? "Analizez…" : "Analizează"}
+                {loading ? t("analyzing") : t("analyze")}
               </button>
             </div>
           </>
@@ -344,7 +345,7 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
             }} />
           </div>
           <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.25)", margin: "10px 0 0", textAlign: "right" }}>
-            {loadingProgress < 100 ? `${loadingProgress}%` : "Finalizez…"}
+            {loadingProgress < 100 ? `${loadingProgress}%` : t("analyzing")}
           </p>
           <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
         </div>
@@ -354,7 +355,7 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
       {!loadingCompetitors && competitors.length > 0 && !analysis && !loading && (
         <div style={{ marginBottom: "28px" }}>
           <p style={{ fontSize: "11px", fontWeight: 700, color: "rgba(255,255,255,0.3)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "10px" }}>
-            Competitori analizați
+            {t("history")}
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             {competitors.map((c) => (
@@ -378,7 +379,7 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
                       color: "#56db84", cursor: "pointer", fontFamily: "var(--font-geist-sans)",
                     }}
                   >
-                    ↩ Reîncarcă
+                    {t("reload")}
                   </button>
                   <button
                     onClick={() => setInput(`https://${c.page_identifier}`)}
@@ -388,7 +389,7 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
                       color: "rgba(255,255,255,0.4)", cursor: "pointer", fontFamily: "var(--font-geist-sans)",
                     }}
                   >
-                    ↺ Reanalizează
+                    {t("reanalyze")}
                   </button>
                 </div>
               </div>
@@ -400,9 +401,9 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
       {/* Error */}
       {error === "no_credits" && (
         <div style={{ background: "rgba(251,146,60,0.08)", border: "1px solid rgba(251,146,60,0.25)", borderRadius: "10px", padding: "14px 16px", marginBottom: "20px" }}>
-          <p style={{ color: "#fdba74", fontSize: "14px", fontWeight: 600, margin: "0 0 4px" }}>Credite insuficiente</p>
-          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", margin: "0 0 10px" }}>Spy AI costă 5 credite per analiză.</p>
-          <a href="/pricing" style={{ background: "#56db84", color: "#000", padding: "6px 14px", borderRadius: "6px", fontSize: "12px", fontWeight: 700, textDecoration: "none" }}>+ Cumpără credite</a>
+          <p style={{ color: "#fdba74", fontSize: "14px", fontWeight: 600, margin: "0 0 4px" }}>{t("noCredits.title")}</p>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "13px", margin: "0 0 10px" }}>{t("noCredits.body")}</p>
+          <a href="/pricing" style={{ background: "#56db84", color: "#000", padding: "6px 14px", borderRadius: "6px", fontSize: "12px", fontWeight: 700, textDecoration: "none" }}>{t("noCredits.cta")}</a>
         </div>
       )}
       {error && error !== "no_credits" && (
@@ -415,21 +416,21 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
       {analysis && (
         <div>
           <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.4)", marginBottom: "20px" }}>
-            Analiză pentru <strong style={{ color: "#fff" }}>{analysis.competitorName || domain}</strong>
+            {t("analysisFor")} <strong style={{ color: "#fff" }}>{analysis.competitorName || domain}</strong>
           </p>
 
           {/* Strategy + Tone row */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
             <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "12px", padding: "16px" }}>
-              <p style={labelStyle}>Strategia lor</p>
+              <p style={labelStyle}>{t("sections.strategy")}</p>
               <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.75)", lineHeight: 1.6, margin: 0 }}>{analysis.strategy}</p>
             </div>
             <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "12px", padding: "16px" }}>
-              <p style={labelStyle}>Ton comunicare</p>
+              <p style={labelStyle}>{t("sections.tone")}</p>
               <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.75)", lineHeight: 1.6, margin: "0 0 12px" }}>{analysis.tone}</p>
               {analysis.offers?.length > 0 && (
                 <>
-                  <p style={{ ...labelStyle, marginTop: "12px" }}>Servicii / Produse</p>
+                  <p style={{ ...labelStyle, marginTop: "12px" }}>{t("sections.services")}</p>
                   <div style={{ display: "flex", flexWrap: "wrap", gap: "5px" }}>
                     {analysis.offers.map((o, i) => (
                       <span key={i} style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "5px", padding: "3px 8px", fontSize: "11px", color: "rgba(255,255,255,0.55)" }}>{o}</span>
@@ -444,7 +445,7 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px", marginBottom: "12px" }}>
             {analysis.painPoints?.length > 0 && (
               <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "12px", padding: "16px" }}>
-                <p style={labelStyle}>Frici / Dureri adresate</p>
+                <p style={labelStyle}>{t("sections.pains")}</p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                   {analysis.painPoints.map((p, i) => (
                     <div key={i} style={{ display: "flex", gap: "8px", fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>
@@ -456,7 +457,7 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
             )}
             {analysis.hooks?.length > 0 && (
               <div style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: "12px", padding: "16px" }}>
-                <p style={labelStyle}>Mesaje / Hook-uri cheie</p>
+                <p style={labelStyle}>{t("sections.hooks")}</p>
                 <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                   {analysis.hooks.map((h, i) => (
                     <div key={i} style={{ display: "flex", gap: "8px", fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>
@@ -471,7 +472,7 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
           {/* Weaknesses */}
           {analysis.weaknesses?.length > 0 && (
             <div style={{ background: "rgba(251,191,36,0.04)", border: "1px solid rgba(251,191,36,0.15)", borderRadius: "12px", padding: "16px", marginBottom: "12px" }}>
-              <p style={{ ...labelStyle, color: "#fbbf24" }}>Puncte slabe identificate</p>
+              <p style={{ ...labelStyle, color: "#fbbf24" }}>{t("sections.weaknesses")}</p>
               <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                 {analysis.weaknesses.map((w, i) => (
                   <div key={i} style={{ display: "flex", gap: "8px", fontSize: "13px", color: "rgba(255,255,255,0.7)" }}>
@@ -485,15 +486,15 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
           {/* Differentiation + Actionable move */}
           <div style={{ background: "linear-gradient(135deg,rgba(86,219,132,0.07),rgba(129,140,248,0.05))", border: "1px solid rgba(86,219,132,0.2)", borderRadius: "12px", padding: "20px", marginBottom: "16px" }}>
             <p style={{ fontSize: "11px", fontWeight: 700, color: "#56db84", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: "14px" }}>
-              Avantajul tău competitiv
+              {t("sections.advantage")}
             </p>
             <div style={{ marginBottom: "16px" }}>
-              <p style={labelStyle}>Cum te diferențiezi</p>
+              <p style={labelStyle}>{t("sections.differentiation")}</p>
               <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.85)", lineHeight: 1.6, margin: 0 }}>{analysis.differentiation}</p>
             </div>
             {analysis.actionableMove && (
               <div style={{ background: "rgba(86,219,132,0.08)", border: "1px solid rgba(86,219,132,0.2)", borderRadius: "8px", padding: "12px 14px" }}>
-                <p style={{ ...labelStyle, color: "#56db84" }}>Acțiunea de făcut acum</p>
+                <p style={{ ...labelStyle, color: "#56db84" }}>{t("sections.action")}</p>
                 <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.85)", lineHeight: 1.6, margin: 0 }}>{analysis.actionableMove}</p>
               </div>
             )}
@@ -505,12 +506,10 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
               <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "16px", flexWrap: "wrap" }}>
                 <div style={{ flex: 1 }}>
                   <p style={{ fontSize: "13px", fontWeight: 600, color: "#818cf8", margin: "0 0 4px" }}>
-                    Actualizează profilul brandului tău
+                    {t("apply.title")}
                   </p>
                   <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.4)", margin: 0 }}>
-                    {insightsApplied
-                      ? "Profilul a fost actualizat cu recomandările din această analiză."
-                      : "Aplică automat USP-ul, tonul și decizia de cumpărare sugerate de AI."}
+                    {insightsApplied ? t("apply.success") : t("apply.subtitle")}
                   </p>
                 </div>
                 <button
@@ -525,7 +524,7 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
                     whiteSpace: "nowrap", fontFamily: "var(--font-geist-sans)", flexShrink: 0,
                   }}
                 >
-                  {insightsApplied ? "✓ Aplicat" : applyingInsights ? "Se aplică…" : "Aplică la brandul tău"}
+                  {insightsApplied ? t("apply.applied") : applyingInsights ? t("apply.applying") : t("apply.cta")}
                 </button>
               </div>
             </div>
@@ -544,13 +543,13 @@ export default function VisionView({ brandId = 1, onCreditsChange }: Props) {
                 fontFamily: "var(--font-geist-sans)", transition: "all 0.15s",
               }}
             >
-              {emailSent ? "✓ Trimis pe email" : sendingEmail ? "Se trimite…" : "Trimite pe email"}
+              {emailSent ? t("email.sent") : sendingEmail ? t("email.sending") : t("email.cta")}
             </button>
             <button
               onClick={() => { setAnalysis(null); setDomain(""); setInput(""); setInsightsApplied(false); setEmailSent(false); }}
               style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.1)", borderRadius: "8px", padding: "8px 16px", color: "rgba(255,255,255,0.4)", fontSize: "13px", cursor: "pointer", fontFamily: "var(--font-geist-sans)" }}
             >
-              ← Analizează alt competitor
+              {t("backBtn")}
             </button>
           </div>
         </div>

@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { useTranslations } from "next-intl";
 
 interface TourStep {
   target: string; // data-tour attribute value
@@ -10,28 +11,13 @@ interface TourStep {
   position: "bottom" | "top" | "left" | "right";
 }
 
-const TOUR_STEPS: TourStep[] = [
-  {
-    target: "content-type",
-    title: "1. Alege tipul de conținut",
-    description: "Post Facebook, Instagram, LinkedIn, email sau reclamă — AI-ul aplică automat regulile platformei.",
-    position: "bottom",
-  },
-  {
-    target: "context-field",
-    title: "2. Adaugă un context (opțional)",
-    description: "Spune-i AI-ului despre ce să scrie: o promoție, un produs nou, o idee. Cu cât mai specific, cu atât mai bun rezultatul.",
-    position: "top",
-  },
-  {
-    target: "generate-btn",
-    title: "3. Generează și gata",
-    description: "AI-ul scrie în stilul brandului tău, pe baza profilului completat la onboarding. Costă 1 credit per generare.",
-    position: "top",
-  },
-];
-
 export default function ProductTour() {
+  const t = useTranslations("productTour");
+  const TOUR_STEPS: TourStep[] = [
+    { target: "content-type", title: t("step1.title"), description: t("step1.desc"), position: "bottom" },
+    { target: "context-field", title: t("step2.title"), description: t("step2.desc"), position: "top" },
+    { target: "generate-btn", title: t("step3.title"), description: t("step3.desc"), position: "top" },
+  ];
   const [step, setStep] = useState(0);
   const [visible, setVisible] = useState(false);
   const [rect, setRect] = useState<DOMRect | null>(null);
@@ -266,7 +252,7 @@ export default function ProductTour() {
               fontFamily: "var(--font-geist-sans)",
             }}
           >
-            {step < TOUR_STEPS.length - 1 ? "Următorul →" : "Am înțeles ✓"}
+            {step < TOUR_STEPS.length - 1 ? t("next") : t("done")}
           </button>
         </div>
       </div>

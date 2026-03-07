@@ -1,7 +1,33 @@
+// SQL to run once in Supabase SQL editor:
+// CREATE TABLE IF NOT EXISTS waitlist_entries (
+//   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+//   name TEXT,
+//   email TEXT NOT NULL,
+//   phone TEXT,
+//   business_type TEXT,
+//   website TEXT,
+//   budget TEXT,
+//   team_size TEXT,
+//   frustration TEXT,
+//   call_open TEXT,
+//   services TEXT,
+//   lang TEXT DEFAULT 'ro',
+//   created_at TIMESTAMPTZ DEFAULT now()
+// );
+// ALTER TABLE waitlist_entries ENABLE ROW LEVEL SECURITY;
+// CREATE POLICY "Service role only" ON waitlist_entries USING (false);
+
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import fs from "fs";
-import path from "path";
+import { createClient } from "@supabase/supabase-js";
+
+function getAdminClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { persistSession: false } }
+  );
+}
 
 export async function POST(req: NextRequest) {
   const resend = new Resend(process.env.RESEND_API_KEY);
@@ -24,31 +50,31 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Email required" }, { status: 400 });
   }
 
-  // ── a) Save to data/waitlist.json ──────────────────────────────────────────
-  const dataPath = path.join(process.cwd(), "data", "waitlist.json");
-  let existing: unknown[] = [];
-  try {
-    existing = JSON.parse(fs.readFileSync(dataPath, "utf-8"));
-  } catch {
-    existing = [];
-  }
-  existing.push({
+  // ── a) Save to Supabase waitlist_entries ──────────────────────────────────
+  const supabase = getAdminClient();
+  const { data: existingEntry } = await supabase
+    .from("waitlist_entries")
+    .select("id")
+    .eq("email", email)
+    .maybeSingle();
+
+  const isNewEntry = !existingEntry;
+
+  await supabase.from("waitlist_entries").upsert({
     name,
     email,
     phone,
-    businessType,
+    business_type: businessType,
     website,
     budget,
-    teamSize,
+    team_size: teamSize,
     frustration,
-    callOpen,
+    call_open: callOpen,
     services,
     lang,
-    createdAt: new Date().toISOString(),
-  });
-  fs.writeFileSync(dataPath, JSON.stringify(existing, null, 2));
+  }, { onConflict: "email" });
 
-  // ── b) Confirmation email to subscriber ────────────────────────────────────
+  // ── b) Confirmation email to subscriber ───────────────────────────────────
   const isRo = lang === "ro";
   const confirmSubject = isRo
     ? "Ești pe listă! Te anunțăm când lansăm."
@@ -131,6 +157,11 @@ export async function POST(req: NextRequest) {
 </body>
 </html>`;
 
+  // Only send emails on first submission — avoid duplicates when user completes step 2
+  if (!isNewEntry) {
+    return NextResponse.json({ ok: true });
+  }
+
   const results = await Promise.allSettled([
     resend.emails.send({
       from: "noreply@nescodigital.com",
@@ -156,17 +187,17 @@ export async function POST(req: NextRequest) {
         add_tags: "nesco-ai-waitlist",
         channels: "email",
       }),
-    }).then(r => r.text()).then(text => { console.log('TheMarketer response:', text); return text; }),
+    }).then(r => r.text()).then(text => { console.log("TheMarketer response:", text); return text; }),
   ]);
 
   const errors = results
-    .map((r, i) => r.status === 'rejected' ? `Task ${i}: ${r.reason}` : null)
+    .map((r, i) => r.status === "rejected" ? `Task ${i}: ${r.reason}` : null)
     .filter(Boolean);
 
-  console.log('Waitlist results:', JSON.stringify(results.map((r, i) => ({
-    task: i === 0 ? 'confirm_email' : i === 1 ? 'notify_email' : 'themarketer',
+  console.log("Waitlist results:", JSON.stringify(results.map((r, i) => ({
+    task: i === 0 ? "confirm_email" : i === 1 ? "notify_email" : "themarketer",
     status: r.status,
-    value: r.status === 'fulfilled' ? r.value : (r as PromiseRejectedResult).reason?.message,
+    value: r.status === "fulfilled" ? r.value : (r as PromiseRejectedResult).reason?.message,
   }))));
 
   return NextResponse.json({ ok: true, errors });

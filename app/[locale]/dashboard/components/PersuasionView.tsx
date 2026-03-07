@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface Dimension {
   score: number;
@@ -47,6 +48,7 @@ function DimensionBar({ dim }: { dim: Dimension }) {
 }
 
 export default function PersuasionView({ onCreditsChange }: { onCreditsChange: (n: number) => void }) {
+  const t = useTranslations("persuasion");
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ScoreResult | null>(null);
@@ -65,11 +67,11 @@ export default function PersuasionView({ onCreditsChange }: { onCreditsChange: (
       });
       const data = await res.json();
       if (res.status === 402) { setError("no_credits"); return; }
-      if (!res.ok) throw new Error(data.error || "Eroare la analiză");
+      if (!res.ok) throw new Error(data.error || t("analyzing"));
       setResult(data.result);
       if (typeof data.creditsRemaining === "number") onCreditsChange(data.creditsRemaining);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Ceva n-a mers. Încearcă din nou.");
+      setError(e instanceof Error ? e.message : t("analyzing"));
     } finally {
       setLoading(false);
     }
@@ -82,11 +84,11 @@ export default function PersuasionView({ onCreditsChange }: { onCreditsChange: (
     <div style={{ fontFamily: "var(--font-geist-sans)" }}>
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
-        <h2 style={{ fontSize: "20px", fontWeight: 800, color: "#fff", margin: 0 }}>Persuasion Score</h2>
+        <h2 style={{ fontSize: "20px", fontWeight: 800, color: "#fff", margin: 0 }}>{t("title")}</h2>
         <span style={{
           fontSize: "10px", fontWeight: 700, padding: "2px 7px", borderRadius: "20px",
           background: "rgba(86,219,132,0.1)", color: "#56db84", border: "1px solid rgba(86,219,132,0.2)",
-        }}>1 credit</span>
+        }}>{t("credits")}</span>
       </div>
 
       {/* Textarea */}
@@ -95,12 +97,12 @@ export default function PersuasionView({ onCreditsChange }: { onCreditsChange: (
         borderRadius: "14px", padding: "16px", marginBottom: "12px",
       }}>
         <label style={{ display: "block", fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(255,255,255,0.35)", marginBottom: "8px" }}>
-          Textul tău
+          {t("label")}
         </label>
         <textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="Paste-uiește orice text — post, email, reclamă, descriere produs..."
+          placeholder={t("placeholder")}
           rows={6}
           style={{
             width: "100%", background: "transparent", border: "none", outline: "none",
@@ -132,16 +134,16 @@ export default function PersuasionView({ onCreditsChange }: { onCreditsChange: (
               <circle cx="8" cy="8" r="6" stroke="rgba(0,0,0,0.3)" strokeWidth="2" />
               <path d="M8 2a6 6 0 0 1 6 6" stroke="#000" strokeWidth="2" strokeLinecap="round" />
             </svg>
-            Se analizează...
+            {t("analyzing")}
           </>
-        ) : "Analizează — 1 credit"}
+        ) : t("analyze")}
       </button>
 
       {/* Error */}
       {error === "no_credits" && (
         <div style={{ background: "rgba(251,146,60,0.08)", border: "1px solid rgba(251,146,60,0.25)", borderRadius: "10px", padding: "12px 16px", marginBottom: "16px" }}>
-          <p style={{ color: "#fdba74", fontSize: "13px", fontWeight: 600, margin: "0 0 4px" }}>Credite insuficiente</p>
-          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", margin: 0 }}>Ia un plan pentru a continua.</p>
+          <p style={{ color: "#fdba74", fontSize: "13px", fontWeight: 600, margin: "0 0 4px" }}>{t("noCredits.title")}</p>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", margin: 0 }}>{t("noCredits.body")}</p>
         </div>
       )}
       {error && error !== "no_credits" && (
@@ -163,7 +165,7 @@ export default function PersuasionView({ onCreditsChange }: { onCreditsChange: (
               {result.overall}
             </div>
             <div style={{ fontSize: "12px", color: "rgba(255,255,255,0.35)", textTransform: "uppercase", letterSpacing: "0.08em", fontWeight: 700 }}>
-              Scor persuasiune
+              {t("score")}
             </div>
           </div>
 
@@ -178,7 +180,7 @@ export default function PersuasionView({ onCreditsChange }: { onCreditsChange: (
             borderRadius: "12px", padding: "14px 16px", marginBottom: "12px",
           }}>
             <p style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(251,146,60,0.7)", margin: "0 0 6px" }}>
-              Punct slab — unde pierzi cititorul
+              {t("weakPoint")}
             </p>
             <p style={{ fontSize: "13px", color: "rgba(255,255,255,0.7)", fontStyle: "italic", margin: 0, lineHeight: 1.5 }}>
               &ldquo;{result.weak_point}&rdquo;
@@ -191,7 +193,7 @@ export default function PersuasionView({ onCreditsChange }: { onCreditsChange: (
             borderRadius: "12px", padding: "14px 16px",
           }}>
             <p style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(255,255,255,0.35)", margin: "0 0 10px" }}>
-              Îmbunătățiri recomandate
+              {t("improvements")}
             </p>
             <ol style={{ margin: 0, paddingLeft: "18px", display: "flex", flexDirection: "column", gap: "8px" }}>
               {result.improvements.map((imp, i) => (

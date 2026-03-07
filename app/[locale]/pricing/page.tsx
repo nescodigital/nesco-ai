@@ -125,7 +125,7 @@ export default function PricingPage() {
                 >
                   {isUrgent ? t("spotsUrgent") : `${remaining} ${t("spotsRemaining")}`}
                 </span>
-                <span className="text-[12px] text-white/30">{pct}% ocupat</span>
+                <span className="text-[12px] text-white/30">{pct}% {t("spotsOccupied")}</span>
               </div>
               <div className="h-2 rounded-full" style={{ background: "rgba(255,255,255,0.06)" }}>
                 <div
@@ -211,7 +211,7 @@ export default function PricingPage() {
                   </div>
 
                   <p className="text-[12px] mt-1" style={{ color: "#56db84" }}>
-                    {t("futurePrice")}: {futurePrice} RON → economisești {futurePrice - config.price} RON/lună
+                    {t("futurePrice")}: {futurePrice} RON → {t("savings")} {futurePrice - config.price} {t("perMonthShort")}
                   </p>
 
                   <p className="text-[12px] text-white/30 mt-1">

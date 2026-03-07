@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { CONTENT_TYPE_KEY_MAP } from "@/lib/contentTypeLabels";
 
 interface BusinessUpdate {
   id: string;
@@ -41,6 +42,7 @@ function getSuggestions(updates: BusinessUpdate[]): Suggestion[] {
 
 export default function BusinessMemory({ onSuggestionClick, onUpdatesChange }: Props) {
   const t = useTranslations("memory");
+  const tDashboard = useTranslations("dashboard");
   const [updates, setUpdates] = useState<BusinessUpdate[]>([]);
   const [showAdd, setShowAdd] = useState(false);
   const [newText, setNewText] = useState("");
@@ -301,7 +303,7 @@ export default function BusinessMemory({ onSuggestionClick, onUpdatesChange }: P
                   }}
                 >
                   <span style={{ color: "#56db84", fontSize: "10px" }}>→</span>
-                  <span className="font-semibold" style={{ color: "rgba(86,219,132,0.8)" }}>{s.contentType}</span>
+                  <span className="font-semibold" style={{ color: "rgba(86,219,132,0.8)" }}>{tDashboard(`contentTypes.${CONTENT_TYPE_KEY_MAP[s.contentType] ?? s.contentType}`)}</span>
                   <span style={{ color: "rgba(255,255,255,0.25)" }}>·</span>
                   <span className="truncate" style={{ maxWidth: "160px" }}>{s.context}</span>
                 </button>

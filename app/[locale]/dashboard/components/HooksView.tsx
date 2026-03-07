@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 interface Hook {
   text: string;
@@ -9,11 +10,17 @@ interface Hook {
 }
 
 const TYPE_COLORS: Record<string, string> = {
+  "curiosity": "#818cf8",
   "curiozitate": "#818cf8",
+  "shock": "#ef4444",
   "șoc": "#ef4444",
+  "controversy": "#f97316",
   "controversă": "#f97316",
+  "statistic": "#38bdf8",
   "statistică": "#38bdf8",
+  "personal story": "#56db84",
   "poveste personală": "#56db84",
+  "direct question": "#eab308",
   "întrebare directă": "#eab308",
 };
 
@@ -33,6 +40,9 @@ export default function HooksView({
   brandId: number;
   onUseHook: (text: string) => void;
 }) {
+  const t = useTranslations("hooks");
+  const tCommon = useTranslations("common");
+  const tDashboard = useTranslations("dashboard");
   const [subject, setSubject] = useState("");
   const [contentType, setContentType] = useState("");
   const [loading, setLoading] = useState(false);
@@ -53,11 +63,11 @@ export default function HooksView({
       });
       const data = await res.json();
       if (res.status === 402) { setError("no_credits"); return; }
-      if (!res.ok) throw new Error(data.error || "Eroare la generare");
+      if (!res.ok) throw new Error(data.error || tCommon("error"));
       setHooks(data.hooks || []);
       if (typeof data.creditsRemaining === "number") onCreditsChange(data.creditsRemaining);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Ceva n-a mers. Încearcă din nou.");
+      setError(e instanceof Error ? e.message : tCommon("error"));
     } finally {
       setLoading(false);
     }
@@ -85,11 +95,11 @@ export default function HooksView({
     <div style={{ fontFamily: "var(--font-geist-sans)" }}>
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "20px" }}>
-        <h2 style={{ fontSize: "20px", fontWeight: 800, color: "#fff", margin: 0 }}>Hook Generator</h2>
+        <h2 style={{ fontSize: "20px", fontWeight: 800, color: "#fff", margin: 0 }}>{t("title")}</h2>
         <span style={{
           fontSize: "10px", fontWeight: 700, padding: "2px 7px", borderRadius: "20px",
           background: "rgba(129,140,248,0.12)", color: "#818cf8", border: "1px solid rgba(129,140,248,0.2)",
-        }}>1 credit</span>
+        }}>{t("credits")}</span>
       </div>
 
       {/* Form */}
@@ -100,14 +110,14 @@ export default function HooksView({
       }}>
         <div>
           <label style={{ display: "block", fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(255,255,255,0.35)", marginBottom: "8px" }}>
-            Subiect / temă
+            {t("subject")}
           </label>
           <input
             type="text"
             value={subject}
             onChange={(e) => setSubject(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleGenerate()}
-            placeholder="Ex: lansăm o reducere de 50%, beneficiile somnului bun..."
+            placeholder={t("subjectPlaceholder")}
             style={{
               width: "100%", background: "rgba(255,255,255,0.03)", border: "1.5px solid rgba(255,255,255,0.08)",
               borderRadius: "10px", padding: "10px 14px", fontSize: "14px", color: "#fff",
@@ -117,7 +127,7 @@ export default function HooksView({
         </div>
         <div>
           <label style={{ display: "block", fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(255,255,255,0.35)", marginBottom: "8px" }}>
-            Tip conținut <span style={{ fontWeight: 400, textTransform: "none", color: "rgba(255,255,255,0.2)" }}>(opțional)</span>
+            {t("contentType")}
           </label>
           <select
             value={contentType}
@@ -125,9 +135,9 @@ export default function HooksView({
             className="w-full rounded-xl px-4 py-3 text-[14px] outline-none"
             style={selectStyle}
           >
-            <option value="" style={{ background: "#1a1a1a" }}>Orice tip</option>
-            {CONTENT_TYPES.map((t) => (
-              <option key={t} value={t} style={{ background: "#1a1a1a" }}>{t}</option>
+            <option value="" style={{ background: "#1a1a1a" }}>{t("anyType")}</option>
+            {CONTENT_TYPES.map((ct) => (
+              <option key={ct} value={ct} style={{ background: "#1a1a1a" }}>{tDashboard(`contentTypes.${ct === "Post Facebook" ? "facebookPost" : ct === "Post Instagram" ? "instagramPost" : ct === "Post LinkedIn" ? "linkedinPost" : ct === "Email newsletter" ? "emailNewsletter" : "metaAd"}`)}</option>
             ))}
           </select>
         </div>
@@ -155,16 +165,16 @@ export default function HooksView({
               <circle cx="8" cy="8" r="6" stroke="rgba(129,140,248,0.3)" strokeWidth="2" />
               <path d="M8 2a6 6 0 0 1 6 6" stroke="#818cf8" strokeWidth="2" strokeLinecap="round" />
             </svg>
-            Se generează hookurile...
+            {t("generating")}
           </>
-        ) : "Generează hookuri — 1 credit"}
+        ) : t("generate")}
       </button>
 
       {/* Error */}
       {error === "no_credits" && (
         <div style={{ background: "rgba(251,146,60,0.08)", border: "1px solid rgba(251,146,60,0.25)", borderRadius: "10px", padding: "12px 16px", marginBottom: "16px" }}>
-          <p style={{ color: "#fdba74", fontSize: "13px", fontWeight: 600, margin: "0 0 4px" }}>Credite insuficiente</p>
-          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", margin: 0 }}>Ia un plan pentru a continua.</p>
+          <p style={{ color: "#fdba74", fontSize: "13px", fontWeight: 600, margin: "0 0 4px" }}>{t("noCredits.title")}</p>
+          <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "12px", margin: 0 }}>{t("noCredits.body")}</p>
         </div>
       )}
       {error && error !== "no_credits" && (
@@ -177,7 +187,7 @@ export default function HooksView({
       {hooks.length > 0 && (
         <div>
           <p style={{ fontSize: "11px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "rgba(255,255,255,0.3)", marginBottom: "12px" }}>
-            {hooks.length} hookuri generate
+            {t("hooksGenerated", { count: hooks.length })}
           </p>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px" }}>
             {hooks.map((hook, i) => {
@@ -217,7 +227,7 @@ export default function HooksView({
                         color: isCopied ? "#56db84" : "rgba(255,255,255,0.5)",
                       }}
                     >
-                      {isCopied ? "Copiat ✓" : "Copiază"}
+                      {isCopied ? tCommon("copied") : tCommon("copy")}
                     </button>
                     <button
                       onClick={() => onUseHook(hook.text)}
@@ -227,7 +237,7 @@ export default function HooksView({
                         background: `${color}10`, border: `1px solid ${color}25`, color,
                       }}
                     >
-                      Folosește →
+                      {t("use")}
                     </button>
                   </div>
                 </div>

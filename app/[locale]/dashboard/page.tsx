@@ -14,6 +14,7 @@ import VisionView from "./components/VisionView";
 import PersuasionView from "./components/PersuasionView";
 import HooksView from "./components/HooksView";
 import VoiceSetup from "./components/VoiceSetup";
+import { CONTENT_TYPE_KEY_MAP, OBJECTIVE_KEY_MAP } from "@/lib/contentTypeLabels";
 
 // Internal values (sent to API) stay in English
 const CONTENT_TYPE_KEYS = [
@@ -183,7 +184,7 @@ export default function DashboardPage() {
         setError("no_credits");
         return;
       }
-      if (!res.ok) throw new Error(data.error || "Eroare la generare");
+      if (!res.ok) throw new Error(data.error || t("error"));
       setOutput(data.content);
       if (typeof data.creditsRemaining === "number") setCredits(data.creditsRemaining);
       // Refresh history
@@ -303,6 +304,37 @@ export default function DashboardPage() {
             onAddBrand={handleAddBrand}
             maxBrands={5}
           />
+        </div>
+      )}
+
+      {/* Low credits warning — shown on all tabs when credits < 10 */}
+      {credits !== null && credits < 10 && credits > 0 && (
+        <div
+          style={{
+            marginBottom: "16px",
+            padding: "10px 14px",
+            borderRadius: "10px",
+            background: "rgba(251,146,60,0.08)",
+            border: "1px solid rgba(251,146,60,0.25)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "12px",
+          }}
+        >
+          <p style={{ fontSize: "13px", color: "#fdba74", fontWeight: 600, margin: 0 }}>
+            {t("lowCredits", { credits })}
+          </p>
+          <a
+            href="/pricing"
+            style={{
+              fontSize: "12px", fontWeight: 700, padding: "5px 12px",
+              borderRadius: "7px", background: "rgba(251,146,60,0.2)",
+              color: "#fdba74", textDecoration: "none", flexShrink: 0,
+            }}
+          >
+            {t("buyCredits")}
+          </a>
         </div>
       )}
 
@@ -778,13 +810,13 @@ export default function DashboardPage() {
                         className="text-[11px] font-bold px-2 py-0.5 rounded-full"
                         style={{ background: "rgba(86,219,132,0.1)", color: "#56db84" }}
                       >
-                        {item.content_type}
+                        {t(`contentTypes.${CONTENT_TYPE_KEY_MAP[item.content_type] ?? item.content_type}`)}
                       </span>
                       <span
                         className="text-[11px] font-medium px-2 py-0.5 rounded-full"
                         style={{ background: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.45)" }}
                       >
-                        {item.objective}
+                        {t(`objectives.${OBJECTIVE_KEY_MAP[item.objective] ?? item.objective}`)}
                       </span>
                     </div>
                     <span className="text-[11px] text-white/20 flex-shrink-0">

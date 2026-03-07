@@ -86,7 +86,7 @@ Scrie DOAR în română.${updatesSection}${historySection}${voiceSection}`;
 
   const message = await anthropic.messages.create({
     model: "claude-opus-4-6",
-    max_tokens: 1024,
+    max_tokens: 2048,
     system: systemPrompt,
     messages: [
       {

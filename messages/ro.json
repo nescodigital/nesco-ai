@@ -224,7 +224,9 @@
     },
     "footer": {
       "rights": "Toate drepturile rezervate.",
-      "signups": "persoane înscrise"
+      "signups": "persoane înscrise",
+      "privacy": "Politica de confidențialitate",
+      "terms": "Termeni și condiții"
     }
   },
   "auth": {
@@ -354,6 +356,9 @@
     "futurePrice": "Preț viitor",
     "spotsRemaining": "locuri rămase din 200",
     "spotsUrgent": "Mai puțin de 20 locuri rămase!",
+    "spotsOccupied": "ocupat",
+    "savings": "economisești",
+    "perMonthShort": "RON/lună",
     "guarantee": "Anulezi oricând. Dacă nu ești mulțumit în primele 7 zile, îți returnăm banii."
   },
   "dashboard": {
@@ -413,6 +418,8 @@
       "showMore": "Vezi tot ↓",
       "collapse": "Restrânge ↑"
     },
+    "lowCredits": "Mai ai doar {credits} credite rămase.",
+    "buyCredits": "+ Cumpără credite",
     "noCredits": {
       "title": "Credite insuficiente",
       "body": "Ia un plan pentru a continua să generezi conținut personalizat cu AI.",
@@ -484,6 +491,11 @@
     "generateHint": "Apasă \"Generează\" pentru a construi planul editorial.",
     "moveHere": "Mută aici",
     "dragHint": "↕ Trage cardurile pentru a le muta",
+    "noContext": "Fără context — click pentru a adăuga",
+    "image": "Imagine",
+    "chooseFormat": "Alege formatul",
+    "generateText": "Generează text",
+    "approve": "Aprobă",
     "statuses": {
       "suggested": "Sugestie",
       "approved": "Aprobat",
@@ -537,6 +549,7 @@
       "cta": "+ Cumpără credite"
     },
     "error": "Ceva n-a mers. Încearcă din nou.",
+    "analysisFor": "Analiză pentru",
     "history": "Competitori analizați",
     "reload": "↩ Reîncarcă",
     "reanalyze": "↺ Reanalizează",
@@ -612,6 +625,22 @@
     "score": "Scor persuasiune",
     "weakPoint": "Punct slab — unde pierzi cititorul",
     "improvements": "Îmbunătățiri recomandate"
+  },
+  "productTour": {
+    "step1": {
+      "title": "1. Alege tipul de conținut",
+      "desc": "Post Facebook, Instagram, LinkedIn, email sau reclamă — AI-ul aplică automat regulile platformei."
+    },
+    "step2": {
+      "title": "2. Adaugă un context (opțional)",
+      "desc": "Spune-i AI-ului despre ce să scrie: o promoție, un produs nou, o idee. Cu cât mai specific, cu atât mai bun rezultatul."
+    },
+    "step3": {
+      "title": "3. Generează și gata",
+      "desc": "AI-ul scrie în stilul brandului tău, pe baza profilului completat la onboarding. Costă 1 credit per generare."
+    },
+    "next": "Următorul →",
+    "done": "Am înțeles ✓"
   },
   "strategist": {
     "title": "Recomandare AI",

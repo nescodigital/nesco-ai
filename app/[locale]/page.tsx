@@ -757,7 +757,11 @@ export default function Home() {
 
         {/* ── FOOTER ── */}
         <footer className="border-t border-white/10 py-8 text-center text-xs text-zinc-600">
-          © {new Date().getFullYear()} Nesco Digital. {t("footer.rights")}
+          <div className="flex items-center justify-center gap-4 flex-wrap">
+            <span>© {new Date().getFullYear()} Nesco Digital. {t("footer.rights")}</span>
+            <a href="/privacy" className="hover:text-zinc-400 transition-colors">{t("footer.privacy")}</a>
+            <a href="/terms" className="hover:text-zinc-400 transition-colors">{t("footer.terms")}</a>
+          </div>
         </footer>
       </main>
     </div>

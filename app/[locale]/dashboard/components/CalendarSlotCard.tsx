@@ -4,6 +4,8 @@ import React, { useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { FaFacebook, FaInstagram, FaLinkedin, FaMeta } from "react-icons/fa6";
 import { MdEmail } from "react-icons/md";
+import { useTranslations } from "next-intl";
+import { CONTENT_TYPE_KEY_MAP, OBJECTIVE_KEY_MAP } from "@/lib/contentTypeLabels";
 
 export interface CalendarSlot {
   id: string;
@@ -51,6 +53,7 @@ const IMAGE_FORMATS = [
 ] as const;
 
 export default function CalendarSlotCard({ slot, onUpdate, onDelete, onCreditsChange }: Props) {
+  const t = useTranslations();
   const [generating, setGenerating] = useState(false);
   const [copied, setCopied] = useState(false);
   const [editingContext, setEditingContext] = useState(false);
@@ -160,7 +163,7 @@ export default function CalendarSlotCard({ slot, onUpdate, onDelete, onCreditsCh
         <div style={{ display: "flex", alignItems: "center", gap: "5px", flexWrap: "wrap" }}>
           <span style={{ color: iconData.color, display: "flex", alignItems: "center" }}>{iconData.icon}</span>
           <span style={{ fontWeight: 700, color: "rgba(255,255,255,0.85)", fontSize: "11px", lineHeight: 1.3 }}>
-            {slot.content_type}
+            {t(`dashboard.contentTypes.${CONTENT_TYPE_KEY_MAP[slot.content_type] ?? slot.content_type}`)}
           </span>
         </div>
         <button
@@ -182,7 +185,7 @@ export default function CalendarSlotCard({ slot, onUpdate, onDelete, onCreditsCh
             borderRadius: "20px", background: objColor, color: objTextColor,
           }}
         >
-          {slot.objective}
+          {t(`dashboard.objectives.${OBJECTIVE_KEY_MAP[slot.objective] ?? slot.objective}`)}
         </span>
       </div>
 
@@ -203,10 +206,10 @@ export default function CalendarSlotCard({ slot, onUpdate, onDelete, onCreditsCh
           />
           <div style={{ display: "flex", gap: "4px", marginTop: "4px" }}>
             <button onClick={handleSaveContext} style={{ fontSize: "10px", fontWeight: 700, padding: "3px 8px", borderRadius: "5px", background: "rgba(86,219,132,0.15)", border: "1px solid rgba(86,219,132,0.3)", color: "#56db84", cursor: "pointer" }}>
-              Salvează
+              {t("common.save")}
             </button>
             <button onClick={() => setEditingContext(false)} style={{ fontSize: "10px", padding: "3px 8px", borderRadius: "5px", background: "transparent", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.4)", cursor: "pointer" }}>
-              Anulează
+              {t("common.cancel")}
             </button>
           </div>
         </div>
@@ -216,7 +219,7 @@ export default function CalendarSlotCard({ slot, onUpdate, onDelete, onCreditsCh
           onClick={() => setEditingContext(true)}
           title="Click pentru a edita"
         >
-          {slot.context || <span style={{ color: "rgba(255,255,255,0.2)", fontStyle: "italic" }}>Fără context — click pentru a adăuga</span>}
+          {slot.context || <span style={{ color: "rgba(255,255,255,0.2)", fontStyle: "italic" }}>{t("calendar.noContext")}</span>}
         </p>
       )}
 
@@ -239,10 +242,10 @@ export default function CalendarSlotCard({ slot, onUpdate, onDelete, onCreditsCh
         <div style={{ borderTop: "1px solid rgba(255,255,255,0.06)", paddingTop: "8px", marginBottom: "8px" }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "6px" }}>
             <span style={{ fontSize: "10px", fontWeight: 700, color: "rgba(255,255,255,0.45)", letterSpacing: "0.04em", textTransform: "uppercase" }}>
-              Imagine
+              {t("calendar.image")}
             </span>
             <span style={{ fontSize: "9px", padding: "1px 5px", borderRadius: "20px", background: "rgba(99,102,241,0.15)", color: "#818cf8", fontWeight: 700 }}>
-              2 credite
+              {t("dashboard.result.imageCredits")}
             </span>
           </div>
 
@@ -291,9 +294,9 @@ export default function CalendarSlotCard({ slot, onUpdate, onDelete, onCreditsCh
                     <circle cx="6" cy="6" r="4" stroke="rgba(129,140,248,0.3)" strokeWidth="2"/>
                     <path d="M6 2a4 4 0 0 1 4 4" stroke="#818cf8" strokeWidth="2" strokeLinecap="round"/>
                   </svg>
-                  Generez...
+                  {t("dashboard.result.generatingImage")}
                 </span>
-              ) : !imageFormat ? "Alege formatul" : "Generează imagine"}
+              ) : !imageFormat ? t("calendar.chooseFormat") : t("dashboard.result.generateImage")}
             </button>
           </div>
 
@@ -314,7 +317,7 @@ export default function CalendarSlotCard({ slot, onUpdate, onDelete, onCreditsCh
                     background: "rgba(86,219,132,0.12)", border: "1px solid rgba(86,219,132,0.25)", color: "#56db84",
                   }}
                 >
-                  Descarcă
+                  {t("dashboard.result.download")}
                 </a>
                 <button
                   onClick={handleGenerateImage}
@@ -325,7 +328,7 @@ export default function CalendarSlotCard({ slot, onUpdate, onDelete, onCreditsCh
                     color: "rgba(255,255,255,0.3)", cursor: "pointer",
                   }}
                 >
-                  Regenerează
+                  {t("dashboard.result.regenerate")}
                 </button>
               </div>
             </div>
@@ -344,7 +347,7 @@ export default function CalendarSlotCard({ slot, onUpdate, onDelete, onCreditsCh
               color: "#56db84", cursor: "pointer",
             }}
           >
-            Aprobă
+            {t("calendar.approve")}
           </button>
         )}
 
@@ -366,9 +369,9 @@ export default function CalendarSlotCard({ slot, onUpdate, onDelete, onCreditsCh
                   <circle cx="6" cy="6" r="4" stroke="rgba(86,219,132,0.3)" strokeWidth="2"/>
                   <path d="M6 2a4 4 0 0 1 4 4" stroke="#56db84" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
-                Se generează...
+                {t("dashboard.form.generating")}
               </span>
-            ) : "Generează text"}
+            ) : t("calendar.generateText")}
           </button>
         )}
 
@@ -384,7 +387,7 @@ export default function CalendarSlotCard({ slot, onUpdate, onDelete, onCreditsCh
                 cursor: "pointer",
               }}
             >
-              {copied ? "Copiat" : "Copiază text"}
+              {copied ? t("dashboard.result.copied") : t("dashboard.result.copy")}
             </button>
             <button
               onClick={handleGenerate}
@@ -395,7 +398,7 @@ export default function CalendarSlotCard({ slot, onUpdate, onDelete, onCreditsCh
                 color: "rgba(255,255,255,0.3)", cursor: generating ? "not-allowed" : "pointer",
               }}
             >
-              {generating ? "..." : "Regenerează"}
+              {generating ? "..." : t("dashboard.result.regenerate")}
             </button>
           </>
         )}

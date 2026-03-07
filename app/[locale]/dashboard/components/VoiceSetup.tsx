@@ -66,12 +66,12 @@ export default function VoiceSetup({
         body: JSON.stringify({ samples, brandId }),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Eroare la analiză");
+      if (!res.ok) throw new Error(data.error || t("analyzing"));
       setStyleProfile(data.style_profile);
       setEditing(false);
       onProfileReady(true);
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Ceva n-a mers");
+      setError(e instanceof Error ? e.message : t("analyzing"));
     } finally {
       setLoading(false);
     }
